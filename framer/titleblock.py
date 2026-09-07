@@ -44,9 +44,8 @@ def read_titleblock(layout) -> dict:
     (`{material, drawing_number, revision, scale, ...}`), ognuno con `source` e
     `confidence`; `None` + voce in `unresolved` dove non legge.
 
-    Aperto (FRAMER.md): se questa lettura sta in Framer o nello step
-    `titleblock.py` dell'interprete. Framer di sicuro **delimita** il cartiglio
-    e le sue celle; leggere i valori potrebbe stare di là.
+    Sta **in framer** (MAP D4): framer delimita il cartiglio e ne legge i
+    valori; l'interprete è solo un orchestratore e non fa lavoro geometrico.
 
     STUB — ritorna un dict vuoto.
     """

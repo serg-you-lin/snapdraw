@@ -108,10 +108,12 @@ produce gli edge di cornice + un cartiglio vuoto. Fuori dal primo giro.
 - discretizzazione: la geometria di cornice è marcata, non ridisegnata — forge
   la riscrive con le primitive native.
 
-## Domande aperte
+## Decisioni (erano domande aperte, chiuse in MAP D4)
 
-- framer è un modulo dell'interprete o un progetto a sé che l'interprete
-  importa? (per ora: repo a sé, l'interprete lo importerà)
-- la lettura dei campi del cartiglio è di framer o dello step `titleblock.py`
-  dell'interprete? framer di sicuro **delimita** cartiglio e celle; leggere i
-  valori potrebbe stare di là.
+- **framer è un progetto a sé che l'interprete importa** come libreria, come
+  `unfold` — non una cartella dentro l'interprete. L'interprete è solo un
+  orchestratore, non fa lavoro geometrico.
+- **La lettura dei campi del cartiglio (`read_titleblock`) sta in framer.**
+  framer delimita il cartiglio, ne legge le celle e ne estrae i valori con
+  `source` + `confidence`. L'interprete riceve il risultato e lo incrocia con
+  callout ed ERP.

@@ -5,18 +5,22 @@ Rilevamento della cornice di formato.
 
 Porta l'algoritmo del vecchio `core/classification/frame_detector.py` di forge
 (rimosso in forge MAP D24 perché girava *prima* di heal — cioè è roba del
-consumatore, vedi FRAMER.md) e lo riscrive sugli `Edge` / `LineSeg` di forge
-invece che su `RawSegment` propri.
+consumatore, vedi FRAMER.md) e lo riscrive sugli `Edge` / `LineSeg` di forge.
 
 Algoritmo:
-    1. tra i rettangoli chiusi (`geometry.find_rectangles`), tieni quelli con
+    1. tra i rettangoli di bordo (`geometry.find_rectangles`), tieni quelli con
        rapporto dei lati ≈ √2 (formati ISO), tolleranza ±5%;
-    2. per ognuno calcola il contenimento: frazione della geometria restante
-       che sta dentro la sua bbox;
-    3. tieni i candidati con contenimento ≥ 80%; tra questi prendi il più
-       grande — quella è la cornice;
+    2. per ognuno calcola il **contenimento**: frazione della geometria
+       restante che sta dentro la sua bbox;
+    3. tieni **tutti** quelli con contenimento ≥ 80% — una cornice a doppio
+       bordo ne ha due (riquadro esterno + squadratura), e vanno marcati
+       entrambi, altrimenti il riquadro non marcato resta e `heal` lo prende
+       come outer;
     4. conservativo: se nessuno supera la soglia, ritorna None. Meglio un
        cluster sporco che buttare via la geometria di un pezzo.
+
+Il `FrameInfo` restituito porta gli `Edge` di **tutti** i rettangoli tenuti; la
+bbox e il formato sono quelli del più grande.
 """
 
 from __future__ import annotations
@@ -36,37 +40,45 @@ def detect_frame(doc, containment_threshold: float = CONTAINMENT_THRESHOLD) -> O
     Rileva la cornice di formato nella geometria grezza di `doc`
     (`forge.load_dxf(...)`, prima di `heal`).
 
-    Ritorna un `FrameInfo` con gli `Edge` del riquadro, oppure `None` se non
-    c'è un candidato convincente (il chiamante mette "frame: uncertain" nei
-    flag e non marca niente).
+    Ritorna un `FrameInfo` con gli `Edge` di tutti i riquadri di bordo che
+    racchiudono il disegno, oppure `None` se non c'è un candidato convincente
+    (il chiamante mette "frame: uncertain" nei flag e non marca niente).
     """
     candidates = [r for r in find_rectangles(doc) if is_iso_ratio(r)]
     if not candidates:
         return None
 
-    scored = [(r, containment(r, doc)) for r in candidates]
-    valid = [(r, c) for r, c in scored if c >= containment_threshold]
-    if not valid:
+    kept = [(r, c) for r in candidates if (c := containment(r, doc)) >= containment_threshold]
+    if not kept:
         return None
 
-    rect, cont = max(valid, key=lambda rc: rc[0].area)
+    largest, largest_cont = max(kept, key=lambda rc: rc[0].area)
+
+    seen: set = set()
+    edges = []
+    for rect, _ in kept:
+        for e in rect.edges:
+            if id(e) not in seen:
+                seen.add(id(e))
+                edges.append(e)
+
     return FrameInfo(
-        edges=list(rect.edges),
-        bbox=rect.bbox,
-        iso_format=iso_format(rect),
-        containment=cont,
-        confidence=_confidence(rect, cont, n_candidates=len(valid)),
+        edges=edges,
+        bbox=largest.bbox,
+        iso_format=iso_format(largest),
+        containment=largest_cont,
+        confidence=_confidence(largest, largest_cont, n_borders=len(kept)),
     )
 
 
-def _confidence(rect: Rect, cont: float, n_candidates: int) -> float:
+def _confidence(rect: Rect, cont: float, n_borders: int) -> float:
     """
-    Confidenza grezza: parte dal contenimento, penalizza se più candidati
-    hanno passato la soglia (cornice ambigua) o se il formato ISO non torna.
+    Confidenza grezza: parte dal contenimento, bonus se il formato ISO torna,
+    bonus se ci sono due bordi (cornice a doppia squadratura, molto tipica).
     """
     score = cont
-    if n_candidates > 1:
-        score -= 0.15
-    if iso_format(rect) is None:
-        score -= 0.10
+    if iso_format(rect) is not None:
+        score += 0.05
+    if n_borders >= 2:
+        score += 0.05
     return max(0.0, min(1.0, score))

@@ -4,7 +4,7 @@ import forge
 import framer
 
 # --- CONFIG ---------------------------------------------------------------
-INPUT = r"tests/examples/framed_drawing.dxf"   # relativo -> dalla radice del repo
+INPUT = r"42D025Z00I.DXF"   # relativo -> dalla radice del repo
 # INPUT = r"C:\job\disegno_cliente.dxf"        # assoluto -> usato com'è
 # -----------------------------------------------------------------------------
 
@@ -37,3 +37,12 @@ print(f"cluster dopo heal: {len(result.clusters)}")
 for i, c in enumerate(result.clusters):
     b = tuple(round(v) for v in c.outer.polygon.bounds)
     print(f"  cluster {i}: area={c.outer.polygon.area:.0f}  bbox={b}  inner={len(c.inners)}")
+
+# to_dxf(result, source_doc) RITORNA un Drawing ezdxf, non salva. Il secondo
+# argomento è il ForgeDocument (opzionale), non un path.
+import os
+os.makedirs("pipeline_output", exist_ok=True)
+out = forge.to_dxf(result, doc)
+out.saveas(r"pipeline_output/output.dxf")
+print("scritto pipeline_output/output.dxf")
+

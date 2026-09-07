@@ -8,17 +8,24 @@ arrotondati alla tolerance da forge) e `segment` (primitiva nativa: `LineSeg`,
 `ArcSeg`, ...). Cornice e cartiglio sono fatti di segmenti dritti, quindi qui
 si guardano solo i `LineSeg`.
 
-Nessuna decisione semantica: trova rettangoli, misura contenimento, riconosce
-un formato ISO. Chi decide "questa è la cornice" è `frame.py`.
+Nessuna decisione semantica: trova rettangoli di bordo, misura contenimento,
+riconosce un formato ISO. Chi decide "questa è la cornice" è `frame.py`.
+
+Il rilevamento rettangoli **non** usa `polygonize`: su un disegno reale il bordo
+della cornice è coperto di tacche di graduazione (le zone A/B/C/1/2/3) che
+spezzano ogni faccia pulita — `polygonize` restituisce un poligono da 45 punti
+con 13 buchi, non un rettangolo. Si cercano invece i **lati** direttamente:
+linee axis-aligned lunghe almeno una frazione della dimensione del disegno, che
+coprono per intero i quattro lati di un rettangolo. Così una cornice a doppio
+bordo dà due rettangoli, non zero.
 """
 
 from __future__ import annotations
 
 import math
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
-from shapely.geometry import LineString, Polygon
-from shapely.ops import polygonize, unary_union
+from shapely.geometry import box
 
 from forge.core.primitives.segments import LineSeg
 
@@ -26,11 +33,16 @@ from .model import BBox
 
 ISO_RATIO = math.sqrt(2)          # ≈ 1.41421 — rapporto lato lungo / lato corto dei formati ISO
 RATIO_TOLERANCE = 0.05            # ±5% sul rapporto
-RECT_AREA_TOLERANCE = 0.02       # scarto max fra area del poligono e area del suo envelope
+
+BORDER_MIN_SIDE_FRACTION = 0.30   # un lato di cornice è lungo ≥ 30% della dimensione maggiore del disegno
+AXIS_EPS = 0.5                    # mm — scarto per considerare una linea orizzontale / verticale
+COORD_CLUSTER_TOL = 1.5          # mm — due bordi più vicini di così sono lo stesso bordo
+SIDE_COVERAGE = 0.85            # frazione minima di un lato coperta da linee collineari
 CONTAINMENT_MARGIN_FACTOR = 0.02  # margine sulla bbox, frazione del lato corto
 
 # Formati ISO in mm (lato corto, lato lungo). Il disegno può essere in
 # qualsiasi unità: il riconoscimento del formato è best-effort e assume mm.
+# `margin`: quanto il riquadro di squadratura rientra dal bordo carta (per lato).
 _ISO_FORMATS = {
     "A0": (841.0, 1189.0),
     "A1": (594.0, 841.0),
@@ -40,12 +52,13 @@ _ISO_FORMATS = {
     "A5": (148.0, 210.0),
 }
 _ISO_SIZE_TOLERANCE = 0.03        # ±3% sulle dimensioni nominali
+_ISO_MARGINS = (0.0, 5.0, 10.0, 20.0, 25.0)   # rientri tipici del riquadro di squadratura
 
 
 class Rect:
     """Un rettangolo candidato: il poligono shapely e gli Edge che lo bordano."""
 
-    def __init__(self, polygon: Polygon, edges: list):
+    def __init__(self, polygon, edges: list):
         self.polygon = polygon
         self.edges = edges
 
@@ -78,48 +91,137 @@ def line_edges(doc) -> list:
     return [e for e in doc.edges if isinstance(e.segment, LineSeg)]
 
 
-def find_rectangles(doc) -> List[Rect]:
-    """
-    Trova i rettangoli chiusi nella geometria grezza.
+# ---------------------------------------------------------------------------
+# Rilevamento rettangoli di bordo
+# ---------------------------------------------------------------------------
 
-    Fa il `polygonize` dell'unione nodata di tutti i LineSeg: gestisce con lo
-    stesso passaggio il rettangolo disegnato come polilinea chiusa e quello
-    fatto di 4 LINE separate. Tiene i poligoni che coincidono col proprio
-    envelope (rettangoli axis-aligned) entro `RECT_AREA_TOLERANCE`.
+def find_rectangles(doc, min_side_fraction: float = BORDER_MIN_SIDE_FRACTION) -> List[Rect]:
+    """
+    Trova i rettangoli axis-aligned "di bordo": quelli i cui quattro lati sono
+    coperti da linee lunghe. Prende sia il riquadro esterno sia quello di
+    squadratura di una cornice a doppio bordo.
+
+    Non usa `polygonize` — vedi il docstring del modulo.
     """
     edges = line_edges(doc)
     if len(edges) < 4:
         return []
 
-    strings = [LineString([e.start, e.end]) for e in edges]
-    merged = unary_union(strings)
+    xs_all = [p[0] for e in edges for p in (e.start, e.end)]
+    ys_all = [p[1] for e in edges for p in (e.start, e.end)]
+    big = max(max(xs_all) - min(xs_all), max(ys_all) - min(ys_all))
+    if big <= 0:
+        return []
+    min_len = big * min_side_fraction
+
+    horiz, vert = _axis_lines(edges)
+    long_h = [h for h in horiz if (h[2] - h[1]) >= min_len]
+    long_v = [v for v in vert if (v[2] - v[1]) >= min_len]
+    if len(long_h) < 2 or len(long_v) < 2:
+        return []
+
+    ys = _cluster_coords([h[3] for h in long_h])
+    xs = _cluster_coords([v[3] for v in long_v])
+
     rects: List[Rect] = []
-
     seen: set = set()
-    for poly in polygonize(merged):
-        if poly.is_empty or poly.area <= 0:
-            continue
-        # `polygonize` restituisce il riquadro esterno con i pezzi interni come
-        # buchi: si guarda solo l'anello esterno per decidere se è un rettangolo
-        # e per raccogliere gli Edge che lo bordano.
-        shell = Polygon(poly.exterior)
-        env = shell.envelope
-        if env.area <= 0:
-            continue
-        if abs(shell.area - env.area) / env.area > RECT_AREA_TOLERANCE:
-            continue  # non è un rettangolo axis-aligned
-
-        key = tuple(round(v, 3) for v in shell.bounds)
-        if key in seen:
-            continue
-        seen.add(key)
-
-        boundary = shell.exterior.buffer(_edge_match_tol(shell))
-        owned = [e for e, s in zip(edges, strings) if boundary.contains(s)]
-        rects.append(Rect(polygon=shell, edges=owned))
-
+    for i in range(len(ys)):
+        for j in range(i + 1, len(ys)):
+            y_lo, y_hi = ys[i], ys[j]
+            for k in range(len(xs)):
+                for m in range(k + 1, len(xs)):
+                    x_lo, x_hi = xs[k], xs[m]
+                    if not _sides_covered(x_lo, y_lo, x_hi, y_hi, horiz, vert):
+                        continue
+                    key = (round(x_lo, 1), round(y_lo, 1), round(x_hi, 1), round(y_hi, 1))
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    poly = box(x_lo, y_lo, x_hi, y_hi)
+                    rects.append(Rect(polygon=poly, edges=_edges_on_border(x_lo, y_lo, x_hi, y_hi, edges)))
     return rects
 
+
+def _axis_lines(edges, eps: float = AXIS_EPS):
+    """
+    Divide gli Edge dritti in orizzontali e verticali.
+
+    horiz: (edge, x_lo, x_hi, y)   —  vert: (edge, y_lo, y_hi, x)
+    """
+    horiz, vert = [], []
+    for e in edges:
+        (x0, y0), (x1, y1) = e.start, e.end
+        if abs(y0 - y1) <= eps and abs(x0 - x1) > eps:
+            horiz.append((e, min(x0, x1), max(x0, x1), (y0 + y1) / 2.0))
+        elif abs(x0 - x1) <= eps and abs(y0 - y1) > eps:
+            vert.append((e, min(y0, y1), max(y0, y1), (x0 + x1) / 2.0))
+    return horiz, vert
+
+
+def _cluster_coords(values, tol: float = COORD_CLUSTER_TOL) -> List[float]:
+    """Fonde coordinate più vicine di `tol` nel loro valore medio."""
+    out: List[float] = []
+    for v in sorted(values):
+        if out and v - out[-1] <= tol:
+            continue
+        out.append(v)
+    return out
+
+
+def _coverage(segments: List[Tuple[float, float]], lo: float, hi: float) -> float:
+    """Frazione di [lo, hi] coperta dall'unione degli intervalli `segments`."""
+    if hi <= lo:
+        return 0.0
+    clipped = sorted(
+        (max(lo, a), min(hi, b)) for a, b in segments if min(hi, b) > max(lo, a)
+    )
+    covered, cur = 0.0, None
+    for a, b in clipped:
+        if cur is None:
+            cur = [a, b]
+        elif a <= cur[1]:
+            cur[1] = max(cur[1], b)
+        else:
+            covered += cur[1] - cur[0]
+            cur = [a, b]
+    if cur:
+        covered += cur[1] - cur[0]
+    return covered / (hi - lo)
+
+
+def _sides_covered(x_lo, y_lo, x_hi, y_hi, horiz, vert, tol: float = 2 * AXIS_EPS) -> bool:
+    """True se tutti e 4 i lati del rettangolo sono coperti ≥ SIDE_COVERAGE."""
+    for y in (y_lo, y_hi):
+        segs = [(h[1], h[2]) for h in horiz if abs(h[3] - y) <= tol]
+        if _coverage(segs, x_lo, x_hi) < SIDE_COVERAGE:
+            return False
+    for x in (x_lo, x_hi):
+        segs = [(v[1], v[2]) for v in vert if abs(v[3] - x) <= tol]
+        if _coverage(segs, y_lo, y_hi) < SIDE_COVERAGE:
+            return False
+    return True
+
+
+def _edges_on_border(x_lo, y_lo, x_hi, y_hi, edges, tol: float = 2 * AXIS_EPS) -> list:
+    """
+    Gli Edge che giacciono su uno dei 4 lati del rettangolo — i lati veri più
+    le tacche di graduazione collineari (anche loro sono arredo di cornice).
+    """
+    owned = []
+    for e in edges:
+        (x0, y0), (x1, y1) = e.start, e.end
+        on_h = abs(y0 - y1) <= tol and (abs((y0 + y1) / 2 - y_lo) <= tol or abs((y0 + y1) / 2 - y_hi) <= tol) \
+            and min(x0, x1) >= x_lo - tol and max(x0, x1) <= x_hi + tol
+        on_v = abs(x0 - x1) <= tol and (abs((x0 + x1) / 2 - x_lo) <= tol or abs((x0 + x1) / 2 - x_hi) <= tol) \
+            and min(y0, y1) >= y_lo - tol and max(y0, y1) <= y_hi + tol
+        if on_h or on_v:
+            owned.append(e)
+    return owned
+
+
+# ---------------------------------------------------------------------------
+# Misure
+# ---------------------------------------------------------------------------
 
 def is_iso_ratio(rect: Rect, tolerance: float = RATIO_TOLERANCE) -> bool:
     """True se il rapporto dei lati è ≈ √2 (formati ISO)."""
@@ -148,16 +250,18 @@ def containment(rect: Rect, doc) -> float:
 
 
 def iso_format(rect: Rect, tolerance: float = _ISO_SIZE_TOLERANCE) -> Optional[str]:
-    """Formato ISO dedotto dalle dimensioni del rettangolo, o None. Assume mm."""
+    """
+    Formato ISO dedotto dalle dimensioni del rettangolo, o None. Assume mm.
+
+    Confronta contro le dimensioni nominali del foglio **e** contro il foglio
+    meno un rientro tipico del riquadro di squadratura (5, 10, 20, 25 mm per
+    lato): un A2 con squadratura a 10 mm misura 574 × 400, non 594 × 420.
+    """
     short, long_ = rect.short_side, rect.long_side
     for name, (s_nom, l_nom) in _ISO_FORMATS.items():
-        if (abs(short - s_nom) / s_nom <= tolerance
-                and abs(long_ - l_nom) / l_nom <= tolerance):
-            return name
+        for margin in _ISO_MARGINS:
+            s_exp, l_exp = s_nom - 2 * margin, l_nom - 2 * margin
+            if (abs(short - s_exp) / s_exp <= tolerance
+                    and abs(long_ - l_exp) / l_exp <= tolerance):
+                return name
     return None
-
-
-def _edge_match_tol(poly: Polygon) -> float:
-    """Tolleranza per decidere se un Edge giace sul bordo di un poligono."""
-    minx, miny, maxx, maxy = poly.bounds
-    return max(maxx - minx, maxy - miny) * 1e-4 + 1e-6
