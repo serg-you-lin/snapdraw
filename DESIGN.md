@@ -35,11 +35,12 @@ framer.read_titleblock(l) → (stub) celle del cartiglio → metadati di disegno
 
 | ruolo | cos'è | forge lo conosce? |
 |---|---|---|
-| `frame` | il riquadro di formato ISO | sì — `ContourRole.FRAME` (solo etichetta) |
-| `title_block` | il cartiglio | no — slug custom, forge lo conserva (D27) |
+| `frame` | il riquadro di formato ISO | no — slug di consumatore (forge D31 ha rimosso `ContourRole.FRAME`) |
+| `title_block` | il cartiglio | no — slug di consumatore, forge lo conserva (D27) |
 
-Nessuno dei due è in `STRUCTURAL_ROLES`: geometria non di taglio, va in
-`trash_entities` con lo stile preservato.
+Nessuno dei due è strutturale: geometria non di taglio. `heal` li tiene fuori
+dal grafo, finiscono in `trash_entities` col ruolo intatto, e l'output DXF li
+scrive su un layer col nome dello slug (`frame`, `title_block`), colore grigio.
 
 ## Algoritmo cornice (`frame.py`, portato e funzionante)
 
@@ -75,7 +76,7 @@ indipendente. Segnali da combinare (nessuno sufficiente da solo):
 
 Conservativo: nel dubbio non marca, `title_block: uncertain` nei flag.
 
-## L'aggancio a forge (opzione B, chiusa in forge D30)
+## L'aggancio a forge (opzione B, chiusa in forge D30 + D31)
 
 framer setta `edge.role` sugli `Edge` di `doc.edges` prima di `heal`. forge non
 ha preso API nuove: ha consolidato il concetto "ruolo strutturale" in
@@ -86,7 +87,10 @@ ha preso API nuove: ha consolidato il concetto "ruolo strutturale" in
   per gap solving né per la ricerca loop;
 - `detect()` non trasforma un ruolo che non conosce in una feature: lo lascia
   in `trash_entities`;
-- l'output DXF riscrive quella geometria nativa sul layer di destinazione.
+- l'output DXF scrive quella geometria nativa su un **layer col nome dello
+  slug** (`frame`, `title_block`), colore grigio — non su `Trash` insieme alla
+  spazzatura vera (D31: `ContourRole.FRAME` rimosso da forge, i ruoli di
+  consumatore vanno su un layer loro).
 
 Invariante: **framer non ragiona dentro forge.** Chiama `forge.load_dxf`, fa il
 suo lavoro geometrico, restituisce dei ruoli. Se serve un cambiamento in forge è

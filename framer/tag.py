@@ -8,11 +8,12 @@ Riporta il layout rilevato a forge: setta `edge.role` sugli `Edge` di
 **prima** di `forge.heal`, e heal tiene quegli edge fuori dal grafo
 (`_split_labeled` estrae ogni ruolo deciso e non strutturale). La geometria non
 si perde — finisce in `trash_entities` col ruolo intatto e l'output DXF la
-riscrive nativa sul layer di destinazione.
+scrive su un layer **col nome dello slug** (`frame`, `title_block`), colore
+grigio, non su `Trash` (forge D31).
 
-Lo slug passa da `forge.normalize_role`: `"frame"` è un ruolo che forge
-conosce (`ContourRole.FRAME`), `"title_block"` è uno slug custom che forge
-conserva senza classificarlo (D27).
+`"frame"` e `"title_block"` sono **entrambi** slug di consumatore: forge non li
+conosce (`ContourRole.FRAME` è stato rimosso in D31), li conserva e basta.
+`forge.normalize_role` li ripulisce in slug sicuri.
 """
 
 from __future__ import annotations

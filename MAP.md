@@ -78,6 +78,20 @@ Nota aperta: su `42D025Z00I` la cornice ora esce (`cluster 1 → 4`), ma i pezzi
 veri non si chiudono in `heal` (tanti archi, linee di costruzione, 97 edge non
 di contorno) — è roba di forge/heal, non di framer.
 
+### D6 — `frame` è uscito da forge (forge D31)  ✅
+
+Aprendo i DXF prodotti, la geometria di cornice usciva **sul layer `Trash`**
+insieme alla spazzatura vera: `forge.io.dxf._write_trash` scriveva tutto su
+`TRASH_LAYER` ignorando il ruolo. Federico: tutto ciò che è framer, ruolo
+compreso e anche nell'adapter, deve uscire da forge.
+
+Fatto in **forge D31**: `ContourRole.FRAME` rimosso, `frame` è uno slug di
+consumatore come `title_block`. `_write_trash` instrada per ruolo — slug di
+consumatore → un layer col nome dello slug, colore grigio; `unknown` → `Trash`.
+`framer.tag_layout` non cambia: `forge.normalize_role("frame")` ora ritorna la
+stringa `"frame"` invece della costante. Sul disegno reale: `frame` esce su un
+layer `frame` (11 entità), la spazzatura su `Trash` (388).
+
 ---
 
 ## Appunti (aperti — non decisioni)
