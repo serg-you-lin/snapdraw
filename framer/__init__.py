@@ -43,7 +43,10 @@ from __future__ import annotations
 
 from .frame import find_frame, rejected_border
 from .generate import DEFAULT_TITLE_BLOCK_TEMPLATE, add_frame, add_title_block
-from .model import BBox, Cell, FieldSlot, FrameInfo, FrameLayout, TitleBlock, TitleBlockTemplate, View, ViewLayout
+from .holes import (callout_scale, describe_holes, diameter_callouts, group_holes, hole_trace, parse_callout,
+                    principal_circles, read_holes)
+from .model import (BBox, Cell, FieldSlot, FrameInfo, FrameLayout, Hole, HoleCallout, HoleGroup, HoleLayout,
+                    HoleTrace, TitleBlock, TitleBlockTemplate, View, ViewLayout)
 from .roles import CONSTRUCTION, FRAME, TITLE_BLOCK
 from .rules import load_rules, rules_from_dict
 from .recipe import detect_frame
@@ -77,6 +80,19 @@ __all__ = [
     "view_depth",
     "View",
     "ViewLayout",
+    "read_holes",
+    "describe_holes",
+    "principal_circles",
+    "hole_trace",
+    "diameter_callouts",
+    "parse_callout",
+    "callout_scale",
+    "group_holes",
+    "Hole",
+    "HoleCallout",
+    "HoleTrace",
+    "HoleGroup",
+    "HoleLayout",
     "add_frame",
     "add_title_block",
     "FrameLayout",

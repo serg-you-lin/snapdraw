@@ -155,3 +155,98 @@ class ViewLayout:
     depth:     Optional[float] = None
     flags:     List[str] = field(default_factory=list)
 
+
+@dataclass
+class HoleCallout:
+    """
+    La quota di diametro agganciata a un cerchio, letta.
+
+    text        : il testo come sul disegno (`display_text`), es. "∅5,3+0,05^-0"
+    designation : "Ø" o "M" (filetto)
+    nominal     : il valore scritto, es. 5.3
+    upper/lower : scostamenti di tolleranza scritti, o None
+    measured    : la misura della geometria (`measured_value`), in unità del disegno
+    rest        : testo dopo valore e tolleranza non letto ("" se tutto letto)
+    """
+    text:        str
+    designation: str
+    nominal:     float
+    measured:    float
+    upper:       Optional[float] = None
+    lower:       Optional[float] = None
+    rest:        str = ""
+
+
+@dataclass
+class HoleTrace:
+    """
+    La traccia di un foro in una vista compagna: le due pareti (linee
+    parallele distanti un diametro) alla quota del cerchio.
+
+    view    : indice della vista compagna
+    through : le pareti attraversano tutta la vista
+    length  : lunghezza delle pareti, in unità del disegno
+    """
+    view:    int
+    through: bool
+    length:  float
+
+
+@dataclass
+class Hole:
+    """
+    Un cerchio della vista principale letto come foro.
+
+    path           : percorso in `result`, es. "clusters[0].inners[2]"
+    center         : centro nel disegno
+    drawn_diameter : diametro misurato sulla geometria
+    callout        : la quota di diametro agganciata, o None
+    traces         : le tracce trovate nelle viste compagne
+    through        : passante? — da traccia, o per convenzione se il disegno non dice niente
+    drawn_depth    : profondità in unità del disegno (traccia, o profondità delle viste)
+    depth          : profondità alla scala delle quote, o None se la scala non si legge
+    source         : "trace" o "convention"
+    flags          : "callout: missing", "trace: inconsistent", ...
+    """
+    path:           str
+    center:         Tuple[float, float]
+    drawn_diameter: float
+    callout:        Optional[HoleCallout] = None
+    traces:         List[HoleTrace] = field(default_factory=list)
+    through:        Optional[bool] = None
+    drawn_depth:    Optional[float] = None
+    depth:          Optional[float] = None
+    source:         str = ""
+    flags:          List[str] = field(default_factory=list)
+
+
+@dataclass
+class HoleGroup:
+    """Fori uguali: stessa quota, stessa tolleranza, stesso tipo e profondità."""
+    holes:       List[Hole]
+    designation: Optional[str]
+    diameter:    Optional[float]
+    upper:       Optional[float]
+    lower:       Optional[float]
+    through:     Optional[bool]
+    depth:       Optional[float]
+
+    @property
+    def count(self) -> int:
+        return len(self.holes)
+
+
+@dataclass
+class HoleLayout:
+    """
+    Il risultato di `framer.read_holes(doc, result, views)`.
+
+    holes  : un Hole per cerchio della vista principale
+    groups : i fori raggruppati come li direbbe una distinta
+    scale  : valore scritto / valore misurato dalle quote di diametro (0.8 = geometria a 1,25:1), o None
+    flags  : "holes: no principal view", "scale: inconsistent", ...
+    """
+    holes:  List[Hole] = field(default_factory=list)
+    groups: List[HoleGroup] = field(default_factory=list)
+    scale:  Optional[float] = None
+    flags:  List[str] = field(default_factory=list)

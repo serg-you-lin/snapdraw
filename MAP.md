@@ -502,6 +502,53 @@ disegno, stesso dominio di cornice e cartiglio: sta in framer, non in forge.
 
 Suite: 47 passed (7 nuovi in `test_views.py`).
 
+### D19 — I fori della vista principale: `read_holes`, passante per convenzione  ✅
+
+Primo caso di lettura delle feature sulle viste (Appunti, "Chi fa cosa"):
+per ogni cerchio della principale (`forge.contour_shape`), la traccia nelle
+viste compagne e la quota di diametro agganciata. forge dice "cerchio";
+che sia un foro passante o cieco si legge qui, incrociando viste e
+notazione. Trapano o laser no: è processo, snapbend.
+
+- **`framer/holes.py`**, ricetta `read_holes(doc, result, views) ->
+  HoleLayout` sopra passi pubblici (`principal_circles`, `hole_trace`,
+  `diameter_callouts`, `parse_callout`, `callout_scale`, `group_holes`);
+  `describe_holes` scrive i gruppi ("2 fori passanti Ø5,3 +0,05/0,
+  profondità 4"). Serve `doc` oltre a `result`: le linee nascoste restano
+  fuori dalle isole.
+- **Passante per convenzione** (Federico): senza indicazioni un foro è
+  passante; su una lamiera tagliata al laser un foro cieco non esiste. Le
+  nascoste si omettono spesso: la loro assenza non fa un cieco. `source =
+  "convention"`, non una confidenza bassa. Profondità = quella delle viste
+  (D18).
+- **Traccia**: nelle compagne, due pareti rettilinee (qualunque tipo di
+  linea) alla quota del cerchio ± r. Come finisce ogni parete: su una
+  **faccia** (una linea che la attraversa, un edge che va verso l'esterno —
+  anche obliquo, uno smusso — o il bordo della vista) o su un **fondo** (edge
+  solo verso l'altra parete, piatto o a punta). Faccia–faccia → passante,
+  profondità = lunghezza delle pareti; faccia–fondo → cieco. Pareti senza
+  né l'una né l'altro non sono una traccia.
+- **Scartato**: passante solo se le pareti coprono tutta la vista compagna,
+  cieco altrimenti. Sulle laterali di lamiera piegata (`tavola_04`,
+  `tavola_02`, `tavola_07`) il foro passa un'ala spessa 1–3 mm e usciva
+  "cieco profondità 1": la faccia interna dell'ala scambiata per fondo.
+- **Quota**: la `Dimension` di diametro con `references` sul cerchio
+  (`forge.dimension_references`, forge D69); dal `display_text` si leggono
+  "Ø"/"M", valore e tolleranza (`+0,05^-0` impilata, `±`). Il resto non letto
+  finisce in un flag.
+- **Scala** (appunto "Scala", ristretto ai fori): scritto / misurato sulle
+  quote Ø, non sui filetti M (cadono sul nocciolo). Quote discordi → `None`
+  + `scale: inconsistent`. `leva_01`: 0,8, profondità 5 disegnata → 4.
+- **Non fatto**: cerchi concentrici (lamatura, svasatura: `tavola_02` Ø30
+  cieco 1,5 sopra Ø8 passante 13,5; `tavola_05`) restano fori separati con
+  il flag `concentric:`. Callout con conteggio ("3xØ5"), profondità scritta
+  (↧), fori visti di fianco nella principale: dopo.
+- **Limite noto**: la profondità per convenzione è quella delle viste; su un
+  pezzo piegato (`tavola_04`, 50) non è lo spessore dove sta il foro.
+
+Suite: 56 passed (8 nuovi in `test_holes.py`). DXF da giudicare:
+`scripts/05_read_holes.py` → `pipeline_output/holes/`.
+
 ---
 
 ## Appunti (aperti — non decisioni)
@@ -523,7 +570,7 @@ framer, qui c'è *cosa* sono.
   (ex bendly); forge terrà i predicati geometrici (`circular_geometry`,
   `NonContourEdgeDetector`) e l'overlay `cluster.detected`. Direzione
   segnata nel MAP di forge, non ancora fatta.
-- **Feature sulle viste: nessuno le legge ancora.** `detect_flat` no (D18).
+- **Feature sulle viste: i fori della principale ci sono (D19).** `detect_flat` no (D18).
   Per Federico la lettura va fatta per processo — lamiera, profili,
   asportazione (la stampa 3D probabilmente non ne ha bisogno) — e non è
   deciso dove. Punto di partenza: `forge.contour_shape` (forge D68) dà la

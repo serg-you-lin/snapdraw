@@ -36,6 +36,11 @@
 
 ## Prossimi passi
 
+- [ ] **fori (MAP D19)**: giudicare i DXF di `pipeline_output/holes/`;
+      poi lamature/svasature (cerchi concentrici → un foro solo), callout
+      con conteggio ("3xØ5") e profondità scritta (↧), profondità vera
+      dove sta il foro su un pezzo piegato.
+
 - [ ] **fixture di regressione formali**: promuovere 2-3 dei 22 disegni reali
       di `lab/` (con permesso cliente) a `tests/examples/` vero e proprio,
       con test che fissano frame/cartiglio/n_cluster attesi — oggi sono solo
