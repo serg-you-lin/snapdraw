@@ -209,7 +209,8 @@ class Feature:
                 oblique dalla sede al foro nella compagna), "seated" (sede
                 concentrica senza prova del tipo); None per il resto
     role      : il ruolo con cui la feature si etichetta (`snapdraw.roles`):
-                `hole` per ogni foro, qualunque sia il tipo
+                per i fori uno per tipo (`hole`, `threaded_hole`,
+                `countersink`, `counterbore`, `seated_hole`)
     view      : indice della vista (cluster) dove sta
     path      : percorso del contorno in `result` al momento della lettura,
                 es. "clusters[0].inners[2]" (`tag_features` lo sposta dopo)

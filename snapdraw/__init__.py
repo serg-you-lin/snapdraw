@@ -49,7 +49,8 @@ from .features import (describe_features, diameter_callouts, feature_contours, f
                        group_features, parse_callout, read_features, tag_features, view_scales)
 from .model import (BBox, Callout, Cell, Feature, FeatureGroup, FeatureLayout, FieldSlot, FrameInfo, FrameLayout,
                     TitleBlock, TitleBlockTemplate, Trace, View, ViewLayout)
-from .roles import CONSTRUCTION, FRAME, HOLE, OPENING, SLOT, TITLE_BLOCK
+from .roles import (CONSTRUCTION, COUNTERBORE, COUNTERSINK, FRAME, HOLE, OPENING, SEATED_HOLE, SLOT, THREADED_HOLE,
+                    TITLE_BLOCK)
 from .rules import load_rules, rules_from_dict
 from .recipe import detect_frame
 from .render import render_view, render_views, view_edges
@@ -115,6 +116,10 @@ __all__ = [
     "TITLE_BLOCK",
     "CONSTRUCTION",
     "HOLE",
+    "THREADED_HOLE",
+    "COUNTERSINK",
+    "COUNTERBORE",
+    "SEATED_HOLE",
     "SLOT",
     "OPENING",
 ]

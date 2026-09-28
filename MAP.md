@@ -676,16 +676,19 @@ sulle viste lo fa snapdraw. Supera D19 (clean break: `holes.py` rimosso).
   → scala del foglio se le viste quotate concordano. Sul campione: 1,0
   ovunque, 0,8 su Leva, una quota discorde su `tavola_02`. Senza quota il
   diametro è quello disegnato alla scala della vista, scritto `Ø≈`.
-- **Etichette** (Federico: i fori devono stare in `hole`; i layer per
-  lavorazione li mette chi esporta per la produzione, snapbend — qui
-  l'exporter serve a guardare): ruoli `hole` (ogni foro, il tipo è
-  `hole_type`, come `detect_flat`), `slot`, `opening`. Palette di default,
+- **Etichette**: un ruolo per tipo di foro — `hole` (semplice),
+  `threaded_hole`, `countersink` (svasato), `counterbore` (lamato,
+  incassato), `seated_hole` (con sede, tipo non determinato) — più `slot` e
+  `opening`; il tipo resta anche in `hole_type`. Federico: bisogna sapere se
+  un foro è svasato o incassato; in Pippo non si esporta, si fa lo sviluppo
+  da tagliare, e il modulo che lo fa sa dove mettere le feature se sono
+  etichettate bene; per guardare, un layer per tipo. Scartato (provato per
+  poco): tutti i fori in `hole` col tipo solo come attributo — nell'export
+  visivo svasati e incassati non si distinguevano più. Palette di default,
   foro viola (sovrascrive il magenta di forge per chi importa snapdraw).
   `tag_features` attacca le feature a `cluster.detected["view_features"]`
   (forge D44) e ne toglie i contorni da `inners`; forge D70 le scrive sul
-  layer del ruolo (`contours`: foro + sede). Scartati: un ruolo per tipo di
-  foro (`threaded_hole`, `countersink`, `counterbore`) — è layering di
-  produzione, non etichetta.
+  layer del ruolo (`contours`: foro + sede).
 - **Forme**: cerchio → `hole`, stadio → `slot`, **ogni altra forma →
   `opening`** (una cava di forma libera è un'apertura, non "altro";
   `shape.kind` dice la forma). Isolamento solo per le forme non circolari:

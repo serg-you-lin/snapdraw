@@ -112,7 +112,7 @@ class TestHoles(unittest.TestCase):
         step = [{"type": "line", "start": (152, 19), "end": (152, 22)}, {"type": "line", "start": (152, 28), "end": (152, 31)}]
         entities = [*FRONT, *seat, _rect(150, 0, 10, 50), *step, *_walls(150, 152, 25, 6), *_walls(152, 160, 25, 3)]
         hole, = _read(entities, hidden=6).features
-        self.assertEqual((hole.hole_type, hole.role), ("counterbore", sd.HOLE))
+        self.assertEqual((hole.hole_type, hole.role), ("counterbore", sd.COUNTERBORE))
         self.assertAlmostEqual(hole.seat_depth, 2.0)
         self.assertTrue(hole.through)
         self.assertEqual(len(hole.contours), 2)
@@ -120,7 +120,7 @@ class TestHoles(unittest.TestCase):
     def test_sede_senza_prova_resta_non_determinata(self):
         # due cerchi concentrici visti di faccia: lamatura e svasatura sono uguali, non si indovina
         hole, = _read([*FRONT, {"type": "circle", "center": (30, 25), "radius": 5}, SIDE]).features
-        self.assertEqual((hole.hole_type, hole.role), ("seated", sd.HOLE))
+        self.assertEqual((hole.hole_type, hole.role), ("seated", sd.SEATED_HOLE))
         self.assertAlmostEqual(hole.outer_shape.diameter, 10.0)
         self.assertIn("seat: type not determined", hole.flags)
 
@@ -130,18 +130,18 @@ class TestHoles(unittest.TestCase):
         entities = [*FRONT, {"type": "circle", "center": (30, 25), "radius": 5}, _rect(150, 0, 10, 50), *cone,
                     *_walls(152, 160, 25, 3)]
         hole, = _read(entities, hidden=4).features
-        self.assertEqual((hole.hole_type, hole.role), ("countersink", sd.HOLE))
+        self.assertEqual((hole.hole_type, hole.role), ("countersink", sd.COUNTERSINK))
 
     def test_quota_m_e_un_filetto(self):
         hole, = _read([*FRONT, SIDE], dimensions=[_diameter("M<>", (30, 25), 3)]).features
-        self.assertEqual((hole.hole_type, hole.role), ("threaded", sd.HOLE))
+        self.assertEqual((hole.hole_type, hole.role), ("threaded", sd.THREADED_HOLE))
 
     def test_arco_di_cresta_a_270_gradi_e_un_filetto(self):
         # convenzione ISO: il preforo chiuso, la cresta come arco aperto di ~3/4 di giro
         crest = {"type": "arc", "center": (30, 25), "radius": 3.6, "start_angle": 0, "end_angle": 270}
         layout = _read([*FRONT, crest, SIDE])
         hole, = layout.features
-        self.assertEqual((hole.hole_type, hole.role), ("threaded", sd.HOLE))
+        self.assertEqual((hole.hole_type, hole.role), ("threaded", sd.THREADED_HOLE))
         self.assertAlmostEqual(hole.thread_diameter, 7.2)
         self.assertEqual(sd.describe_features(layout), "1 foro filettato passante M≈7,2, profondità 5 (disegnata)")
 

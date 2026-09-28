@@ -47,7 +47,8 @@ from forge.tools.hole_detector import is_threaded_hole
 from forge.tools.model.detected_features import DetectedFeatures
 
 from .model import Callout, Feature, FeatureGroup, FeatureLayout, Trace, ViewLayout
-from .roles import CONSTRUCTION, FRAME, HOLE, OPENING, SLOT, TITLE_BLOCK
+from .roles import (CONSTRUCTION, COUNTERBORE, COUNTERSINK, FRAME, HOLE, OPENING, SEATED_HOLE, SLOT, THREADED_HOLE,
+                    TITLE_BLOCK)
 from .views import ORTHOGRAPHIC, view_depth
 
 WALL_TOLERANCE = 0.1     # mm — una parete sta al bordo della forma entro questo
@@ -476,8 +477,11 @@ def _joins(seg, axis: int, a: float, b: float, tolerance: float) -> bool:
 
 
 def _role(feature: Feature) -> str:
-    """Un foro è `hole` qualunque sia il tipo (il tipo è `hole_type`); asola e apertura hanno il loro."""
-    return {"hole": HOLE, "slot": SLOT}.get(feature.kind, OPENING)
+    """Un ruolo per tipo di foro (si vede nell'export, lo usa chi sviluppa il pezzo); asola e apertura il loro."""
+    if feature.kind == "hole":
+        return {THREADED: THREADED_HOLE, COUNTERBORED: COUNTERBORE, COUNTERSUNK: COUNTERSINK,
+                SEATED: SEATED_HOLE}.get(feature.hole_type, HOLE)
+    return {"slot": SLOT}.get(feature.kind, OPENING)
 
 
 def _to_scale(feature: Feature) -> None:
