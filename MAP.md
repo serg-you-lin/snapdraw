@@ -704,11 +704,13 @@ sulle viste lo fa snapdraw. Supera D19 (clean break: `holes.py` rimosso).
   `regr_02` (aperture nella sezione, non viste) e `regr_04` (Federico:
   lasciarlo per ora) la chiave `unchecked` — non confrontate, non
   dichiarate giuste.
-- **Visto in forge, non qui**: su `tavola_01` due filettati e una lamatura
-  in trash. `island()` raggruppa per vicinanza; un gruppo di soli fori
-  disgiunti dentro una vista diventa un'isola, forge ne sceglie un cerchio
-  come "esterno", lo annida nella vista e butta gli altri come `outside`.
+- **Corretto in forge (D71)**: su `tavola_01` due filettati e una lamatura
+  finivano in trash. `island()` raggruppa per vicinanza; un gruppo di soli
+  fori vicini fra loro e lontani dal bordo della vista era un'isola a sé,
+  forge ne annidava nella vista un cerchio solo e buttava gli altri.
   Federico: roba interna a un'isola trovata non può essere un'isola a sé.
+  Dopo: `tavola_01` 30 M4 (il richiamo dice "n°30 fori"), 23 fori con
+  sede, 19 M6 + uno dalla sola cresta.
 - **Aperti**: sezioni lette come viste qualunque (le loro facce tratteggiate
   possono diventare aperture, le tracce si cercano lì); tracce per
   coincidenza in compagne complesse (`regr_04`: profondità 253 e 523);
