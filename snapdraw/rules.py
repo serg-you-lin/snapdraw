@@ -1,7 +1,7 @@
 """
-framer/rules.py
----------------
-Le regole di ruolo di framer: file JSON in `rules/` → `forge.RoleRule`, da
+snapdraw/rules.py
+-----------------
+Le regole di ruolo di snapdraw: file JSON in `rules/` → `forge.RoleRule`, da
 passare a `forge.load_dxf(role_rules=...)` (forge D63/D64: forge dà il
 meccanismo, il vocabolario è del chiamante).
 
@@ -12,7 +12,7 @@ file è completo, nessuna ereditarietà (bendly D5): uno studio **compone**
 le sue regole con quelle generiche nello script, in chiaro, e le sue vanno
 prima perché vince la prima che corrisponde (MAP D17):
 
-    role_rules = framer.load_rules("studio_x") + framer.load_rules("generic")
+    role_rules = sd.load_rules("studio_x") + sd.load_rules("generic")
     doc = forge.load_dxf("disegno.dxf", role_rules=role_rules)
 
 Formato:

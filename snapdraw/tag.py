@@ -1,6 +1,6 @@
 """
-framer/tag.py
--------------
+snapdraw/tag.py
+---------------
 Riporta il layout rilevato a forge: setta `edge.role` sugli `Edge` di
 `doc.edges` che compongono cornice e cartiglio.
 

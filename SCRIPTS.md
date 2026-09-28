@@ -1,6 +1,6 @@
 # Scripts
 
-La "palestra" per imparare e collaudare l'API di framer. Ogni script:
+La "palestra" per imparare e collaudare l'API di snapdraw. Ogni script:
 
 - ha un blocco `# --- CONFIG ---` in cima (input, path);
 - gira **senza argomenti** (`python scripts/00_detection.py`);
@@ -10,7 +10,7 @@ La "palestra" per imparare e collaudare l'API di framer. Ogni script:
 
 | script | copre |
 |---|---|
-| `00_detection.py` | `framer.detect_frame`, `framer.read_titleblock` — solo la ricetta: rileva cornice e cartiglio e legge i campi, nessuna lettura di forge a valle |
-| `01_export.py` | `framer.detect_frame`, `framer.tag_layout` + `forge.island` — marca cornice e cartiglio, legge le viste per isole e scrive il DXF |
-| `02_batch_frame.py` | `framer.add_frame`, `framer.add_title_block` — genera cornice+cartiglio in batch su `tests/examples/to_add_frame/` (metadati dal nome file), scrive `pipeline_output/framed/*_framed.dxf`, non tocca gli originali |
-| `05_read_holes.py` | `framer.read_views` + `framer.read_holes` — i fori della vista principale (passante/cieco, quota, scala) su alcuni disegni del campione `islands` di forge, scrive `pipeline_output/holes/*_holes.dxf` con la lettura accanto a ogni cerchio |
+| `00_detection.py` | `sd.detect_frame`, `sd.read_titleblock` — solo la ricetta: rileva cornice e cartiglio e legge i campi, nessuna lettura di forge a valle |
+| `01_export.py` | `sd.detect_frame`, `sd.tag_layout` + `forge.island` — marca cornice e cartiglio, legge le viste per isole e scrive il DXF |
+| `02_batch_frame.py` | `sd.add_frame`, `sd.add_title_block` — genera cornice+cartiglio in batch su `tests/examples/to_add_frame/` (metadati dal nome file), scrive `pipeline_output/framed/*_framed.dxf`, non tocca gli originali |
+| `05_read_holes.py` | `sd.read_views` + `sd.read_holes` — i fori della vista principale (passante/cieco, quota, scala) su alcuni disegni del campione `islands` di forge, scrive `pipeline_output/holes/*_holes.dxf` con la lettura accanto a ogni cerchio |

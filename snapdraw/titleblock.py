@@ -1,6 +1,6 @@
 """
-framer/titleblock.py
---------------------
+snapdraw/titleblock.py
+----------------------
 Rilevamento del cartiglio e lettura delle sue celle.
 
 `find_titleblock`: il segnale forte è la griglia interna
@@ -297,7 +297,7 @@ def read_titleblock(layout) -> dict:
     cella. Nessun match → `None` + il nome in `unresolved`, mai una
     supposizione.
 
-    `layout`: una `FrameLayout` (l'output di `framer.detect_frame`), o un
+    `layout`: una `FrameLayout` (l'output di `sd.detect_frame`), o un
     `TitleBlock` direttamente.
     """
     title_block = layout.title_block if hasattr(layout, "title_block") else layout

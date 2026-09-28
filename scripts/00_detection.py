@@ -1,7 +1,7 @@
 import _paths  # noqa: F401  — chdir alla radice del repo
 
 import forge
-import framer
+import snapdraw as sd
 
 # --- CONFIG ---------------------------------------------------------------
 INPUT = r"42D025Z00I.DXF"   # relativo -> dalla radice del repo
@@ -11,7 +11,7 @@ INPUT = r"42D025Z00I.DXF"   # relativo -> dalla radice del repo
 doc = forge.load_dxf(INPUT)
 print(f"edge: {len(doc.edges)}  annotazioni: {len(doc.annotations)}")
 
-layout = framer.detect_frame(doc)
+layout = sd.detect_frame(doc)
 
 if layout.frame:
     f = layout.frame
@@ -31,7 +31,7 @@ print("flag:", layout.flags or "nessuno")
 # la ricetta si ferma qui: nessuna lettura di forge a valle. Per marcare gli
 # Edge e scrivere un DXF (heal o island, scelta del chiamante) vedi 01_export.py.
 if layout.title_block:
-    fields = framer.read_titleblock(layout)
+    fields = sd.read_titleblock(layout)
     for name, field in fields.items():
         if name != "unresolved" and field["value"]:
             print(f"  {name}: {field['value']}")

@@ -1,7 +1,7 @@
 """
-framer/recipe.py
-----------------
-La ricetta di framer: `detect_frame(doc)` → `FrameLayout`.
+snapdraw/recipe.py
+------------------
+La ricetta di snapdraw: `detect_frame(doc)` → `FrameLayout`.
 
 Stesso schema di forge D62 (`heal()` è una ricetta sopra passi pubblici):
 qui c'è solo la composizione di default, i passi stanno nei loro moduli e
@@ -12,16 +12,18 @@ la cornice, o il cartiglio con una cornice nota da `add_frame`).
 
 Gira sulla geometria GREZZA di `doc` (`forge.load_dxf(...)`) e **non
 presuppone nessuna lettura a valle**: `heal()`, `island()` o niente del tutto
-sono scelte del chiamante. framer interpreta, forge trasforma la topologia
+sono scelte del chiamante. snapdraw interpreta, forge trasforma la topologia
 (`frame_heal_forge_architecture.md`).
 
 Uso tipico:
 
-    import forge, framer
+    import forge
+
+    import snapdraw as sd
 
     doc = forge.load_dxf("disegno.dxf")
-    layout = framer.detect_frame(doc)   # cornice + cartiglio, doc non mutato
-    framer.tag_layout(doc, layout)      # marca gli Edge → role="frame" / "title_block"
+    layout = sd.detect_frame(doc)   # cornice + cartiglio, doc non mutato
+    sd.tag_layout(doc, layout)      # marca gli Edge → role="frame" / "title_block"
     result = forge.island(doc)          # oppure forge.heal(doc): li lasciano fuori entrambi
 """
 
@@ -45,7 +47,7 @@ def detect_frame(doc) -> FrameLayout:
     (`rejected_border`): quel riquadro resta nel disegno.
 
     Non muta `doc`: individua soltanto. Per riportare le decisioni a forge
-    (settare `edge.role`) usa `framer.tag_layout(doc, layout)`.
+    (settare `edge.role`) usa `sd.tag_layout(doc, layout)`.
     """
     layout = FrameLayout()
 

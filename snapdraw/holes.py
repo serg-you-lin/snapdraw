@@ -1,6 +1,6 @@
 """
-framer/holes.py
----------------
+snapdraw/holes.py
+-----------------
 I fori della vista principale: per ogni cerchio (`forge.contour_shape`) la
 traccia nelle viste compagne, la quota di diametro agganciata, e se è
 passante e quanto è profondo.
@@ -19,9 +19,9 @@ Stesso schema di `read_views`: passi pubblici (`principal_circles`,
 `group_holes`) e una ricetta, `read_holes(doc, result, views)`.
 
     result = forge.island(doc)
-    views = framer.read_views(result)
-    holes = framer.read_holes(doc, result, views)
-    framer.describe_holes(holes)   # "2 fori passanti Ø5,3 +0,05/0, profondità 4; ..."
+    views = sd.read_views(result)
+    holes = sd.read_holes(doc, result, views)
+    sd.describe_holes(holes)   # "2 fori passanti Ø5,3 +0,05/0, profondità 4; ..."
 """
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# framer
+# snapdraw
 
 Automatic detection **and generation** of the **drawing frame** and **title
 block** in laid-out technical drawings.
@@ -7,7 +7,7 @@ block** in laid-out technical drawings.
 
 ## What it is
 
-`framer` is a **consumer of [forge](../forge)**. It recognises two things in
+`snapdraw` is a **consumer of [forge](../forge)**. It recognises two things in
 a drawing's geometry:
 
 - the **frame** (`frame`) — the ISO-format border around the sheet;
@@ -15,11 +15,11 @@ a drawing's geometry:
   cells and full of text.
 
 It is not part of forge: forge stays neutral and deterministic and does not
-decide what a title block is. framer uses forge's primitives to do the
+decide what a title block is. snapdraw uses forge's primitives to do the
 recognition, assigns the roles (`frame`, `title_block`) and feeds them back down
 to forge as input — the same pattern as `label_map` and `detect`.
 
-In the bigger picture framer is a **module of the drawing interpreter** (a
+In the bigger picture snapdraw is a **module of the drawing interpreter** (a
 project not built yet), a sibling of the unfolder. It is its own repo because the
 problem is large and worth solving on its own.
 
@@ -27,27 +27,28 @@ problem is large and worth solving on its own.
 
 On a drawing with a frame, forge today produces **a single cluster** containing
 all the sheet's geometry: the frame is the outermost loop and swallows
-everything. framer detects frame and title block **before** `forge.heal`, marks
+everything. snapdraw detects frame and title block **before** `forge.heal`, marks
 them, and `heal` excludes them from cluster detection. The real part outlines
 emerge; the title block is not a cluster; its texts stay without a `cluster_ref`.
 
 ## Usage
 
 ```python
-import forge, framer
+import forge
+import snapdraw as sd
 
-doc = forge.load_dxf("drawing.dxf", role_rules=framer.load_rules("generic"))
+doc = forge.load_dxf("drawing.dxf", role_rules=sd.load_rules("generic"))
 
-layout = framer.detect_frame(doc)    # frame + title block on the raw geometry
-fields = framer.read_titleblock(layout)
+layout = sd.detect_frame(doc)    # frame + title block on the raw geometry
+fields = sd.read_titleblock(layout)
 
 # only when you need the parts: mark, then pick forge's reading
-framer.tag_layout(doc, layout)       # mark the Edges → role="frame" / "title_block"
+sd.tag_layout(doc, layout)       # mark the Edges → role="frame" / "title_block"
 result = forge.island(doc)           # a sheet of views is read by islands
 ```
 
 Roles are assigned at load time by rule files in `rules/`, turned into
-`forge.RoleRule`s by `framer.load_rules`. `rules/generic.json` holds the
+`forge.RoleRule`s by `sd.load_rules`. `rules/generic.json` holds the
 technical-drawing rules for everyone: chain lines (dash-dot: `CENTER`,
 `PHANTOM`, ...) are axes and construction lines in ISO 128 and become
 `construction`, so they stop gluing views to dimensions. Plain dashed lines
@@ -56,10 +57,10 @@ or client writes its own rules (layer names included) in
 `rules/studio_<name>.json`, kept out of git, and puts them first:
 
 ```python
-role_rules = framer.load_rules("studio_x") + framer.load_rules("generic")
+role_rules = sd.load_rules("studio_x") + sd.load_rules("generic")
 ```
 
-`framer.detect_frame(doc)` is a **recipe**, the same way `forge.heal` is one
+`sd.detect_frame(doc)` is a **recipe**, the same way `forge.heal` is one
 (forge D62): it composes public steps — `find_frame(doc)` and
 `find_titleblock(doc, frame=...)` — and presumes no forge reading after it.
 Compose the steps yourself for a different reading. It returns a
@@ -79,8 +80,8 @@ repo, same principle as forge's `data_injector`.
 ```python
 doc = forge.load_dxf("bare_part.dxf")
 
-framer.add_frame(doc)                                        # ISO frame around the existing geometry
-framer.add_title_block(doc, fields={"material": "S235JR", "quantity": "2"})
+sd.add_frame(doc)                                        # ISO frame around the existing geometry
+sd.add_title_block(doc, fields={"material": "S235JR", "quantity": "2"})
 
 result = forge.heal(doc)
 forge.to_dxf(result, doc).saveas("bare_part_framed.dxf")
@@ -96,7 +97,7 @@ is out of scope for now — forge's neutral model has no concept of an image.
 
 ## Hook into forge
 
-framer hooks in with **option B** (forge D30): it sets `edge.role` on the `Edge`
+snapdraw hooks in with **option B** (forge D30): it sets `edge.role` on the `Edge`
 objects of `doc.edges` before `heal`. forge took no new API —
 `forge.heal._split_labeled` pulls every decided, non-structural role out of the
 graph, and `forge.detect` leaves roles it does not know alone. The frame and

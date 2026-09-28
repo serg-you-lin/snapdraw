@@ -1,31 +1,31 @@
-# framer — design
+# snapdraw — design
 
 Origine: `FRAMER.md` nel repo di forge (la specifica dalla quale nasce questo
 modulo). Qui la versione operativa, allineata al codice.
 
 ## Dove gira nella pipeline
 
-framer lavora sulla geometria **grezza** di `doc` — le primitive che forge ha
+snapdraw lavora sulla geometria **grezza** di `doc` — le primitive che forge ha
 già parsato e normalizzato (`forge.load_dxf`), ma **prima** di qualunque
-lettura di forge (`heal` o `island`). framer interpreta, forge trasforma la
+lettura di forge (`heal` o `island`). snapdraw interpreta, forge trasforma la
 topologia: la lettura a valle è una scelta del chiamante, non un passo di
-framer (MAP D13).
+snapdraw (MAP D13).
 
 ```
 file CAD
    │
    ▼
-forge.load_dxf(path, role_rules=framer.load_rules("generic"))
+forge.load_dxf(path, role_rules=sd.load_rules("generic"))
                             → ForgeDocument; le regole di rules/ assegnano già
                               i ruoli al caricamento (assi = construction, MAP D17)
    │
    ▼
-framer.detect_frame(doc)    → FrameLayout: cornice + cartiglio (la ricetta)
+sd.detect_frame(doc)    → FrameLayout: cornice + cartiglio (la ricetta)
    │
-   ├──► framer.read_titleblock(l) → celle del cartiglio → metadati di disegno
+   ├──► sd.read_titleblock(l) → celle del cartiglio → metadati di disegno
    │
    ▼  (solo se servono i pezzi)
-framer.tag_layout(doc, l)   → setta edge.role su doc.edges (frame / title_block)
+sd.tag_layout(doc, l)   → setta edge.role su doc.edges (frame / title_block)
    │
    ▼
 forge.heal(doc) | forge.island(doc)
@@ -47,7 +47,7 @@ cornice, il cartiglio con una cornice già nota) chiama i passi a mano.
 
 Nessuno dei due è strutturale: geometria non di taglio. `heal` li tiene fuori
 dal grafo, finiscono in `trash_entities` col ruolo intatto, e l'output DXF li
-scrive sul layer/colore registrati in `framer/roles.py` (`Frame`, `TitleBlock`,
+scrive sul layer/colore registrati in `snapdraw/roles.py` (`Frame`, `TitleBlock`,
 nero) — non su un layer grigio generico (MAP D7).
 
 ## Algoritmo cornice (`frame.py`, portato e funzionante)
@@ -122,7 +122,7 @@ tarate su un disegno reale, vedi TODO.md.
 
 ## L'aggancio a forge (opzione B, chiusa in forge D30 + D31)
 
-framer setta `edge.role` sugli `Edge` di `doc.edges` prima di `heal`. forge non
+snapdraw setta `edge.role` sugli `Edge` di `doc.edges` prima di `heal`. forge non
 ha preso API nuove: ha consolidato il concetto "ruolo strutturale" in
 `forge.is_structural_role` e reso l'aggancio un contratto.
 
@@ -131,7 +131,7 @@ ha preso API nuove: ha consolidato il concetto "ruolo strutturale" in
   per gap solving né per la ricerca loop;
 - `detect()` non trasforma un ruolo che non conosce in una feature: lo lascia
   in `trash_entities`;
-- l'output DXF scrive quella geometria nativa sul layer/colore che `framer`
+- l'output DXF scrive quella geometria nativa sul layer/colore che `snapdraw`
   stesso registra in `roles.py` via `forge.register_role_style` — non su
   `Trash` insieme alla spazzatura vera (D31: `ContourRole.FRAME` rimosso da
   forge, i ruoli di consumatore vanno su un layer loro) e non lasciato al
@@ -139,19 +139,19 @@ ha preso API nuove: ha consolidato il concetto "ruolo strutturale" in
   meccanismo pubblico con cui forge registra il proprio vocabolario di
   `detect()` — vedi MAP D7).
 
-Invariante: **framer non ragiona dentro forge.** Chiama `forge.load_dxf`, fa il
+Invariante: **snapdraw non ragiona dentro forge.** Chiama `forge.load_dxf`, fa il
 suo lavoro geometrico, restituisce dei ruoli. Se serve un cambiamento in forge è
 solo per **accettare** i ruoli, mai per **decidere** cosa sia un cartiglio.
 
-## Il verso "aggiungi" (`framer/generate.py`, MAP D8/D9)
+## Il verso "aggiungi" (`snapdraw/generate.py`, MAP D8/D9)
 
-Oltre a *rilevare* cornice e cartiglio, framer può *generarli* e aggiungerli a
+Oltre a *rilevare* cornice e cartiglio, snapdraw può *generarli* e aggiungerli a
 un disegno che non li ha:
 
 ```python
 doc = forge.load_dxf("pezzo_nudo.dxf")
-framer.add_frame(doc)                                   # cornice ISO attorno alla geometria esistente
-framer.add_title_block(doc, fields={"material": "S235JR"})  # cartiglio nel suo angolo
+sd.add_frame(doc)                                   # cornice ISO attorno alla geometria esistente
+sd.add_title_block(doc, fields={"material": "S235JR"})  # cartiglio nel suo angolo
 result = forge.heal(doc)
 forge.to_dxf(result, doc).saveas("pezzo_framed.dxf")
 ```
@@ -205,10 +205,10 @@ non implementato.
 
 ## Decisioni (erano domande aperte, chiuse in MAP D4)
 
-- **framer è un progetto a sé che l'interprete importa** come libreria, come
+- **snapdraw è un progetto a sé che l'interprete importa** come libreria, come
   `unfold` — non una cartella dentro l'interprete. L'interprete è solo un
   orchestratore, non fa lavoro geometrico.
-- **La lettura dei campi del cartiglio (`read_titleblock`) sta in framer.**
-  framer delimita il cartiglio, ne legge le celle e ne estrae i valori con
+- **La lettura dei campi del cartiglio (`read_titleblock`) sta in snapdraw.**
+  snapdraw delimita il cartiglio, ne legge le celle e ne estrae i valori con
   `source` + `confidence`. L'interprete riceve il risultato e lo incrocia con
   callout ed ERP.

@@ -10,7 +10,7 @@ import math
 import unittest
 
 import forge
-import framer
+import snapdraw as sd
 
 
 def _rect(x, y, w, h):
@@ -33,7 +33,7 @@ def _iso_box(x, y, a, b, c):
 
 
 def _read(entities):
-    return framer.read_views(forge.island(forge.load_geometry(entities)))
+    return sd.read_views(forge.island(forge.load_geometry(entities)))
 
 
 class TestReadViews(unittest.TestCase):

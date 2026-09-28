@@ -11,7 +11,7 @@ import unittest
 from pathlib import Path
 
 import forge
-import framer
+import snapdraw as sd
 from forge.model.style import EdgeStyle
 
 EXAMPLES = Path(__file__).parent / "examples" / "complete_drawings"
@@ -36,7 +36,7 @@ def _read(entities, hidden=0, dimensions=()):
             edge.style = HIDDEN
     doc.annotations.extend(dimensions)
     result = forge.island(doc)
-    return framer.read_holes(doc, result, framer.read_views(result))
+    return sd.read_holes(doc, result, sd.read_views(result))
 
 
 def _diameter(text, center, r):
@@ -106,7 +106,7 @@ class TestReadHoles(unittest.TestCase):
         self.assertEqual((hole.callout.upper, hole.callout.lower), (0.05, 0.0))
         self.assertAlmostEqual(holes.scale, 0.8)
         self.assertAlmostEqual(hole.depth, 4.0)
-        self.assertEqual(framer.describe_holes(holes), "1 foro passante Ø4,8 +0,05/0, profondità 4")
+        self.assertEqual(sd.describe_holes(holes), "1 foro passante Ø4,8 +0,05/0, profondità 4")
 
     def test_senza_vista_principale_niente_fori(self):
         holes = _read([_rect(0, 0, 10, 10), _rect(300, 300, 7, 13)])
@@ -117,13 +117,13 @@ class TestReadHoles(unittest.TestCase):
 class TestLevaInox(unittest.TestCase):
 
     def test_due_da_5_3_e_uno_da_4_3_passanti_profondita_4(self):
-        doc = forge.load_dxf(str(EXAMPLES / "leva_01.dxf"), role_rules=framer.load_rules("generic"))
-        framer.tag_layout(doc, framer.detect_frame(doc))
+        doc = forge.load_dxf(str(EXAMPLES / "leva_01.dxf"), role_rules=sd.load_rules("generic"))
+        sd.tag_layout(doc, sd.detect_frame(doc))
         result = forge.island(doc)
-        holes = framer.read_holes(doc, result, framer.read_views(result))
+        holes = sd.read_holes(doc, result, sd.read_views(result))
         self.assertAlmostEqual(holes.scale, 0.8)
         self.assertTrue(all(h.through and h.source == "convention" for h in holes.holes))
-        self.assertEqual(framer.describe_holes(holes),
+        self.assertEqual(sd.describe_holes(holes),
                          "2 fori passanti Ø5,3 +0,05/0, profondità 4; 1 foro passante Ø4,3 +0,05/0, profondità 4")
 
 

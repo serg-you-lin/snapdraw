@@ -5,12 +5,12 @@ Il verso "togli": su ogni DXF di una cartella rileva la cornice e, se la trova,
 la elimina dal disegno. Il risultato finisce nella STESSA cartella come
 `<nome>_noframe.dxf`.
 
-Nota sul come: `framer.tag_layout` + `forge.island` NON basta a rimuovere — quel
+Nota sul come: `sd.tag_layout` + `forge.island` NON basta a rimuovere — quel
 percorso marca gli Edge e li fa finire in `trash_entities`, che `forge.to_dxf`
 riscrive sul layer `Frame` (forge D31): la cornice resta nel file, solo su un
 altro layer. Per togliere davvero la geometria va staccata da `doc.edges` prima
 di `heal`, per identità di oggetto (gli Edge in `layout.frame.edges` sono gli
-stessi oggetti di `doc.edges`, framer non ne fa copie). La lettura è
+stessi oggetti di `doc.edges`, snapdraw non ne fa copie). La lettura è
 `island()`, non `heal()`: una messa in tavola è fatta di viste (MAP D14).
 """
 
@@ -19,7 +19,7 @@ import _paths  # noqa: F401  — chdir alla radice del repo
 import os
 
 import forge
-import framer
+import snapdraw as sd
 
 # --- CONFIG ---------------------------------------------------------------
 FOLDER_PATH = r"C:\Users\FEDERICO\Documents\Python_Scripts\Projects\GitHub\forge\tests\examples\islands"
@@ -34,7 +34,7 @@ RULES = "generic"
 # ---------------------------------------------------------------------------
 
 
-def frame_free_edges(doc, layout: framer.FrameLayout) -> list:
+def frame_free_edges(doc, layout: sd.FrameLayout) -> list:
     """
     Gli Edge di `doc` che non appartengono a cornice (e cartiglio, se
     `REMOVE_TITLE_BLOCK`). Confronto per identità: `id(edge)`, non per valore —
@@ -58,8 +58,8 @@ for name in names:
     stem = os.path.splitext(name)[0]
     path = os.path.join(FOLDER_PATH, name)
     try:
-        doc = forge.load_dxf(path, role_rules=framer.load_rules(RULES))
-        layout = framer.detect_frame(doc)
+        doc = forge.load_dxf(path, role_rules=sd.load_rules(RULES))
+        layout = sd.detect_frame(doc)
 
         if layout.frame is None:
             print(f"  [SALTATO] {name}: cornice non rilevata ({', '.join(layout.flags)})")

@@ -1,6 +1,6 @@
 """
-framer/views.py
----------------
+snapdraw/views.py
+-----------------
 Le viste di un foglio: quali isole di `forge.island(...)` sono viste
 ortogonali, quali assonometrie, quali simboli; come si corrispondono per
 proiezione; qual è la vista principale e che profondità ha il pezzo.
@@ -14,9 +14,9 @@ Stesso schema di `detect_frame`: passi pubblici (`classify_view`,
 `projection_mates`, `principal_view`, `view_depth`) e una ricetta,
 `read_views(result)`.
 
-    doc = forge.load_dxf("disegno.dxf", role_rules=framer.load_rules("generic"))
-    framer.tag_layout(doc, framer.detect_frame(doc))
-    views = framer.read_views(forge.island(doc))
+    doc = forge.load_dxf("disegno.dxf", role_rules=sd.load_rules("generic"))
+    sd.tag_layout(doc, sd.detect_frame(doc))
+    views = sd.read_views(forge.island(doc))
 """
 
 from __future__ import annotations

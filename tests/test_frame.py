@@ -12,8 +12,8 @@ TODO.md.
 import unittest
 
 import forge
-import framer
-from framer.frame import find_frame
+import snapdraw as sd
+from snapdraw.frame import find_frame
 
 
 def _rect(x0, y0, x1, y1, role="unknown"):
@@ -64,7 +64,7 @@ class TestFindFrame(unittest.TestCase):
 class TestDetectFrameRecipe(unittest.TestCase):
 
     def test_flag_frame_uncertain_quando_non_trova(self):
-        layout = framer.detect_frame(_unframed_doc())
+        layout = sd.detect_frame(_unframed_doc())
         self.assertIsNone(layout.frame)
         self.assertIn("frame: uncertain", layout.flags)
 
@@ -72,7 +72,7 @@ class TestDetectFrameRecipe(unittest.TestCase):
         # _framed_doc() ha una cornice ma nessun cartiglio (niente griglia
         # interna, nessuna annotazione) — vedi tests/test_titleblock.py per
         # il rilevamento vero e proprio.
-        layout = framer.detect_frame(_framed_doc())
+        layout = sd.detect_frame(_framed_doc())
         self.assertIsNone(layout.title_block)
         self.assertIn("title_block: uncertain", layout.flags)
 
@@ -84,32 +84,32 @@ class TestDetectFrameRecipe(unittest.TestCase):
             _rect(0, 0, 300, 600),
             _rect(60, 250, 200, 400, role="outer"),
         ])
-        framer.add_title_block(doc, anchor=(290.0, 10.0))
+        sd.add_title_block(doc, anchor=(290.0, 10.0))
         for e in doc.edges:  # il cartiglio va trovato, non preso come già deciso
-            e.role = "unknown" if e.role == framer.TITLE_BLOCK else e.role
-        layout = framer.detect_frame(doc)
+            e.role = "unknown" if e.role == sd.TITLE_BLOCK else e.role
+        layout = sd.detect_frame(doc)
         self.assertIsNone(layout.frame)
         self.assertIsNotNone(layout.title_block)
         self.assertTrue(any("rejected border" in f for f in layout.flags))
 
     def test_nessun_avviso_senza_cartiglio(self):
         # il rettangolo di un pezzo nudo non è un riquadro di impaginazione
-        layout = framer.detect_frame(forge.load_geometry([_rect(0, 0, 300, 600)]))
+        layout = sd.detect_frame(forge.load_geometry([_rect(0, 0, 300, 600)]))
         self.assertFalse(any("rejected border" in f for f in layout.flags))
 
 
 class TestTagLayoutIntegration(unittest.TestCase):
     """L'aggancio: marca gli Edge, heal esclude la cornice dai cluster."""
 
-    def test_senza_framer_la_cornice_e_un_cluster(self):
+    def test_senza_snapdraw_la_cornice_e_un_cluster(self):
         result = forge.heal(_framed_doc())
         # la cornice fa da outer e si mangia tutto: un solo cluster
         self.assertEqual(len(result.clusters), 1)
 
-    def test_con_framer_emergono_i_due_pezzi(self):
+    def test_con_snapdraw_emergono_i_due_pezzi(self):
         doc = _framed_doc()
-        layout = framer.detect_frame(doc)
-        n = framer.tag_layout(doc, layout)
+        layout = sd.detect_frame(doc)
+        n = sd.tag_layout(doc, layout)
         self.assertEqual(n, 4)
 
         result = forge.heal(doc)

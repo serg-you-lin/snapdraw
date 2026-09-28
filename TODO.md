@@ -1,4 +1,4 @@
-# TODO — framer
+# TODO — snapdraw
 
 ## Fatto
 
@@ -6,9 +6,9 @@
 - [x] aggancio a forge chiuso (opzione B, forge D30) — `tag_layout`
 - [x] `detect_frame` portato da forge `ccbb34f^` e riscritto sulle primitive
       di forge — funzionante, test sintetici verdi
-- [x] `framer/roles.py`: cornice/cartiglio registrano colore+layer con
+- [x] `snapdraw/roles.py`: cornice/cartiglio registrano colore+layer con
       `forge.register_role_style`, allineato a forge D47 (MAP D7)
-- [x] `framer/generate.py`: `add_frame`/`add_title_block`, il verso
+- [x] `snapdraw/generate.py`: `add_frame`/`add_title_block`, il verso
       "aggiungi" — vettoriale, un template condiviso per A3/A4 orizzontale/
       verticale, provato su 10 fixture reali in `tests/examples/to_add_frame/`
       via `scripts/02_batch_frame.py` (MAP D8)
@@ -78,7 +78,7 @@
 - [ ] logo/immagine nel cartiglio generato: forge non ha un concetto di
       immagine nel suo modello neutro — andrebbe inserito in un secondo giro
       direttamente sul `Drawing` ezdxf restituito da `to_dxf()`, fuori da
-      `framer/generate.py`. Non ancora progettato.
+      `snapdraw/generate.py`. Non ancora progettato.
 - [ ] griglia di riferimento (D10): il target di 50 mm/zona è dedotto dal
       range ISO 5457 (25–75 mm), non da una tabella ufficiale per formato —
       se Federico ha/trova la tabella vera (conteggio zone per A0..A4),
@@ -88,4 +88,4 @@
 ## Domande aperte
 
 - Repo GitHub remoto: crearlo o tenerlo locale?
-- framer modulo dell'interprete o progetto importato? (per ora: importato)
+- snapdraw modulo dell'interprete o progetto importato? (per ora: importato)

@@ -1,35 +1,37 @@
 """
-framer
-------
+snapdraw
+--------
 Rilevamento automatico di cornice e cartiglio nei disegni tecnici impaginati.
 
-Framer è un **consumatore di forge**: usa `forge.load_dxf` come motore, fa il
+snapdraw è un **consumatore di forge**: usa `forge.load_dxf` come motore, fa il
 suo lavoro geometrico sulla geometria grezza, e riporta le decisioni a forge
 settando `edge.role` prima della lettura di forge — `heal` o `island`, scelta
 del chiamante (aggancio "opzione B", forge D30).
 Non modifica forge e non ragiona dentro forge: forge resta neutro e
-deterministico, Framer si adatta (vedi FRAMER.md nel repo di forge, DESIGN.md
+deterministico, snapdraw si adatta (vedi FRAMER.md nel repo di forge, DESIGN.md
 qui).
 
 Workflow di rilevamento — `detect_frame` è una ricetta sopra passi pubblici
 (`find_frame`, `find_titleblock`), stesso schema di `forge.heal` (forge D62):
 
-    import forge, framer
+    import forge
+
+    import snapdraw as sd
 
     # regole di ruolo al caricamento: assi e costruzione (MAP D17)
-    doc = forge.load_dxf("disegno.dxf", role_rules=framer.load_rules("generic"))
-    layout = framer.detect_frame(doc)    # cornice + cartiglio sulla geometria grezza
-    fields = framer.read_titleblock(layout)   # campi del cartiglio, per regex su un vocabolario ISO generico
+    doc = forge.load_dxf("disegno.dxf", role_rules=sd.load_rules("generic"))
+    layout = sd.detect_frame(doc)    # cornice + cartiglio sulla geometria grezza
+    fields = sd.read_titleblock(layout)   # campi del cartiglio, per regex su un vocabolario ISO generico
 
     # solo se servono le viste: marca, poi leggi per isole (MAP D14)
-    framer.tag_layout(doc, layout)       # marca gli Edge → role="frame" / "title_block"
+    sd.tag_layout(doc, layout)       # marca gli Edge → role="frame" / "title_block"
     result = forge.island(doc)
 
 Workflow di generazione (il verso "aggiungi" — un disegno senza cornice):
 
     doc = forge.load_dxf("pezzo_nudo.dxf")
-    framer.add_frame(doc)                            # cornice ISO attorno alla geometria esistente
-    framer.add_title_block(doc, fields={"material": "S235JR", "quantity": "2"})
+    sd.add_frame(doc)                            # cornice ISO attorno alla geometria esistente
+    sd.add_title_block(doc, fields={"material": "S235JR", "quantity": "2"})
     result = forge.heal(doc)
     forge.to_dxf(result, doc).saveas("pezzo_framed.dxf")
 
@@ -57,7 +59,7 @@ from .views import classify_view, principal_view, projection_mates, read_views, 
 try:
     from importlib.metadata import version as _pkg_version, PackageNotFoundError
     try:
-        __version__ = _pkg_version("framer")
+        __version__ = _pkg_version("snapdraw")
     except PackageNotFoundError:
         __version__ = "0.0.0+dev"
 except ImportError:  # pragma: no cover

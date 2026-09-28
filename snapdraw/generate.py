@@ -1,6 +1,6 @@
 """
-framer/generate.py
--------------------
+snapdraw/generate.py
+--------------------
 Il verso "aggiungi": genera cornice e cartiglio e li appende a un
 `ForgeDocument` esistente — l'opposto di `detect_frame` + `tag_layout` (che li riconoscono su
 geometria già disegnata). Annotato come
@@ -19,7 +19,7 @@ Puramente forge-nativo: la geometria passa da `forge.load_geometry` (stesso
 meccanismo pubblico con cui `bendly` porta uno sviluppo generato a
 `ForgeDocument`, forge MAP D32) e il testo da `forge.Note` — zero accesso a
 `Edge`/`LineSeg` interni, zero ezdxf. Frame e griglia del cartiglio portano
-`role` (`framer.roles.FRAME`/`TITLE_BLOCK`) fin dalla costruzione: non serve
+`role` (`sd.roles.FRAME`/`TITLE_BLOCK`) fin dalla costruzione: non serve
 chiamare `tag_layout` per questa geometria, e colore/layer arrivano gratis
 dalla registrazione di `roles.py` (MAP D7).
 

@@ -1,7 +1,7 @@
 """
-framer/roles.py
-----------------
-Vocabolario di ruolo di framer — cornice e cartiglio. Prima viveva inline in
+snapdraw/roles.py
+-----------------
+Vocabolario di ruolo di snapdraw — cornice e cartiglio. Prima viveva inline in
 `tag.py`; ora sta a sé, sullo stesso schema con cui forge stesso registra il
 vocabolario manifatturiero di `detect()` (`forge/tools/manufacturing_role.py`,
 forge D47 "roles out of core"): un consumatore costruisce i propri ruoli e la
@@ -34,8 +34,8 @@ LAYER_CONSTRUCTION = "Construction"
 def register_defaults() -> None:
     """
     Registra colore + nome layer di default per `frame`/`title_block` —
-    gira all'import di questo modulo (quindi automaticamente quando `framer`
-    viene importato, dato che `framer/__init__.py` importa `tag`, che importa
+    gira all'import di questo modulo (quindi automaticamente quando `snapdraw`
+    viene importato, dato che `snapdraw/__init__.py` importa `tag`, che importa
     questo modulo). Zero stato da settare a mano in ogni script chiamante.
     """
     forge.register_role_style(FRAME, forge.RoleStyle(color=(20, 20, 20), layer_name=LAYER_FRAME))

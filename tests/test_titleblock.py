@@ -5,7 +5,7 @@ Test del rilevamento cartiglio e della lettura dei campi.
 
 Bootstrap "round-trip": prima di avere fixture DXF reali con un cartiglio
 vero (TODO.md), il modo più veloce per testare `find_titleblock` è
-rilevare un cartiglio generato da `framer.generate.add_title_block` — le
+rilevare un cartiglio generato da `sd.generate.add_title_block` — le
 `forge.Note` di etichetta/valore che scrive sono lo stesso tipo di
 annotazione che un cartiglio vero avrebbe.
 """
@@ -13,9 +13,9 @@ annotazione che un cartiglio vero avrebbe.
 import unittest
 
 import forge
-import framer
-from framer.model import Cell, TitleBlock
-from framer.titleblock import _FIELD_PATTERNS, extend_titleblock, find_titleblock, read_titleblock
+import snapdraw as sd
+from snapdraw.model import Cell, TitleBlock
+from snapdraw.titleblock import _FIELD_PATTERNS, extend_titleblock, find_titleblock, read_titleblock
 
 
 def _part_doc(w=200.0, h=100.0):
@@ -30,8 +30,8 @@ class TestDetectTitleblockRoundTrip(unittest.TestCase):
 
     def test_trova_il_cartiglio_generato_con_la_cornice(self):
         doc = _part_doc()
-        frame = framer.add_frame(doc)
-        framer.add_title_block(doc, fields={"material": "S235JR", "quantity": "2"})
+        frame = sd.add_frame(doc)
+        sd.add_title_block(doc, fields={"material": "S235JR", "quantity": "2"})
 
         tb = find_titleblock(doc, frame=frame)
         self.assertIsNotNone(tb)
@@ -42,15 +42,15 @@ class TestDetectTitleblockRoundTrip(unittest.TestCase):
         # il cartiglio non è per forza dentro una cornice (DESIGN.md) — deve
         # trovarlo anche senza passare `frame`.
         doc = _part_doc()
-        framer.add_title_block(doc, anchor=(200.0, 0.0))
+        sd.add_title_block(doc, anchor=(200.0, 0.0))
 
         tb = find_titleblock(doc, frame=None)
         self.assertIsNotNone(tb)
 
     def test_i_valori_scritti_si_ritrovano_nei_campi_letti(self):
         doc = _part_doc()
-        frame = framer.add_frame(doc)
-        framer.add_title_block(doc, fields={
+        frame = sd.add_frame(doc)
+        sd.add_title_block(doc, fields={
             "material": "S235JR", "quantity": "3", "drawing_number": "tavola_08",
         })
 
@@ -81,7 +81,7 @@ class TestDetectTitleblockConservativo(unittest.TestCase):
         # una cornice a doppia squadratura non deve passare come cartiglio
         # solo perché ha un "divisore" per lato (MAP D9 / _is_genuine_grid)
         doc = _part_doc()
-        frame = framer.add_frame(doc)
+        frame = sd.add_frame(doc)
         self.assertIsNone(find_titleblock(doc, frame=frame))
 
 
@@ -104,8 +104,8 @@ class TestTitleblockAssorbeInteriore(unittest.TestCase):
             "type": "polyline", "closed": True, "role": "outer",
             "points": [(0, 0), (200, 0), (200, 100), (0, 100)],
         }])
-        frame = framer.add_frame(doc)
-        framer.add_title_block(doc)
+        frame = sd.add_frame(doc)
+        sd.add_title_block(doc)
 
         # un "simbolo" isolato (mai un pezzo vero) piazzato dentro il cartiglio,
         # non collegato a nient'altro — non lo scrive add_title_block, lo aggiungo
@@ -126,16 +126,16 @@ class TestTitleblockAssorbeInteriore(unittest.TestCase):
             "type": "polyline", "closed": True, "role": "outer",
             "points": [(0, 0), (200, 0), (200, 100), (0, 100)],
         }])
-        framer.add_frame(doc)
-        framer.add_title_block(doc)
+        sd.add_frame(doc)
+        sd.add_title_block(doc)
         doc.edges.extend(forge.load_geometry([self._symbol(160, -40, 165, -35)]).edges)
 
-        layout = framer.detect_frame(doc)
-        framer.tag_layout(doc, layout)
+        layout = sd.detect_frame(doc)
+        sd.tag_layout(doc, layout)
         result = forge.heal(doc)
 
         # il simbolo non è un cluster a sé: è finito in trash col ruolo title_block
-        from framer.roles import TITLE_BLOCK
+        from snapdraw.roles import TITLE_BLOCK
         symbol_in_trash = [
             t for t in result.trash_entities
             if getattr(t, "role", "") == TITLE_BLOCK
@@ -158,7 +158,7 @@ class TestExtendTitleblock(unittest.TestCase):
 
     def _doc_con_striscia(self):
         doc = _part_doc()
-        framer.add_title_block(doc, anchor=(200.0, 0.0))
+        sd.add_title_block(doc, anchor=(200.0, 0.0))
         tb = find_titleblock(doc)
         xmin, ymin, xmax, ymax = tb.bbox
         # striscia più stretta del cartiglio, appoggiata sul suo lato superiore
@@ -179,7 +179,7 @@ class TestExtendTitleblock(unittest.TestCase):
         # un lato di riquadro che parte dall'angolo del cartiglio e sale per
         # tutto il foglio: la catena non deve risalirlo (B1250136)
         doc = _part_doc()
-        framer.add_title_block(doc, anchor=(200.0, 0.0))
+        sd.add_title_block(doc, anchor=(200.0, 0.0))
         tb = find_titleblock(doc)
         xmin, ymin, xmax, ymax = tb.bbox
         side = forge.load_geometry([{"type": "line", "role": "unknown",
@@ -190,7 +190,7 @@ class TestExtendTitleblock(unittest.TestCase):
 
     def test_senza_niente_attaccato_resta_uguale(self):
         doc = _part_doc()
-        framer.add_title_block(doc, anchor=(200.0, 0.0))
+        sd.add_title_block(doc, anchor=(200.0, 0.0))
         tb = find_titleblock(doc)
         self.assertIs(extend_titleblock(tb, doc), tb)
 
@@ -239,7 +239,7 @@ class TestReadTitleblock(unittest.TestCase):
         self.assertIn("revision", fields["unresolved"])
 
     def test_nessun_cartiglio_tutti_unresolved(self):
-        fields = read_titleblock(framer.FrameLayout())
+        fields = read_titleblock(sd.FrameLayout())
         self.assertEqual(set(fields["unresolved"]), set(_FIELD_PATTERNS))
 
 

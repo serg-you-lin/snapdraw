@@ -3,7 +3,7 @@ import _paths  # noqa: F401  — chdir alla radice del repo
 import os
 
 import forge
-import framer
+import snapdraw as sd
 
 # --- CONFIG ---------------------------------------------------------------
 INPUT_PATH = r"tests/examples/to_add_frame/2_parti_saldate.dxf"
@@ -11,7 +11,7 @@ OUTPUT_DIR = "pipeline_output"
 # ---------------------------------------------------------------------------
 
 doc = forge.load_dxf(INPUT_PATH)
-framer.add_frame(doc)
+sd.add_frame(doc)
 result = forge.heal(doc)
 if not result.is_valid:
     raise SystemExit(f"heal non valido: {result.errors}")

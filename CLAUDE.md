@@ -1,6 +1,6 @@
-# framer — note per chi ci lavora
+# snapdraw — note per chi ci lavora
 
-framer legge come un pezzo è documentato sul foglio: cornice, cartiglio,
+snapdraw legge come un pezzo è documentato sul foglio: cornice, cartiglio,
 viste, notazione, scala. Consuma forge, non lo modifica.
 
 ## Da leggere prima

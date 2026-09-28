@@ -1,6 +1,6 @@
 """
-framer/frame.py
----------------
+snapdraw/frame.py
+-----------------
 Rilevamento della cornice di formato.
 
 Porta l'algoritmo del vecchio `core/classification/frame_detector.py` di forge

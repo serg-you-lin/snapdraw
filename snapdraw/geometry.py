@@ -1,7 +1,7 @@
 """
-framer/geometry.py
-------------------
-Le primitive geometriche di Framer, scritte sugli `Edge` di forge.
+snapdraw/geometry.py
+--------------------
+Le primitive geometriche di snapdraw, scritte sugli `Edge` di forge.
 
 Un `Edge` (`forge.core.topology.edge.Edge`) porta `start` / `end` (endpoint già
 arrotondati alla tolerance da forge) e `segment` (primitiva nativa: `LineSeg`,

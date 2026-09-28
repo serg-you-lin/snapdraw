@@ -3,8 +3,8 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "framer"
-# Unica fonte di verità della versione. framer.__version__ la legge da qui via
+name = "snapdraw"
+# Unica fonte di verità della versione. sd.__version__ la legge da qui via
 # importlib.metadata — non duplicarla nel codice.
 version = "0.1.0"
 description = "Rilevamento automatico di cornice e cartiglio nei disegni tecnici impaginati — consumatore di forge"
@@ -25,7 +25,7 @@ dependencies = [
     "shapely>=2.0",
 ]
 
-# forge NON è qui: è un pacchetto locale, non pubblicato. framer lo usa come
+# forge NON è qui: è un pacchetto locale, non pubblicato. snapdraw lo usa come
 # motore (load_dxf, heal, normalize_role). Installalo a parte:
 #   pip install -e ../forge
 
@@ -34,7 +34,7 @@ dev = ["pytest"]
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["framer*"]
+include = ["snapdraw*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

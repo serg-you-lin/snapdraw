@@ -1,12 +1,12 @@
 """
-framer/model.py
----------------
-Il dominio di Framer: cosa vuol dire "cornice" e "cartiglio" in un disegno
-impaginato, e cosa Framer restituisce a chi lo chiama.
+snapdraw/model.py
+-----------------
+Il dominio di snapdraw: cosa vuol dire "cornice" e "cartiglio" in un disegno
+impaginato, e cosa snapdraw restituisce a chi lo chiama.
 
 Nessuna dipendenza da forge o da un formato: dataclass pure. Gli `Edge` che
 questi oggetti trattengono (`FrameInfo.edges`, `TitleBlock.edges`) sono
-riferimenti agli `Edge` di `forge.load_dxf(...).edges` — Framer li individua e
+riferimenti agli `Edge` di `forge.load_dxf(...).edges` — snapdraw li individua e
 li marca, non ne fa copie.
 """
 
@@ -28,7 +28,7 @@ class FrameInfo:
     bbox        : (xmin, ymin, xmax, ymax) del riquadro
     iso_format  : formato ISO riconosciuto dalle dimensioni ("A4", "A3", ...) o None
     containment : frazione della geometria restante contenuta nella bbox (0..1)
-    confidence  : 0..1 — quanto Framer è sicuro che questo sia la cornice
+    confidence  : 0..1 — quanto snapdraw è sicuro che questo sia la cornice
     """
     edges:       list
     bbox:        BBox
@@ -80,7 +80,7 @@ class TitleBlockTemplate:
     scaricato, MAP D9) — non celle larghe affiancate.
 
     Un consumatore può costruirsene uno proprio (stesso spirito di
-    `framer/roles.py` — costruzione esterna, framer non impone un solo
+    `snapdraw/roles.py` — costruzione esterna, snapdraw non impone un solo
     design) e passarlo a `generate.add_title_block(..., template=...)`.
 
     `fields` : una `FieldSlot` per riga (bbox piena larghezza, righe
@@ -95,9 +95,9 @@ class TitleBlockTemplate:
 @dataclass
 class FrameLayout:
     """
-    Il risultato di `framer.detect_frame(doc)`.
+    Il risultato di `sd.detect_frame(doc)`.
 
-    frame       : la cornice, o None se Framer non l'ha individuata con sicurezza
+    frame       : la cornice, o None se snapdraw non l'ha individuata con sicurezza
     title_block : il cartiglio, o None
     flags       : diagnostica non bloccante — "frame: uncertain",
                   "title_block: uncertain", "multiple_frames", ...
@@ -140,7 +140,7 @@ class View:
 @dataclass
 class ViewLayout:
     """
-    Il risultato di `framer.read_views(result)`.
+    Il risultato di `sd.read_views(result)`.
 
     views     : una View per cluster, stesso ordine di `result.clusters`
     principal : indice della vista principale, o None se incerta
@@ -239,7 +239,7 @@ class HoleGroup:
 @dataclass
 class HoleLayout:
     """
-    Il risultato di `framer.read_holes(doc, result, views)`.
+    Il risultato di `sd.read_holes(doc, result, views)`.
 
     holes  : un Hole per cerchio della vista principale
     groups : i fori raggruppati come li direbbe una distinta

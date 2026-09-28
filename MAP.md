@@ -1,4 +1,4 @@
-# MAP — log delle decisioni di framer
+# MAP — log delle decisioni di snapdraw
 
 Registro cronologico. Una decisione chiusa non si ri-decide: se cambia idea, è
 una nuova voce che supera la precedente.
@@ -7,11 +7,11 @@ una nuova voce che supera la precedente.
 
 ## DECISIONI CHIUSE
 
-### D1 — framer è un repo a sé, consumatore di forge  ✅
+### D1 — snapdraw è un repo a sé, consumatore di forge  ✅
 
 Nasce come modulo scorporato dalla specifica `FRAMER.md` (repo forge). Repo
 separato (non cartella dentro l'interprete, che ancora non esiste), sibling di
-`forge`, package `framer`. Quando l'interprete esisterà lo importerà come
+`forge`, package `snapdraw`. Quando l'interprete esisterà lo importerà come
 libreria. Precedente: `unfold`.
 
 forge è dipendenza **locale non pubblicata**: `pip install -e ../forge`,
@@ -19,7 +19,7 @@ non elencata in `pyproject.toml` (solo `shapely`). Stesso schema di `unfold`.
 
 ### D2 — Aggancio a forge: opzione B  ✅
 
-framer setta `edge.role` sugli `Edge` di `doc.edges` prima di `forge.heal`. La
+snapdraw setta `edge.role` sugli `Edge` di `doc.edges` prima di `forge.heal`. La
 scelta è stata chiusa in **forge D30**: nessuna API nuova su forge, solo
 consolidamento —
 
@@ -30,8 +30,8 @@ consolidamento —
   lascia in `trash_entities` (prima lo perdeva);
 - `forge.normalize_role` / `forge.is_structural_role` pubbliche.
 
-Scartate: **A** (framer rimuove gli edge e li riemette a valle — scarica su
-framer il problema "chi ridisegna la cornice"); **C** (hook `role_resolver` in
+Scartate: **A** (snapdraw rimuove gli edge e li riemette a valle — scarica su
+snapdraw il problema "chi ridisegna la cornice"); **C** (hook `role_resolver` in
 `load_dxf`/`heal` — si valuta quando anche l'unfolder lo chiede; D30 lo rende
 banale da aggiungere).
 
@@ -46,15 +46,15 @@ ricerca combinatoria a quadruple. Stesse soglie: ratio √2 ±5%, contenimento
 
 `detect_titleblock` e `read_titleblock` restano **stub** con firma definitiva.
 
-### D4 — framer è importato dall'interprete; la lettura del cartiglio sta qui  ✅
+### D4 — snapdraw è importato dall'interprete; la lettura del cartiglio sta qui  ✅
 
 Chiuse le due domande aperte di FRAMER.md:
 
-- **framer è un progetto a sé che l'interprete importa** come libreria, come
+- **snapdraw è un progetto a sé che l'interprete importa** come libreria, come
   `unfold`. Non è una cartella dentro l'interprete. L'interprete è **solo un
   orchestratore**: non fa lavoro geometrico.
-- **La lettura dei campi del cartiglio (`read_titleblock`) sta in framer**, non
-  in uno step dell'interprete. framer delimita il cartiglio, ne legge le celle e
+- **La lettura dei campi del cartiglio (`read_titleblock`) sta in snapdraw**, non
+  in uno step dell'interprete. snapdraw delimita il cartiglio, ne legge le celle e
   ne estrae i valori (con `source` + `confidence`). L'interprete riceve il
   risultato e lo incrocia con callout e ERP, non legge geometria.
 
@@ -76,35 +76,35 @@ rientro tipico di squadratura (5/10/20/25 mm): un A2 squadrato a 10 mm misura
 
 Nota aperta: su `42D025Z00I` la cornice ora esce (`cluster 1 → 4`), ma i pezzi
 veri non si chiudono in `heal` (tanti archi, linee di costruzione, 97 edge non
-di contorno) — è roba di forge/heal, non di framer.
+di contorno) — è roba di forge/heal, non di snapdraw.
 
 ### D6 — `frame` è uscito da forge (forge D31)  ✅
 
 Aprendo i DXF prodotti, la geometria di cornice usciva **sul layer `Trash`**
 insieme alla spazzatura vera: `forge.io.dxf._write_trash` scriveva tutto su
-`TRASH_LAYER` ignorando il ruolo. Federico: tutto ciò che è framer, ruolo
+`TRASH_LAYER` ignorando il ruolo. Federico: tutto ciò che è snapdraw, ruolo
 compreso e anche nell'adapter, deve uscire da forge.
 
 Fatto in **forge D31**: `ContourRole.FRAME` rimosso, `frame` è uno slug di
 consumatore come `title_block`. `_write_trash` instrada per ruolo — slug di
 consumatore → un layer col nome dello slug, colore grigio; `unknown` → `Trash`.
-`framer.tag_layout` non cambia: `forge.normalize_role("frame")` ora ritorna la
+`sd.tag_layout` non cambia: `forge.normalize_role("frame")` ora ritorna la
 stringa `"frame"` invece della costante. Sul disegno reale: `frame` esce su un
 layer `frame` (11 entità), la spazzatura su `Trash` (388).
 
-### D7 — `frame`/`title_block` registrano il proprio stile in `framer/roles.py` (forge D47)  ✅
+### D7 — `frame`/`title_block` registrano il proprio stile in `snapdraw/roles.py` (forge D47)  ✅
 
 forge D47 ("roles out of core") ha spostato anche `hole`/`bending`/`engrave`
 fuori dal motore: `tools/manufacturing_role.py` costruisce quel vocabolario e
 registra colore/layer con `forge.register_role_style` allo stesso modo
 pubblico con cui lo farebbe un consumatore esterno — nessuna via privilegiata.
-Prima framer non aveva un equivalente: `FRAME_ROLE`/`TITLE_BLOCK_ROLE` erano
+Prima snapdraw non aveva un equivalente: `FRAME_ROLE`/`TITLE_BLOCK_ROLE` erano
 inline in `tag.py`, senza stile registrato, e chi voleva un colore diverso da
 grigio lo passava a mano a `to_dxf(..., role_styles={...})` in ogni script
 (`scripts/00_detection.py`, `scripts/01_export.py` lo facevano con due valori
 diversi — incoerente, e da ripetere ovunque).
 
-Fatto: nuovo modulo `framer/roles.py`, stesso schema di
+Fatto: nuovo modulo `snapdraw/roles.py`, stesso schema di
 `manufacturing_role.py` — costanti `FRAME`/`TITLE_BLOCK` via
 `forge.normalize_role`, `register_defaults()` che chiama
 `forge.register_role_style` per entrambe (nero, layer `Frame`/`TitleBlock`),
@@ -113,9 +113,9 @@ definirle. Nessun `is_structural` qui: cornice/cartiglio sono decorazione, non
 topologia di pezzo — il default di `heal()` (nessun predicato) già li tiene
 fuori dal grafo, a differenza di `hole` in forge che invece È strutturale.
 Gli script non passano più `role_styles` a mano: colore/layer arrivano gratis
-da `import framer`.
+da `import snapdraw`.
 
-### D8 — Generazione cartiglio+cornice: `framer/generate.py`, un template condiviso  ✅
+### D8 — Generazione cartiglio+cornice: `snapdraw/generate.py`, un template condiviso  ✅
 
 Il verso "aggiungi" era solo una nota futura in `forge/FRAMER.md` e in
 `TODO.md`. Nessun cartiglio reale è stato trovato tra i repo sibling
@@ -153,7 +153,7 @@ Provato su fixture reali: 10 disegni pezzo-nudo in
 `{drawing_number}_{position}_{material}_SP{spessore}_Q{quantità}`, es.
 `piastra_02.dxf`), da 20×10 mm a 628×528 mm — tutti e 10
 passano (`scripts/02_batch_frame.py`, mai i file originali). Il parsing del
-nome file **sta nello script**, non in `framer/`: è nomenclatura di questa
+nome file **sta nello script**, non in `snapdraw/`: è nomenclatura di questa
 cartella/cliente (DESIGN.md, "Cosa NON ci va" — mai nel modulo pubblico).
 
 Restano aperti: generazione della sola cornice quando basta quella (oggi
@@ -218,7 +218,7 @@ dimensione, non è un numero fisso.
 
 ### D11 — `detect_titleblock`/`read_titleblock` portati da stub a funzionanti  ✅
 
-Ripreso da `ROADMAP.md`: il cartiglio è il pezzo di framer già maturo per
+Ripreso da `ROADMAP.md`: il cartiglio è il pezzo di snapdraw già maturo per
 essere costruito (a differenza del raggruppamento viste, ancora rimandato).
 Bootstrap senza aspettare fixture DXF reali (non ancora raccolte, TODO.md):
 round-trip su `generate.py` — genera un cartiglio con `add_title_block`,
@@ -294,7 +294,7 @@ generato viene marcato e, dopo `heal`, finisce in trash con
 Nota operativa per il futuro: rilanciare il rilevamento dopo un cambio come
 questo può **spostare gli indici dei cluster** su disegni dove il cartiglio
 già esisteva (meno cluster restituiti da `heal` = indici diversi a valle) —
-successo davvero su `tavola_09.dxf` mentre un'etichettatura reale (framer
+successo davvero su `tavola_09.dxf` mentre un'etichettatura reale (snapdraw
 `lab/`) era in corso, richiesta una migrazione manuale dei documenti nel
 database dell'artifact per bbox invece che per indice. Prima di rilanciare
 `survey.py` su un cambio che tocca `detect`/`heal`, avvisare.
@@ -303,16 +303,16 @@ database dell'artifact per bbox invece che per indice. Prima di rilanciare
 
 Segue forge D62 (`heal()` è una ricetta sopra passi pubblici, `HealStep` non
 c'è più) e D58 (`heal` e `island` sono due letture, nessuna sta "sopra"
-l'altra). Federico: non va che il rilevamento di framer si porti dietro
+l'altra). Federico: non va che il rilevamento di snapdraw si porti dietro
 sempre un `heal` a valle, e il punto d'ingresso deve chiamarsi
 `detect_frame`, non `detect`.
 
-- **`framer.detect` → `framer.detect_frame`**, in `framer/recipe.py`
+- **`sd.detect` → `sd.detect_frame`**, in `snapdraw/recipe.py`
   (`detect.py` rimosso, clean break): solo la composizione di default,
   stesso schema di `forge/core/heal.py`.
 - **I passi sono pubblici** e rinominati per non collidere con la ricetta:
   `frame.detect_frame` → `find_frame`, `titleblock.detect_titleblock` →
-  `find_titleblock`, entrambi in `framer.__all__`. `tag_layout` resta un
+  `find_titleblock`, entrambi in `sd.__all__`. `tag_layout` resta un
   passo a sé. Chi vuole un'altra composizione li chiama a mano.
 - **Nessuna lettura di forge presupposta**: `detect_frame` non muta `doc`;
   marcare (`tag_layout`) e poi leggere con `heal` o `island` è scelta del
@@ -339,7 +339,7 @@ dopo `detect_frame` + `tag_layout` la lettura di forge è `forge.island()`.
 `04_batch_remove_frame.py` passano a `island()`.
 
 Conseguenza: le cose che rompono le isole su un foglio di viste sono lavoro
-di framer, da marcare per ruolo **prima** di `island()` — i cerchi di
+di snapdraw, da marcare per ruolo **prima** di `island()` — i cerchi di
 ingrandimento (un cerchio che taglia una vista la fonde con quello che ha
 intorno) e le linee di interruzione delle viste interrotte. Rilevatori non
 ancora scritti: prima si verificano a occhio sui `complete_drawings`.
@@ -425,7 +425,7 @@ punto è ora un fatto del modello di forge, e la regola di D16 si scrive come
 qualunque `RoleRule`. Federico: regole generiche estendibili da uno studio o
 un cliente, sul modello delle calibrazioni di bendly.
 
-- **`rules/<nome>.json`** → `framer.load_rules(name, folder=None)` →
+- **`rules/<nome>.json`** → `sd.load_rules(name, folder=None)` →
   `list[forge.RoleRule]`, da passare a `forge.load_dxf(role_rules=...)`.
   Ogni voce ha i campi di `RoleRule`; `name`/`name_contains` accettano una
   lista (una regola per voce, in ordine); un campo sconosciuto alza.
@@ -459,9 +459,9 @@ Suite: 40 passed (`test_rules.py` sostituisce `test_construction.py`).
 Dopo `island()` ogni isola è un cluster, ma nessuno dice quale sia la vista
 del pezzo: un'assonometria, un logo e una vista vera sono tutti cluster
 uguali. Una persona lo capisce guardando; qui lo si misura. Proiezione ortogonale = convenzione di
-disegno, stesso dominio di cornice e cartiglio: sta in framer, non in forge.
+disegno, stesso dominio di cornice e cartiglio: sta in snapdraw, non in forge.
 
-- **`framer/views.py`**, ricetta `read_views(result) -> ViewLayout` sopra
+- **`snapdraw/views.py`**, ricetta `read_views(result) -> ViewLayout` sopra
   passi pubblici (`classify_view`, `projection_mates`, `principal_view`,
   `view_depth`), stesso schema di `detect_frame` (D13).
 - **Ortogonale / assonometria**: quota di lunghezza dei LineSeg orizzontali
@@ -510,7 +510,7 @@ viste compagne e la quota di diametro agganciata. forge dice "cerchio";
 che sia un foro passante o cieco si legge qui, incrociando viste e
 notazione. Trapano o laser no: è processo, snapbend.
 
-- **`framer/holes.py`**, ricetta `read_holes(doc, result, views) ->
+- **`snapdraw/holes.py`**, ricetta `read_holes(doc, result, views) ->
   HoleLayout` sopra passi pubblici (`principal_circles`, `hole_trace`,
   `diameter_callouts`, `parse_callout`, `callout_scale`, `group_holes`);
   `describe_holes` scrive i gruppi ("2 fori passanti Ø5,3 +0,05/0,
@@ -549,18 +549,28 @@ notazione. Trapano o laser no: è processo, snapbend.
 Suite: 56 passed (8 nuovi in `test_holes.py`). DXF da giudicare:
 `scripts/05_read_holes.py` → `pipeline_output/holes/`.
 
+### D20 — framer diventa snapdraw (`import snapdraw as sd`)  ✅
+
+Il nome deciso negli Appunti ("Repo"), ora applicato: package `snapdraw/`,
+`name = "snapdraw"` in `pyproject.toml`, `import snapdraw as sd` in script,
+test e `lab/`; docs e voci precedenti di questo MAP riscritte col nome nuovo
+(la storia col nome vecchio resta nei commit fino a `d89839b`). `sd`, non
+`sdr`: coppia con `snapbend as sb`. `FRAMER.md` resta: è il nome di un file
+nel repo di forge. Non toccati: la cartella locale (si chiama ancora
+`framer/`) e i riferimenti a framer dentro forge.
+
 ---
 
 ## Appunti (aperti — non decisioni)
 
 Raccolti per argomento. Molti vengono da una sessione di lavoro su forge
 (28/09/2026, forge D65–D67): lì si è deciso *che* certe cose vanno in
-framer, qui c'è *cosa* sono.
+snapdraw, qui c'è *cosa* sono.
 
 ### Chi fa cosa (il confine, detto da Federico)
 
 - **Tre domini, non tre livelli di certezza.** forge = la geometria del
-  pezzo. framer = come il pezzo è documentato sul foglio: cornice,
+  pezzo. snapdraw = come il pezzo è documentato sul foglio: cornice,
   cartiglio, viste, notazione, scala. Pippo = capire: processo, profilo del
   cliente, incrocio fra numeri e immagine. "È deterministico" **non** è il
   criterio per mettere una cosa in forge: anche la lettura delle viste è
@@ -585,7 +595,7 @@ framer, qui c'è *cosa* sono.
 - **forge D66 dà già l'aggancio**: `anchor_annotations` riempie
   `Leader.target` con il percorso dell'elemento su cui cade la punta
   (`"clusters[0].inners[3]"`); `forge.resolve_target` lo risolve. Leggere il
-  testo ("M8" → quel foro è M8) è di framer, non di forge.
+  testo ("M8" → quel foro è M8) è di snapdraw, non di forge.
 - **Sul campione `islands` i callout dei fori stanno nelle quote di
   diametro, non nelle frecce** (`text_override` `M<>`, `%%c<>`): 18 frecce,
   nessuna con testo. **forge D69** ora dà `Dimension.references` (quale
@@ -594,12 +604,12 @@ framer, qui c'è *cosa* sono.
   di diametro su 76 agganciate, 30 a un cerchio dello stesso Ø; un `M5` col
   filetto disegnato come arco aperto cade sul cerchio di nocciolo (Ø4,13) —
   vicino, non esatto: decide snapdraw.
-- Da leggere in framer: "M6", "n°23 fori lamati", ∅, R, con `source` +
+- Da leggere in snapdraw: "M6", "n°23 fori lamati", ∅, R, con `source` +
   `confidence` come il cartiglio (D4).
 
 ### Scala
 
-- **Controllo della scala (Federico: è di framer).** Confrontare il valore
+- **Controllo della scala (Federico: è di snapdraw).** Confrontare il valore
   scritto in una quota con la geometria che misura. Caso reale: `leva_01`
   (campione `islands` di forge) ha `∅5,3` su cerchi da 6,625, `∅4,3` su
   5,375, `R8,5` su 10,625 — rapporto 0,8 su tutte: la geometria è a 1,25:1,
@@ -618,15 +628,15 @@ framer, qui c'è *cosa* sono.
   un'assonometria / un logo", i numeri dicono quanto misura. Su un caso
   l'occhio ha sbagliato (8 asole chiamate "fori" su `tavola_06`) e forge
   aveva ragione.
-- **framer misura, non guarda** (D18): le regole delle viste sono conti
+- **snapdraw misura, non guarda** (D18): le regole delle viste sono conti
   sulle primitive. Le immagini sono di Pippo: ritagli delle viste passati al
-  modello, controllati contro i numeri di forge + framer.
+  modello, controllati contro i numeri di forge + snapdraw.
 - **Fingerprint (idea di Federico, aperta)**: un descrittore compatto e
-  versionato di una vista, calcolato da framer, che risparmi la creazione
+  versionato di una vista, calcolato da snapdraw, che risparmi la creazione
   dell'immagine e un domani serva anche ad addestrare qualcosa. Non
   progettato.
 - Materiale dell'esperimento (braccio A: agente con solo ezdxf; braccio B:
-  forge + framer; immagini, DXF, script): `forge/output/esperimento_agente/`,
+  forge + snapdraw; immagini, DXF, script): `forge/output/esperimento_agente/`,
   fuori da git.
 
 ### Problemi visti sul campione `islands`
@@ -641,8 +651,8 @@ framer, qui c'è *cosa* sono.
 
 - **Nome: `snapdraw`** (`import snapdraw as sd`), deciso da Federico;
   `snapsheet` scartato perché richiama la lamiera. Stessa famiglia di
-  `snapbend` (`sb`). Rinomina del repo e del package non ancora fatta.
-- Repo GitHub remoto: non ancora creato. framer resta locale finché non serve.
+  `snapbend` (`sb`). Rinomina del package fatta (D20); cartella locale ancora `framer/`.
+- Repo GitHub remoto: non ancora creato. snapdraw resta locale finché non serve.
 - Fixture reali (un A3/A4 con cornice e cartiglio veri, rilevamento non
   generazione) da mettere in `tests/examples/` — vedi TODO.md.
 
