@@ -60,6 +60,10 @@ desktop.ini
 *.dxf
 !tests/examples/**/*.dxf
 
+# disegni reali dei clienti, grezzi: solo locali. In git vanno solo i fogli
+# ripuliti di tests/examples/regression/ (controllati con 07_check_client_info.py)
+tests/examples/complete_drawings/
+
 pipeline_output/
 output/
 

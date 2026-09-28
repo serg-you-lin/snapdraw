@@ -590,6 +590,40 @@ numeri.
 Suite: 58 passed (2 nuovi in `test_render.py`). Immagini:
 `scripts/06_render_views.py` → `pipeline_output/views/`.
 
+### D22 — Fixture reali ripulite in `tests/examples/regression/`, golden senza i campi  ✅
+
+Cinque fogli reali, ripuliti dei dati del cliente, entrano in git come
+regressione: `regr_01` (lamiera piegata, senza cornice né cartiglio dopo la
+pulizia), `regr_02` (nascoste, lamature, A1), `regr_03` (foglio con
+cornice e griglia, senza cartiglio), `regr_04` (assonometria che non
+chiude, A3 a 1:3,5), `regr_05` (leva_01: quote a 1,25:1). I grezzi di
+`complete_drawings/` restano locali, ora in `.gitignore`.
+
+- **Pulizia**: Federico nel CAD (testi del cartiglio con valori finti,
+  export R2000); dove il CAD non arriva, sostituzione di testo esatta e
+  contata sul DXF (non un file riscritto da forge: la fixture deve restare
+  un input reale). Blocchi col nome dell'azienda rinominati. `regr_05`
+  rifatto dall'originale: l'export del CAD rigenerava le quote senza il
+  `DIMLFAC` 0,8 per quota, perdendo proprio il caso della scala; tolti
+  anteprima, due OLE (logo), proprietà del file, `$AUTHOR`/`$LASTSAVEDBY`,
+  GUID. Verifica: stessa geometria punto per punto, stesse quote, stessa
+  lettura di snapdraw. `scripts/07_check_client_info.py` elenca il testo che
+  forge legge; layer degli edge, blocchi e header forge non li conserva.
+- **Golden** (`tests/generate_regression.py`, `test_regression.py`, un
+  test per foglio): cornice, riquadro del cartiglio, isole, viste,
+  principale, profondità, fori. **Fuori i campi del cartiglio** (Federico):
+  la lettura non è affidabile, fissarla vorrebbe dire dichiararla giusta.
+- **`known_wrong`**: {chiave: perché} nel golden per una lettura sbagliata
+  nota. Il golden porta la verità scritta a mano, il test verifica che
+  l'errore ci sia ancora; quando si sistema, il test fallisce e la voce si
+  toglie. `--force` non la riscrive. Primo caso: `regr_03`, dove
+  `detect_titleblock` prende per cartiglio la fascia della griglia di
+  riferimento in alto (il foglio non ne ha).
+- Fissati come sono, limiti noti: `regr_04` vista 3 troncata (D21),
+  `regr_01` profondità per convenzione 50 su un pezzo piegato (D19).
+
+Suite: 64 passed.
+
 ---
 
 ## Appunti (aperti — non decisioni)

@@ -1,0 +1,122 @@
+{
+  "frame": {
+    "bbox": [
+      0.0,
+      0.0,
+      237.6,
+      168.0
+    ],
+    "iso_format": null
+  },
+  "title_block": null,
+  "frame_flags": [],
+  "clusters": 5,
+  "views": [
+    {
+      "kind": "orthographic",
+      "bbox": [
+        31.259,
+        90.391,
+        77.259,
+        138.391
+      ]
+    },
+    {
+      "kind": "orthographic",
+      "bbox": [
+        138.401,
+        90.391,
+        141.401,
+        138.391
+      ]
+    },
+    {
+      "kind": "orthographic",
+      "bbox": [
+        107.052,
+        90.391,
+        110.052,
+        138.391
+      ]
+    },
+    {
+      "kind": "orthographic",
+      "bbox": [
+        168.007,
+        90.391,
+        171.007,
+        138.391
+      ]
+    },
+    {
+      "kind": "orthographic",
+      "bbox": [
+        31.259,
+        57.616,
+        77.259,
+        60.616
+      ]
+    }
+  ],
+  "principal": 0,
+  "depth": 3.0,
+  "view_flags": [],
+  "holes": {
+    "summary": "2 fori passanti (quota mancante); 2 fori passanti (quota mancante); 2 fori passanti (quota mancante); 2 fori passanti (quota mancante)",
+    "scale": null,
+    "flags": [],
+    "holes": [
+      {
+        "path": "clusters[0].inners[0]",
+        "through": true,
+        "source": "trace",
+        "drawn_depth": 3.0
+      },
+      {
+        "path": "clusters[0].inners[1]",
+        "through": true,
+        "source": "trace",
+        "drawn_depth": 3.0
+      },
+      {
+        "path": "clusters[0].inners[2]",
+        "through": true,
+        "source": "trace",
+        "drawn_depth": 1.2
+      },
+      {
+        "path": "clusters[0].inners[3]",
+        "through": true,
+        "source": "trace",
+        "drawn_depth": 1.2
+      },
+      {
+        "path": "clusters[0].inners[4]",
+        "through": true,
+        "source": "trace",
+        "drawn_depth": 1.4
+      },
+      {
+        "path": "clusters[0].inners[5]",
+        "through": true,
+        "source": "trace",
+        "drawn_depth": 1.4
+      },
+      {
+        "path": "clusters[0].inners[7]",
+        "through": true,
+        "source": "convention",
+        "drawn_depth": 3.0
+      },
+      {
+        "path": "clusters[0].inners[8]",
+        "through": true,
+        "source": "convention",
+        "drawn_depth": 3.0
+      }
+    ]
+  },
+  "known_wrong": {
+    "title_block": "il foglio non ha cartiglio: detect_titleblock prende la fascia della griglia di riferimento in alto"
+  }
+}

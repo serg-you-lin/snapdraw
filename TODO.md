@@ -36,6 +36,11 @@
 
 ## Prossimi passi
 
+- [ ] **cartiglio sulle fixture** (MAP D22): falso positivo su `regr_03`
+      (la fascia della griglia di riferimento), campi letti male su
+      `regr_05`/`regr_02`/`regr_04` — ritarare `detect_titleblock` e la
+      lettura dei campi, poi rimettere i campi nel golden.
+
 - [ ] **risultati serializzabili** (Appunti, "Pippo come portale"):
       `to_dict()` su `ViewLayout`, `HoleLayout`, `FrameLayout`, con
       riferimenti stabili (`clusters[i].inners[j]`, `view_<i>.png`) — senza,
@@ -46,10 +51,6 @@
       con conteggio ("3xØ5") e profondità scritta (↧), profondità vera
       dove sta il foro su un pezzo piegato.
 
-- [ ] **fixture di regressione formali**: promuovere 2-3 dei 22 disegni reali
-      di `lab/` (con permesso cliente) a `tests/examples/` vero e proprio,
-      con test che fissano frame/cartiglio/n_cluster attesi — oggi sono solo
-      materiale di esplorazione in una cartella locale, non nella suite.
 - [ ] **ritarare le soglie di `titleblock.py`** (`CONFIDENCE_THRESHOLD`,
       `MIN_FILLED_CELL_FRACTION`, `MAX_DOMINANT_SEGMENT_FRACTION`) sui 22
       disegni reali — oggi sono le prime che fanno passare il round-trip

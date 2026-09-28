@@ -1,0 +1,150 @@
+{
+  "frame": {
+    "bbox": [
+      0.0,
+      0.0,
+      840.0,
+      594.0
+    ],
+    "iso_format": "A1"
+  },
+  "title_block": {
+    "bbox": [
+      430.0,
+      0.0,
+      830.0,
+      132.0
+    ]
+  },
+  "frame_flags": [],
+  "clusters": 7,
+  "views": [
+    {
+      "kind": "orthographic",
+      "bbox": [
+        86.942,
+        246.466,
+        486.942,
+        386.466
+      ]
+    },
+    {
+      "kind": "orthographic",
+      "bbox": [
+        86.942,
+        500.111,
+        486.942,
+        515.294
+      ]
+    },
+    {
+      "kind": "pictorial",
+      "bbox": [
+        168.101,
+        44.104,
+        285.481,
+        157.596
+      ]
+    },
+    {
+      "kind": "orthographic",
+      "bbox": [
+        754.024,
+        246.466,
+        769.024,
+        386.466
+      ]
+    },
+    {
+      "kind": "orthographic",
+      "bbox": [
+        627.433,
+        246.466,
+        642.433,
+        386.466
+      ]
+    },
+    {
+      "kind": "symbol",
+      "bbox": [
+        754.89,
+        145.486,
+        765.27,
+        154.475
+      ]
+    },
+    {
+      "kind": "symbol",
+      "bbox": [
+        785.739,
+        238.206,
+        791.246,
+        243.714
+      ]
+    }
+  ],
+  "principal": 0,
+  "depth": 15.061,
+  "view_flags": [],
+  "holes": {
+    "summary": "4 fori ciechi (quota mancante); 4 fori passanti (quota mancante); 1 foro passante (quota mancante)",
+    "scale": null,
+    "flags": [],
+    "holes": [
+      {
+        "path": "clusters[0].inners[0]",
+        "through": false,
+        "source": "trace",
+        "drawn_depth": 1.5
+      },
+      {
+        "path": "clusters[0].inners[1]",
+        "through": false,
+        "source": "trace",
+        "drawn_depth": 1.5
+      },
+      {
+        "path": "clusters[0].inners[2]",
+        "through": false,
+        "source": "trace",
+        "drawn_depth": 1.5
+      },
+      {
+        "path": "clusters[0].inners[3]",
+        "through": false,
+        "source": "trace",
+        "drawn_depth": 1.5
+      },
+      {
+        "path": "clusters[0].inners[4]",
+        "through": true,
+        "source": "convention",
+        "drawn_depth": 15.061
+      },
+      {
+        "path": "clusters[0].inners[8]",
+        "through": true,
+        "source": "trace",
+        "drawn_depth": 13.5
+      },
+      {
+        "path": "clusters[0].inners[9]",
+        "through": true,
+        "source": "trace",
+        "drawn_depth": 13.5
+      },
+      {
+        "path": "clusters[0].inners[10]",
+        "through": true,
+        "source": "trace",
+        "drawn_depth": 13.5
+      },
+      {
+        "path": "clusters[0].inners[11]",
+        "through": true,
+        "source": "trace",
+        "drawn_depth": 13.5
+      }
+    ]
+  }
+}

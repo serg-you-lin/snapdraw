@@ -1,0 +1,68 @@
+{
+  "frame": {
+    "bbox": [
+      17.5,
+      17.5,
+      1452.5,
+      1022.0
+    ],
+    "iso_format": null
+  },
+  "title_block": {
+    "bbox": [
+      770.0,
+      35.0,
+      1435.0,
+      227.5
+    ]
+  },
+  "frame_flags": [],
+  "clusters": 4,
+  "views": [
+    {
+      "kind": "orthographic",
+      "bbox": [
+        155.429,
+        471.499,
+        678.418,
+        725.013
+      ]
+    },
+    {
+      "kind": "orthographic",
+      "bbox": [
+        155.429,
+        146.896,
+        678.418,
+        276.896
+      ]
+    },
+    {
+      "kind": "orthographic",
+      "bbox": [
+        1199.847,
+        471.499,
+        1329.847,
+        725.013
+      ]
+    },
+    {
+      "kind": "pictorial",
+      "bbox": [
+        808.016,
+        402.217,
+        1111.775,
+        586.831
+      ]
+    }
+  ],
+  "principal": 0,
+  "depth": 130.0,
+  "view_flags": [],
+  "holes": {
+    "summary": "",
+    "scale": null,
+    "flags": [],
+    "holes": []
+  }
+}
