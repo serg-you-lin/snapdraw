@@ -8,22 +8,21 @@ Riporta il layout rilevato a forge: setta `edge.role` sugli `Edge` di
 **prima** di `forge.heal`, e heal tiene quegli edge fuori dal grafo
 (`_split_labeled` estrae ogni ruolo deciso e non strutturale). La geometria non
 si perde — finisce in `trash_entities` col ruolo intatto e l'output DXF la
-scrive su un layer **col nome dello slug** (`frame`, `title_block`), colore
-grigio, non su `Trash` (forge D31).
+scrive sul layer registrato in `roles.py` (`Frame`, `TitleBlock`), non su
+`Trash` (forge D31).
 
 `"frame"` e `"title_block"` sono **entrambi** slug di consumatore: forge non li
-conosce (`ContourRole.FRAME` è stato rimosso in D31), li conserva e basta.
-`forge.normalize_role` li ripulisce in slug sicuri.
+conosce (`ContourRole.FRAME` è stato rimosso in D31), li conserva e basta. Gli
+slug e il loro stile (colore/layer) sono costruiti in `roles.py` — qui si
+importano soltanto, mai definiti inline (forge D47, "roles out of core": lo
+stesso schema con cui forge costruisce il proprio vocabolario di `detect()`).
 """
 
 from __future__ import annotations
 
-import forge
-
 from .model import FrameLayout
-
-FRAME_ROLE = forge.normalize_role("frame")
-TITLE_BLOCK_ROLE = forge.normalize_role("title_block")
+from .roles import FRAME as FRAME_ROLE
+from .roles import TITLE_BLOCK as TITLE_BLOCK_ROLE
 
 
 def tag_layout(doc, layout: FrameLayout) -> int:

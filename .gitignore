@@ -63,6 +63,10 @@ desktop.ini
 pipeline_output/
 output/
 
+# lavoretti manuali usa-e-getta (script diagnostici, disegni reali del
+# cliente, dataset di etichette) — mai nel repo, per costruzione
+lab/
+
 # ===========================================================================
 # Local configuration / secrets
 # ===========================================================================
@@ -80,3 +84,12 @@ output/
 *.bak
 *.orig
 *~
+
+# ===========================================================================
+# Regole di ruolo di studio/cliente (MAP D17) — nel repo resta solo
+# rules/generic.json (il disegno tecnico). Stesso schema di bendly
+# calibrations/.
+# ===========================================================================
+
+rules/studio_*.json
+rules/cliente_*.json

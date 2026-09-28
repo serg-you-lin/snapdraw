@@ -39,6 +39,7 @@ AXIS_EPS = 0.5                    # mm — scarto per considerare una linea oriz
 COORD_CLUSTER_TOL = 1.5          # mm — due bordi più vicini di così sono lo stesso bordo
 SIDE_COVERAGE = 0.85            # frazione minima di un lato coperta da linee collineari
 CONTAINMENT_MARGIN_FACTOR = 0.02  # margine sulla bbox, frazione del lato corto
+TEXT_BORDER_TOL = 0.5            # mm — un testo sul bordo di un rettangolo conta come dentro
 
 # Formati ISO in mm (lato corto, lato lungo). Il disegno può essere in
 # qualsiasi unità: il riconoscimento del formato è best-effort e assume mm.
@@ -95,11 +96,23 @@ def line_edges(doc) -> list:
 # Rilevamento rettangoli di bordo
 # ---------------------------------------------------------------------------
 
-def find_rectangles(doc, min_side_fraction: float = BORDER_MIN_SIDE_FRACTION) -> List[Rect]:
+def find_rectangles(
+    doc,
+    min_side_fraction: float = BORDER_MIN_SIDE_FRACTION,
+    min_side_length: Optional[float] = None,
+) -> List[Rect]:
     """
     Trova i rettangoli axis-aligned "di bordo": quelli i cui quattro lati sono
     coperti da linee lunghe. Prende sia il riquadro esterno sia quello di
     squadratura di una cornice a doppio bordo.
+
+    La soglia di lunghezza minima di un lato è, di norma, una frazione della
+    dimensione del disegno (`min_side_fraction`) — funziona per la cornice,
+    che per definizione occupa quasi tutto il foglio. Un cartiglio no: la sua
+    dimensione assoluta (decine di mm) non scala con l'estensione del
+    disegno, quindi un rettangolo piccolo può valere una frazione minuscola
+    su un disegno grande. `min_side_length` (mm, assoluto) sostituisce la
+    frazione quando è dato — lo usa `titleblock.py`.
 
     Non usa `polygonize` — vedi il docstring del modulo.
     """
@@ -107,12 +120,15 @@ def find_rectangles(doc, min_side_fraction: float = BORDER_MIN_SIDE_FRACTION) ->
     if len(edges) < 4:
         return []
 
-    xs_all = [p[0] for e in edges for p in (e.start, e.end)]
-    ys_all = [p[1] for e in edges for p in (e.start, e.end)]
-    big = max(max(xs_all) - min(xs_all), max(ys_all) - min(ys_all))
-    if big <= 0:
-        return []
-    min_len = big * min_side_fraction
+    if min_side_length is not None:
+        min_len = min_side_length
+    else:
+        xs_all = [p[0] for e in edges for p in (e.start, e.end)]
+        ys_all = [p[1] for e in edges for p in (e.start, e.end)]
+        big = max(max(xs_all) - min(xs_all), max(ys_all) - min(ys_all))
+        if big <= 0:
+            return []
+        min_len = big * min_side_fraction
 
     horiz, vert = _axis_lines(edges)
     long_h = [h for h in horiz if (h[2] - h[1]) >= min_len]
@@ -265,3 +281,74 @@ def iso_format(rect: Rect, tolerance: float = _ISO_SIZE_TOLERANCE) -> Optional[s
                     and abs(long_ - l_exp) / l_exp <= tolerance):
                 return name
     return None
+
+
+# ---------------------------------------------------------------------------
+# Griglia interna (cartiglio) e densità di annotazioni
+# ---------------------------------------------------------------------------
+
+GRID_COVERAGE = 0.85  # frazione minima di lato coperta da un divisore di riga/colonna
+
+
+def grid_dividers(rect: Rect, doc, coverage: float = GRID_COVERAGE) -> Tuple[List[float], List[float]]:
+    """
+    Linee dritte STRETTAMENTE interne a `rect` (bordo escluso) che lo
+    attraversano per almeno `coverage` della larghezza/altezza — i divisori
+    di riga/colonna di un rettangolo suddiviso in una griglia di celle (il
+    segnale più forte di un cartiglio, DESIGN.md). Una sola riga di divisori
+    (nessuna colonna, o viceversa) conta: il nostro stesso `generate.py`
+    produce un cartiglio a righe piene, senza colonne.
+
+    Ritorna `(row_ys, col_xs)`, ciascuna ordinata, bordo del rettangolo
+    escluso.
+    """
+    edges = line_edges(doc)
+    horiz, vert = _axis_lines(edges)
+    xmin, ymin, xmax, ymax = rect.bbox
+    tol = 2 * AXIS_EPS
+
+    row_ys = []
+    for y in _cluster_coords([h[3] for h in horiz if ymin + tol < h[3] < ymax - tol]):
+        segs = [(h[1], h[2]) for h in horiz if abs(h[3] - y) <= tol]
+        if _coverage(segs, xmin, xmax) >= coverage:
+            row_ys.append(y)
+
+    col_xs = []
+    for x in _cluster_coords([v[3] for v in vert if xmin + tol < v[3] < xmax - tol]):
+        segs = [(v[1], v[2]) for v in vert if abs(v[3] - x) <= tol]
+        if _coverage(segs, ymin, ymax) >= coverage:
+            col_xs.append(x)
+
+    return row_ys, col_xs
+
+
+def annotation_density_ratio(rect: Rect, doc) -> float:
+    """
+    Quante volte più annotazioni per unità di area cadono dentro `rect`
+    rispetto alla densità media dell'intero disegno (annotazioni + geometria,
+    per una bbox totale robusta anche su un disegno senza testo fuori dal
+    cartiglio). > 1 = più denso della media — un cartiglio impacchetta molto
+    testo in poco spazio. 0 se il disegno non ha annotazioni o `rect` non ne
+    contiene nessuna.
+    """
+    if not doc.annotations or rect.area <= 0:
+        return 0.0
+
+    # tolleranza sul bordo: un MTEXT agganciato a sinistra ha il punto
+    # d'inserimento esattamente sul bordo (vedi titleblock._build_cells)
+    minx, miny, maxx, maxy = rect.bbox
+    t = TEXT_BORDER_TOL
+    inside = sum(1 for a in doc.annotations
+                 if minx - t <= a.position[0] <= maxx + t and miny - t <= a.position[1] <= maxy + t)
+    if inside == 0:
+        return 0.0
+
+    xs = [a.position[0] for a in doc.annotations] + [p[0] for e in doc.edges for p in (e.start, e.end)]
+    ys = [a.position[1] for a in doc.annotations] + [p[1] for e in doc.edges for p in (e.start, e.end)]
+    total_area = (max(xs) - min(xs)) * (max(ys) - min(ys))
+    if total_area <= 0:
+        return 0.0
+
+    global_density = len(doc.annotations) / total_area
+    local_density = inside / rect.area
+    return local_density / global_density

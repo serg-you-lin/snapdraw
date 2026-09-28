@@ -27,7 +27,7 @@ dependencies = [
 
 # forge NON è qui: è un pacchetto locale, non pubblicato. framer lo usa come
 # motore (load_dxf, heal, normalize_role). Installalo a parte:
-#   pip install -e ../dxf-forge
+#   pip install -e ../forge
 
 [project.optional-dependencies]
 dev = ["pytest"]

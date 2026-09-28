@@ -1,0 +1,7 @@
+{
+  "name": "generic",
+  "description": "Regole del disegno tecnico, valide per tutti (MAP D17): tratto e punto = assi e linee di costruzione (ISO 128). Niente nomi di layer: sono convenzione di chi disegna (su tavola_01 il layer ASSI contiene il pezzo intero, non gli assi). Uno studio scrive le sue regole, nomi di layer compresi, in rules/studio_<nome>.json e le mette PRIMA di queste: vince la prima regola che corrisponde.",
+  "rules": [
+    {"role": "construction", "dash": "chain"}
+  ]
+}

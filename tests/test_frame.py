@@ -13,7 +13,7 @@ import unittest
 
 import forge
 import framer
-from framer.frame import detect_frame
+from framer.frame import find_frame
 
 
 def _rect(x0, y0, x1, y1, role="unknown"):
@@ -40,17 +40,17 @@ def _unframed_doc():
     ])
 
 
-class TestDetectFrame(unittest.TestCase):
+class TestFindFrame(unittest.TestCase):
 
     def test_trova_la_cornice_iso_che_racchiude_i_pezzi(self):
-        frame = detect_frame(_framed_doc())
+        frame = find_frame(_framed_doc())
         self.assertIsNotNone(frame)
         self.assertEqual(frame.iso_format, "A3")
         self.assertGreaterEqual(frame.containment, 0.80)
         self.assertEqual(len(frame.edges), 4)
 
     def test_nessuna_cornice_su_un_disegno_senza_riquadro(self):
-        self.assertIsNone(detect_frame(_unframed_doc()))
+        self.assertIsNone(find_frame(_unframed_doc()))
 
     def test_conservativo_ratio_non_iso(self):
         # riquadro quadrato che racchiude tutto: rapporto 1.0, non ISO
@@ -58,20 +58,44 @@ class TestDetectFrame(unittest.TestCase):
             _rect(0, 0, 400, 400),
             _rect(30, 30, 130, 130, role="outer"),
         ])
-        self.assertIsNone(detect_frame(doc))
+        self.assertIsNone(find_frame(doc))
 
 
-class TestDetectOrchestrator(unittest.TestCase):
+class TestDetectFrameRecipe(unittest.TestCase):
 
     def test_flag_frame_uncertain_quando_non_trova(self):
-        layout = framer.detect(_unframed_doc())
+        layout = framer.detect_frame(_unframed_doc())
         self.assertIsNone(layout.frame)
         self.assertIn("frame: uncertain", layout.flags)
 
-    def test_title_block_sempre_uncertain_finche_e_stub(self):
-        layout = framer.detect(_framed_doc())
+    def test_title_block_uncertain_su_disegno_senza_cartiglio(self):
+        # _framed_doc() ha una cornice ma nessun cartiglio (niente griglia
+        # interna, nessuna annotazione) — vedi tests/test_titleblock.py per
+        # il rilevamento vero e proprio.
+        layout = framer.detect_frame(_framed_doc())
         self.assertIsNone(layout.title_block)
         self.assertIn("title_block: uncertain", layout.flags)
+
+
+    def test_riquadro_non_iso_attorno_al_cartiglio_viene_segnalato(self):
+        # un modello aziendale non ISO (rapporto 2) che racchiude cartiglio e
+        # pezzo: non è una cornice, ma resta nel disegno e va detto (B1250136)
+        doc = forge.load_geometry([
+            _rect(0, 0, 300, 600),
+            _rect(60, 250, 200, 400, role="outer"),
+        ])
+        framer.add_title_block(doc, anchor=(290.0, 10.0))
+        for e in doc.edges:  # il cartiglio va trovato, non preso come già deciso
+            e.role = "unknown" if e.role == framer.TITLE_BLOCK else e.role
+        layout = framer.detect_frame(doc)
+        self.assertIsNone(layout.frame)
+        self.assertIsNotNone(layout.title_block)
+        self.assertTrue(any("rejected border" in f for f in layout.flags))
+
+    def test_nessun_avviso_senza_cartiglio(self):
+        # il rettangolo di un pezzo nudo non è un riquadro di impaginazione
+        layout = framer.detect_frame(forge.load_geometry([_rect(0, 0, 300, 600)]))
+        self.assertFalse(any("rejected border" in f for f in layout.flags))
 
 
 class TestTagLayoutIntegration(unittest.TestCase):
@@ -84,14 +108,14 @@ class TestTagLayoutIntegration(unittest.TestCase):
 
     def test_con_framer_emergono_i_due_pezzi(self):
         doc = _framed_doc()
-        layout = framer.detect(doc)
+        layout = framer.detect_frame(doc)
         n = framer.tag_layout(doc, layout)
         self.assertEqual(n, 4)
 
         result = forge.heal(doc)
         self.assertEqual(len(result.clusters), 2)
         # la geometria della cornice non si perde: è in trash col ruolo intatto
-        # (ContourRole eredita da str, quindi role == "frame")
+        # (role è lo slug di consumatore "frame", non un ContourRole — D31/D47)
         self.assertTrue(
             any(getattr(t, "role", "") == "frame" for t in result.trash_entities)
         )

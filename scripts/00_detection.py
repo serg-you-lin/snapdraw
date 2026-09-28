@@ -11,7 +11,7 @@ INPUT = r"42D025Z00I.DXF"   # relativo -> dalla radice del repo
 doc = forge.load_dxf(INPUT)
 print(f"edge: {len(doc.edges)}  annotazioni: {len(doc.annotations)}")
 
-layout = framer.detect(doc)
+layout = framer.detect_frame(doc)
 
 if layout.frame:
     f = layout.frame
@@ -24,25 +24,14 @@ else:
 if layout.title_block:
     print(f"cartiglio: bbox={tuple(round(v, 1) for v in layout.title_block.bbox)}")
 else:
-    print("cartiglio: non trovato (stub)")
+    print("cartiglio: non trovato")
 
 print("flag:", layout.flags or "nessuno")
 
-# marca gli Edge e passa a heal: la cornice viene esclusa dai cluster
-n = framer.tag_layout(doc, layout)
-print(f"\n{n} edge marcati")
-
-result = forge.heal(doc)
-print(f"cluster dopo heal: {len(result.clusters)}")
-for i, c in enumerate(result.clusters):
-    b = tuple(round(v) for v in c.outer.polygon.bounds)
-    print(f"  cluster {i}: area={c.outer.polygon.area:.0f}  bbox={b}  inner={len(c.inners)}")
-
-# to_dxf(result, source_doc) RITORNA un Drawing ezdxf, non salva. Il secondo
-# argomento è il ForgeDocument (opzionale), non un path.
-import os
-os.makedirs("pipeline_output", exist_ok=True)
-out = forge.to_dxf(result, doc)
-out.saveas(r"pipeline_output/output.dxf")
-print("scritto pipeline_output/output.dxf")
-
+# la ricetta si ferma qui: nessuna lettura di forge a valle. Per marcare gli
+# Edge e scrivere un DXF (heal o island, scelta del chiamante) vedi 01_export.py.
+if layout.title_block:
+    fields = framer.read_titleblock(layout)
+    for name, field in fields.items():
+        if name != "unresolved" and field["value"]:
+            print(f"  {name}: {field['value']}")

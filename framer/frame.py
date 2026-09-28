@@ -28,14 +28,14 @@ from __future__ import annotations
 from typing import Optional
 
 from .geometry import (
-    Rect, containment, find_rectangles, is_iso_ratio, iso_format,
+    AXIS_EPS, Rect, containment, find_rectangles, is_iso_ratio, iso_format,
 )
 from .model import FrameInfo
 
 CONTAINMENT_THRESHOLD = 0.80
 
 
-def detect_frame(doc, containment_threshold: float = CONTAINMENT_THRESHOLD) -> Optional[FrameInfo]:
+def find_frame(doc, containment_threshold: float = CONTAINMENT_THRESHOLD) -> Optional[FrameInfo]:
     """
     Rileva la cornice di formato nella geometria grezza di `doc`
     (`forge.load_dxf(...)`, prima di `heal`).
@@ -69,6 +69,32 @@ def detect_frame(doc, containment_threshold: float = CONTAINMENT_THRESHOLD) -> O
         containment=largest_cont,
         confidence=_confidence(largest, largest_cont, n_borders=len(kept)),
     )
+
+
+def rejected_border(doc, title_block) -> Optional[Rect]:
+    """
+    Il riquadro di bordo più grande che racchiude `title_block` ma che
+    `find_frame` non ha accettato (rapporto non ISO, o contenimento sotto
+    soglia) — o None. Da chiamare quando `find_frame` ha dato None.
+
+    Non è una cornice e non si marca: serve solo a dirlo. Un riquadro così
+    resta nel disegno e `forge.island()` lo prende come contorno esterno di
+    tutte le viste, a meno che qualcosa non lo apra per caso (su `B1250136`
+    lo apriva la marcatura del cartiglio, che ne condivide il lato
+    inferiore — MAP D15). Senza cartiglio dentro non si segnala niente: il
+    rettangolo di un pezzo nudo non è un riquadro di impaginazione.
+    """
+    if title_block is None:
+        return None
+    txmin, tymin, txmax, tymax = title_block.bbox
+    tol = 2 * AXIS_EPS
+    enclosing = [
+        r for r in find_rectangles(doc)
+        if r.bbox[0] - tol <= txmin and r.bbox[1] - tol <= tymin
+        and txmax <= r.bbox[2] + tol and tymax <= r.bbox[3] + tol
+        and r.area > (txmax - txmin) * (tymax - tymin) * 1.5
+    ]
+    return max(enclosing, key=lambda r: r.area) if enclosing else None
 
 
 def _confidence(rect: Rect, cont: float, n_borders: int) -> float:

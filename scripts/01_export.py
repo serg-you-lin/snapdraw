@@ -4,14 +4,15 @@ import forge
 import framer
 
 # --- CONFIG ---------------------------------------------------------------
-INPUT  = r"42D025Z00I.DXF"
-OUTPUT = r"pipeline_output/42D025Z00I_framed.dxf"
+INPUT  = r"tests/examples/complete_drawings/bend_sheet/singoli_piegati/3d_1.dxf"
+OUTPUT = r"pipeline_output/tavola_08_framed.dxf"
+RULES  = "generic"   # rules/<nome>.json — uno studio: load_rules("studio_x") + load_rules("generic")
 # -----------------------------------------------------------------------------
 
-doc = forge.load_dxf(INPUT)
+doc = forge.load_dxf(INPUT, role_rules=framer.load_rules(RULES))
 print(f"edge: {len(doc.edges)}  annotazioni: {len(doc.annotations)}")
 
-layout = framer.detect(doc)
+layout = framer.detect_frame(doc)
 if layout.frame:
     f = layout.frame
     print(f"cornice: bbox={tuple(round(v, 1) for v in f.bbox)}  formato={f.iso_format}  "
@@ -21,12 +22,15 @@ else:
 print("flag:", layout.flags or "nessuno")
 
 n = framer.tag_layout(doc, layout)
-print(f"{n} edge marcati")
+m = sum(1 for e in doc.edges if e.role == framer.CONSTRUCTION)
+print(f"{n} edge di cornice/cartiglio marcati, {m} linee di costruzione (regole al caricamento)")
 
-result = forge.heal(doc)
-print(f"heal: valid={result.is_valid}  cluster={len(result.clusters)}  "
+# messa in tavola = viste su un foglio: si legge per isole, non con heal
+result = forge.island(doc)
+print(f"island: valid={result.is_valid}  isole={len(result.clusters)}  "
       f"trash={len(result.trash_entities)}")
 
+# colore/layer di "frame" arrivano dalla registrazione di framer.roles
 out = forge.to_dxf(result, doc)
 
 import os
