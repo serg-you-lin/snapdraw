@@ -59,10 +59,90 @@
   "principal": 0,
   "depth": 130.0,
   "view_flags": [],
-  "holes": {
-    "summary": "",
-    "scale": null,
+  "features": {
+    "summary": "2 fori passanti Ø15, profondità 15; 4 aperture passanti 17,59×17, profondità 253,51; 2 aperture passanti 17×15,98, profondità 522,99",
+    "scales": {
+      "0": 1.0,
+      "1": 1.0,
+      "2": 1.0
+    },
     "flags": [],
-    "holes": []
+    "features": [
+      {
+        "kind": "hole",
+        "hole_type": "plain",
+        "view": 1,
+        "path": "clusters[1].inners[0]",
+        "through": true,
+        "source": "trace",
+        "drawn_depth": 15.0
+      },
+      {
+        "kind": "hole",
+        "hole_type": "plain",
+        "view": 1,
+        "path": "clusters[1].inners[1]",
+        "through": true,
+        "source": "trace",
+        "drawn_depth": 15.0
+      },
+      {
+        "kind": "opening",
+        "hole_type": null,
+        "view": 1,
+        "path": "clusters[1].inners[2]",
+        "through": true,
+        "source": "convention",
+        "drawn_depth": 253.514
+      },
+      {
+        "kind": "opening",
+        "hole_type": null,
+        "view": 1,
+        "path": "clusters[1].inners[3]",
+        "through": true,
+        "source": "convention",
+        "drawn_depth": 253.514
+      },
+      {
+        "kind": "opening",
+        "hole_type": null,
+        "view": 1,
+        "path": "clusters[1].inners[4]",
+        "through": true,
+        "source": "convention",
+        "drawn_depth": 253.514
+      },
+      {
+        "kind": "opening",
+        "hole_type": null,
+        "view": 1,
+        "path": "clusters[1].inners[5]",
+        "through": true,
+        "source": "convention",
+        "drawn_depth": 253.514
+      },
+      {
+        "kind": "opening",
+        "hole_type": null,
+        "view": 2,
+        "path": "clusters[2].inners[0]",
+        "through": true,
+        "source": "convention",
+        "drawn_depth": 522.989
+      },
+      {
+        "kind": "opening",
+        "hole_type": null,
+        "view": 2,
+        "path": "clusters[2].inners[1]",
+        "through": true,
+        "source": "convention",
+        "drawn_depth": 522.989
+      }
+    ]
+  },
+  "unchecked": {
+    "features": "Federico: foglio da lasciare per ora — contorni nella pianta con profondità 253/523 da tracce per coincidenza"
   }
 }

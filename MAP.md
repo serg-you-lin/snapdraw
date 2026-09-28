@@ -624,6 +624,100 @@ chiude, A3 a 1:3,5), `regr_05` (leva_01: quote a 1,25:1). I grezzi di
 
 Suite: 64 passed.
 
+### D23 — Le feature delle viste: `read_features`, su ogni vista, etichettate  ✅
+
+Federico: le feature vanno individuate ed etichettate sulle isole, qui;
+colori e ruoli finali li decide chi esporta. Il lavoro di `detect_flat` sui
+modelli di forge (fori e tipi) andrà in snapbend, perché è lamiera piatta;
+sulle viste lo fa snapdraw. Supera D19 (clean break: `holes.py` rimosso).
+
+- **`snapdraw/features.py`**, ricetta `read_features(doc, result, views)
+  -> FeatureLayout` sopra passi pubblici (`view_scales`,
+  `feature_contours`, `feature_trace`, `diameter_callouts`,
+  `parse_callout`, `group_features`); `describe_features` scrive i gruppi;
+  `tag_features(result, layout)` le etichetta.
+- **Su ogni vista ortogonale**, non solo la principale (su `regr_04` i fori
+  stanno nella pianta). Forma da `forge.contour_shape`: cerchio → `hole`,
+  stadio → `slot` (asola), rettangolo/poligono → `opening`, il resto →
+  `other` (tenuto, non buttato).
+- **Isolato**: un contorno interno è una feature solo se non tocca il
+  contorno esterno né un vicino (se non uno che lo contiene o che contiene).
+  Le facce create dalle linee che attraversano una vista toccano i vicini.
+  Coi soli cerchi (D19) non serviva.
+- **Tipi di foro**, stesso vocabolario di forge dove c'è: `plain`;
+  `threaded` dall'**arco di cresta** (convenzione ISO: preforo chiuso,
+  cresta come arco aperto di ~3/4; criterio di forge `is_threaded_hole`,
+  270° ± 35°) o dalla quota `M`; `counterbore` (cerchio concentrico con
+  pareti cieche nella compagna: sede + profondità della sede);
+  `countersink` (linee oblique dalla sede al foro nella compagna);
+  `seated` quando non c'è prova. Due cerchi concentrici visti di faccia
+  sono uguali per una lamatura e una svasatura: **non si indovina**
+  (Federico su `tavola_01`: le sezioni dicono incassati, la prima stesura
+  diceva svasati per default). Una "sede" le cui pareti sono passanti non è
+  una sede: i due cerchi restano fori separati, flag `concentric:`.
+- **Quote dei filetti**: si misurano sulla cresta, un arco aperto, e forge
+  non le aggancia (D69 aggancia a contorni). snapdraw le aggancia dal centro:
+  il punto medio dei due punti misurati è il centro, il raggio è quello del
+  foro o della cresta (`callout: anchored by center`). Su `tavola_01` 2 dei
+  3 richiami M erano senza aggancio.
+- **"n°N fori"** (e "N fori", "4xØ5"): il richiamo vale per i fori uguali
+  della sua vista (stesso diametro disegnato, stesso filetto, senza quota
+  propria); numero scritto ≠ trovati → flag. `tavola_01`: "M4 n°30 fori" →
+  28 trovati, "M6 n°16 fori" → 15 + uno letto dalla sola cresta.
+- Una quota di diametro senza simbolo ("15") vale Ø.
+- Le "frecce" di `tavola_01` sono le frecce del piano di sezione A-A, non
+  richiami: materiale per le sezioni.
+- **Traccia generalizzata**: le pareti stanno ai bordi della forma lungo
+  l'asse della compagna (per il cerchio: centro ± r). Faccia/fondo di D19
+  invariati, passante per convenzione invariato.
+- **Scala per vista** (`view_scales`): scritto / misurato, il valore più
+  frequente sulle quote agganciate alla vista (lineari, Ø, R; non angoli né
+  filetti). Discordi nella vista → `scale: view i mixed`; vista senza quote
+  → scala del foglio se le viste quotate concordano. Sul campione: 1,0
+  ovunque, 0,8 su Leva, una quota discorde su `tavola_02`. Senza quota il
+  diametro è quello disegnato alla scala della vista, scritto `Ø≈`.
+- **Etichette** (Federico: i fori devono stare in `hole`; i layer per
+  lavorazione li mette chi esporta per la produzione, snapbend — qui
+  l'exporter serve a guardare): ruoli `hole` (ogni foro, il tipo è
+  `hole_type`, come `detect_flat`), `slot`, `opening`. Palette di default,
+  foro viola (sovrascrive il magenta di forge per chi importa snapdraw).
+  `tag_features` attacca le feature a `cluster.detected["view_features"]`
+  (forge D44) e ne toglie i contorni da `inners`; forge D70 le scrive sul
+  layer del ruolo (`contours`: foro + sede). Scartati: un ruolo per tipo di
+  foro (`threaded_hole`, `countersink`, `counterbore`) — è layering di
+  produzione, non etichetta.
+- **Forme**: cerchio → `hole`, stadio → `slot`, **ogni altra forma →
+  `opening`** (una cava di forma libera è un'apertura, non "altro";
+  `shape.kind` dice la forma). Isolamento solo per le forme non circolari:
+  un cerchio tangente al bordo (la sede di un foro d'angolo, `regr_03`) è
+  un foro.
+- **Sede**: il cono viene prima delle pareti. Su `regr_03` svasatura, cava e
+  svasatura stanno sulla stessa fila: le pareti della cava cadevano alla
+  quota della sede e la facevano passare per passante. La profondità del
+  foro è quella del foro, la sede è a parte (come `detect_flat`: il foro
+  resta foro).
+- **JSON**: `Feature.to_dict`, `FeatureLayout.to_dict`, e
+  `sd.feature_metadata` per il gancio di forge:
+  `forge.to_json(result, extra_metadata=sd.feature_metadata)` dopo
+  `tag_features`.
+- **Golden**: feature fissate su `regr_01`, `regr_03`, `regr_05`; su
+  `regr_02` (aperture nella sezione, non viste) e `regr_04` (Federico:
+  lasciarlo per ora) la chiave `unchecked` — non confrontate, non
+  dichiarate giuste.
+- **Visto in forge, non qui**: su `tavola_01` due filettati e una lamatura
+  in trash. `island()` raggruppa per vicinanza; un gruppo di soli fori
+  disgiunti dentro una vista diventa un'isola, forge ne sceglie un cerchio
+  come "esterno", lo annida nella vista e butta gli altri come `outside`.
+  Federico: roba interna a un'isola trovata non può essere un'isola a sé.
+- **Aperti**: sezioni lette come viste qualunque (le loro facce tratteggiate
+  possono diventare aperture, le tracce si cercano lì); tracce per
+  coincidenza in compagne complesse (`regr_04`: profondità 253 e 523);
+  sedi senza compagne allineate (`tavola_01`: 22 "lamatura o svasatura",
+  le sezioni direbbero lamatura — va con la lettura delle sezioni).
+
+Suite: 79 passed. DXF da guardare: `scripts/05_read_features.py` →
+`pipeline_output/features/`.
+
 ---
 
 ## Appunti (aperti — non decisioni)

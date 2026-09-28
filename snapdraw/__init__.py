@@ -45,11 +45,11 @@ from __future__ import annotations
 
 from .frame import find_frame, rejected_border
 from .generate import DEFAULT_TITLE_BLOCK_TEMPLATE, add_frame, add_title_block
-from .holes import (callout_scale, describe_holes, diameter_callouts, group_holes, hole_trace, parse_callout,
-                    principal_circles, read_holes)
-from .model import (BBox, Cell, FieldSlot, FrameInfo, FrameLayout, Hole, HoleCallout, HoleGroup, HoleLayout,
-                    HoleTrace, TitleBlock, TitleBlockTemplate, View, ViewLayout)
-from .roles import CONSTRUCTION, FRAME, TITLE_BLOCK
+from .features import (describe_features, diameter_callouts, feature_contours, feature_metadata, feature_trace,
+                       group_features, parse_callout, read_features, tag_features, view_scales)
+from .model import (BBox, Callout, Cell, Feature, FeatureGroup, FeatureLayout, FieldSlot, FrameInfo, FrameLayout,
+                    TitleBlock, TitleBlockTemplate, Trace, View, ViewLayout)
+from .roles import CONSTRUCTION, FRAME, HOLE, OPENING, SLOT, TITLE_BLOCK
 from .rules import load_rules, rules_from_dict
 from .recipe import detect_frame
 from .render import render_view, render_views, view_edges
@@ -86,19 +86,21 @@ __all__ = [
     "render_views",
     "render_view",
     "view_edges",
-    "read_holes",
-    "describe_holes",
-    "principal_circles",
-    "hole_trace",
+    "read_features",
+    "describe_features",
+    "tag_features",
+    "feature_metadata",
+    "view_scales",
+    "feature_contours",
+    "feature_trace",
     "diameter_callouts",
     "parse_callout",
-    "callout_scale",
-    "group_holes",
-    "Hole",
-    "HoleCallout",
-    "HoleTrace",
-    "HoleGroup",
-    "HoleLayout",
+    "group_features",
+    "Feature",
+    "Callout",
+    "Trace",
+    "FeatureGroup",
+    "FeatureLayout",
     "add_frame",
     "add_title_block",
     "FrameLayout",
@@ -112,4 +114,7 @@ __all__ = [
     "FRAME",
     "TITLE_BLOCK",
     "CONSTRUCTION",
+    "HOLE",
+    "SLOT",
+    "OPENING",
 ]

@@ -52,24 +52,36 @@
   "view_flags": [
     "principal: single projection"
   ],
-  "holes": {
+  "features": {
     "summary": "2 fori passanti Ø5,3 +0,05/0, profondità 4; 1 foro passante Ø4,3 +0,05/0, profondità 4",
-    "scale": 0.8,
+    "scales": {
+      "0": 0.8,
+      "2": 0.8
+    },
     "flags": [],
-    "holes": [
+    "features": [
       {
+        "kind": "hole",
+        "hole_type": "plain",
+        "view": 0,
         "path": "clusters[0].inners[0]",
         "through": true,
         "source": "convention",
         "drawn_depth": 5.0
       },
       {
+        "kind": "hole",
+        "hole_type": "plain",
+        "view": 0,
         "path": "clusters[0].inners[1]",
         "through": true,
         "source": "convention",
         "drawn_depth": 5.0
       },
       {
+        "kind": "hole",
+        "hole_type": "plain",
+        "view": 0,
         "path": "clusters[0].inners[2]",
         "through": true,
         "source": "convention",

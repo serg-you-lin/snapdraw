@@ -40,66 +40,58 @@
   "view_flags": [
     "principal: single projection"
   ],
-  "holes": {
-    "summary": "5 fori passanti (quota mancante), profondità 50; 4 fori passanti (quota mancante), profondità 1; 1 foro passante Ø9, profondità 1",
-    "scale": 1.0,
-    "flags": [],
-    "holes": [
+  "features": {
+    "summary": "4 fori svasati passanti Ø≈9 (sede Ø≈19), profondità 1; 1 foro svasato passante Ø9 (sede Ø≈19), profondità 1",
+    "scales": {
+      "0": 1.0,
+      "1": 1.0,
+      "2": 1.0
+    },
+    "flags": [
+      "scale: view 1 from sheet",
+      "scale: view 2 from sheet"
+    ],
+    "features": [
       {
-        "path": "clusters[0].inners[5]",
-        "through": true,
-        "source": "convention",
-        "drawn_depth": 50.0
-      },
-      {
-        "path": "clusters[0].inners[6]",
-        "through": true,
-        "source": "convention",
-        "drawn_depth": 50.0
-      },
-      {
-        "path": "clusters[0].inners[7]",
-        "through": true,
-        "source": "convention",
-        "drawn_depth": 50.0
-      },
-      {
+        "kind": "hole",
+        "hole_type": "countersink",
+        "view": 0,
         "path": "clusters[0].inners[8]",
         "through": true,
         "source": "trace",
         "drawn_depth": 1.0
       },
       {
+        "kind": "hole",
+        "hole_type": "countersink",
+        "view": 0,
         "path": "clusters[0].inners[9]",
         "through": true,
         "source": "trace",
         "drawn_depth": 1.0
       },
       {
+        "kind": "hole",
+        "hole_type": "countersink",
+        "view": 0,
         "path": "clusters[0].inners[10]",
         "through": true,
         "source": "trace",
         "drawn_depth": 1.0
       },
       {
-        "path": "clusters[0].inners[14]",
-        "through": true,
-        "source": "convention",
-        "drawn_depth": 50.0
-      },
-      {
-        "path": "clusters[0].inners[15]",
-        "through": true,
-        "source": "convention",
-        "drawn_depth": 50.0
-      },
-      {
+        "kind": "hole",
+        "hole_type": "countersink",
+        "view": 0,
         "path": "clusters[0].inners[16]",
         "through": true,
         "source": "trace",
         "drawn_depth": 1.0
       },
       {
+        "kind": "hole",
+        "hole_type": "countersink",
+        "view": 0,
         "path": "clusters[0].inners[17]",
         "through": true,
         "source": "trace",

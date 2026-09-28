@@ -6,13 +6,17 @@ dati del cliente): un test per foglio, generato a runtime, che rilegge il
 foglio e lo confronta col golden `json/<nome>.json`.
 
 Cosa protegge: cornice e riquadro del cartiglio trovati dove erano, il
-numero di isole, le viste e la principale, la profondità, i fori. Se un test
+numero di isole, le viste e la principale, la profondità, le feature. Se un test
 fallisce: prima si capisce se il codice ha ragione, mai il contrario
 (`generate_regression.py`).
 
 `known_wrong` nel golden: {chiave: perché} per le letture che oggi sono
 sbagliate. Il golden porta la verità, il test controlla che l'errore ci sia
 ancora — quando si sistema, il test fallisce e la voce si toglie.
+
+`unchecked` nel golden: {chiave: perché} per le letture che nessuno ha
+ancora controllato sul DXF. Non si confrontano: fissarle vorrebbe dire
+dichiararle giuste senza averle viste.
 """
 
 import json
@@ -48,6 +52,9 @@ def _make_test(dxf: Path, golden: Path):
         expected = json.loads(golden.read_text(encoding="utf-8"))
         known_wrong = expected.pop("known_wrong", {})
         actual = read_sheet(dxf)
+        for key in expected.pop("unchecked", {}):
+            # lettura non ancora controllata a occhio: non si confronta, non si dichiara giusta
+            expected.pop(key, None), actual.pop(key, None)
         for key, why in known_wrong.items():
             # errore noto: il golden ha la verità, snapdraw sbaglia ancora. Se ora torna,
             # il test lo dice: si toglie la voce da known_wrong, non si abbassa il golden

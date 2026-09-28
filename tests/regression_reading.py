@@ -2,7 +2,7 @@
 tests/regression_reading.py
 ---------------------------
 La lettura di un foglio reale, ridotta a un dict confrontabile:
-cornice, riquadro del cartiglio, isole, viste, fori. La usano
+cornice, riquadro del cartiglio, isole, viste, feature. La usano
 `generate_regression.py` (scrive il golden) e `test_regression.py` (lo
 confronta) — la stessa funzione da tutte e due le parti.
 
@@ -20,13 +20,13 @@ RULES = "generic"
 
 
 def read_sheet(path: Path) -> dict:
-    """Cornice, cartiglio, viste e fori di un foglio, come li legge snapdraw oggi."""
+    """Cornice, cartiglio, viste e feature di un foglio, come li legge snapdraw oggi."""
     doc = forge.load_dxf(str(path), role_rules=sd.load_rules(RULES))
     layout = sd.detect_frame(doc)
     sd.tag_layout(doc, layout)
     result = forge.island(doc)
     views = sd.read_views(result)
-    holes = sd.read_holes(doc, result, views)
+    features = sd.read_features(doc, result, views)
 
     frame = layout.frame
     title_block = layout.title_block
@@ -41,12 +41,13 @@ def read_sheet(path: Path) -> dict:
         "principal": views.principal,
         "depth": _r(views.depth),
         "view_flags": views.flags,
-        "holes": {
-            "summary": sd.describe_holes(holes),
-            "scale": _r(holes.scale),
-            "flags": holes.flags,
-            "holes": [{"path": h.path, "through": h.through, "source": h.source, "drawn_depth": _r(h.drawn_depth)}
-                      for h in holes.holes],
+        "features": {
+            "summary": sd.describe_features(features),
+            "scales": {str(k): _r(v) for k, v in sorted(features.scales.items())},
+            "flags": features.flags,
+            "features": [{"kind": f.kind, "hole_type": f.hole_type, "view": f.view, "path": f.path,
+                          "through": f.through, "source": f.source, "drawn_depth": _r(f.drawn_depth)}
+                         for f in features.features],
         },
     }
 

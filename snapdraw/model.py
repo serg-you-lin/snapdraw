@@ -13,7 +13,7 @@ li marca, non ne fa copie.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 # BBox = (xmin, ymin, xmax, ymax)
 BBox = Tuple[float, float, float, float]
@@ -157,15 +157,16 @@ class ViewLayout:
 
 
 @dataclass
-class HoleCallout:
+class Callout:
     """
-    La quota di diametro agganciata a un cerchio, letta.
+    La quota di diametro agganciata a una feature, letta.
 
     text        : il testo come sul disegno (`display_text`), es. "∅5,3+0,05^-0"
     designation : "Ø" o "M" (filetto)
     nominal     : il valore scritto, es. 5.3
-    upper/lower : scostamenti di tolleranza scritti, o None
     measured    : la misura della geometria (`measured_value`), in unità del disegno
+    upper/lower : scostamenti di tolleranza scritti, o None
+    count       : quante feature uguali copre ("n°30 fori", "4xØ5"), o None
     rest        : testo dopo valore e tolleranza non letto ("" se tutto letto)
     """
     text:        str
@@ -174,17 +175,18 @@ class HoleCallout:
     measured:    float
     upper:       Optional[float] = None
     lower:       Optional[float] = None
+    count:       Optional[int] = None
     rest:        str = ""
 
 
 @dataclass
-class HoleTrace:
+class Trace:
     """
-    La traccia di un foro in una vista compagna: le due pareti (linee
-    parallele distanti un diametro) alla quota del cerchio.
+    La traccia di una feature in una vista compagna: le due pareti (linee
+    parallele ai bordi della forma, lungo l'asse della compagna).
 
     view    : indice della vista compagna
-    through : le pareti attraversano tutta la vista
+    through : le pareti vanno da faccia a faccia
     length  : lunghezza delle pareti, in unità del disegno
     """
     view:    int
@@ -193,60 +195,141 @@ class HoleTrace:
 
 
 @dataclass
-class Hole:
+class Feature:
     """
-    Un cerchio della vista principale letto come foro.
+    Un contorno interno di una vista ortogonale letto come feature.
 
-    path           : percorso in `result`, es. "clusters[0].inners[2]"
-    center         : centro nel disegno
-    drawn_diameter : diametro misurato sulla geometria
-    callout        : la quota di diametro agganciata, o None
-    traces         : le tracce trovate nelle viste compagne
-    through        : passante? — da traccia, o per convenzione se il disegno non dice niente
-    drawn_depth    : profondità in unità del disegno (traccia, o profondità delle viste)
-    depth          : profondità alla scala delle quote, o None se la scala non si legge
-    source         : "trace" o "convention"
-    flags          : "callout: missing", "trace: inconsistent", ...
+    kind      : "hole" (cerchio) / "slot" (stadio: asola) / "opening"
+                (ogni altra forma: rettangolo, poligono, forma libera) —
+                dalla forma di `forge.contour_shape` (`shape.kind`), un
+                fatto geometrico
+    hole_type : solo per i fori — "plain", "threaded" (arco di cresta a ~270°
+                o quota M), "counterbore" (lamatura: sede concentrica con
+                pareti cieche nella compagna), "countersink" (svasatura: linee
+                oblique dalla sede al foro nella compagna), "seated" (sede
+                concentrica senza prova del tipo); None per il resto
+    role      : il ruolo con cui la feature si etichetta (`snapdraw.roles`):
+                `hole` per ogni foro, qualunque sia il tipo
+    view      : indice della vista (cluster) dove sta
+    path      : percorso del contorno in `result` al momento della lettura,
+                es. "clusters[0].inners[2]" (`tag_features` lo sposta dopo)
+    shape     : la `forge.ContourShape` del contorno
+    contours  : i contorni della feature (il foro, e la sede se c'è) — la
+                geometria che un exporter scrive
+    outer_path/outer_shape : la sede concentrica di una lamatura/svasatura
+    hidden    : il contorno è disegnato tratteggiato (la feature sta dall'altra parte)
+    thread_diameter : diametro dell'arco di cresta del filetto, in unità del disegno
+    callout   : la quota di diametro agganciata, o None
+    traces    : le tracce trovate nelle viste compagne
+    through   : passante? — da traccia, o per convenzione se il disegno non dice niente
+    drawn_depth : profondità in unità del disegno
+    depth     : profondità alla scala della vista, o None se la scala non si legge
+    seat_depth : profondità della sede di una lamatura, alla scala della vista
+    scale     : scala della vista usata per le misure (scritto / misurato)
+    source    : "trace" o "convention"
+    confidence: 0..1
+    flags     : "callout: missing", "trace: inconsistent", ...
     """
-    path:           str
-    center:         Tuple[float, float]
-    drawn_diameter: float
-    callout:        Optional[HoleCallout] = None
-    traces:         List[HoleTrace] = field(default_factory=list)
-    through:        Optional[bool] = None
-    drawn_depth:    Optional[float] = None
-    depth:          Optional[float] = None
-    source:         str = ""
-    flags:          List[str] = field(default_factory=list)
+    kind:        str
+    view:        int
+    path:        str
+    shape:       object
+    contours:    list = field(default_factory=list)
+    hole_type:   Optional[str] = None
+    role:        str = ""
+    outer_path:  Optional[str] = None
+    outer_shape: object = None
+    hidden:      bool = False
+    thread_diameter: Optional[float] = None
+    callout:     Optional[Callout] = None
+    traces:      List[Trace] = field(default_factory=list)
+    through:     Optional[bool] = None
+    drawn_depth: Optional[float] = None
+    depth:       Optional[float] = None
+    seat_depth:  Optional[float] = None
+    scale:       Optional[float] = None
+    source:      str = ""
+    confidence:  float = 0.0
+    flags:       List[str] = field(default_factory=list)
+
+    @property
+    def center(self) -> Tuple[float, float]:
+        return tuple(self.shape.center)
+
+    @property
+    def segments(self) -> list:
+        """Il contorno principale (il foro), per chi vuole un solo contorno."""
+        return self.contours[0].segments if self.contours else []
+
+    @property
+    def size(self) -> Tuple[float, float]:
+        """(lunghezza, larghezza) alla scala della vista, o disegnate se la scala manca."""
+        k = self.scale or 1.0
+        return self.shape.length * k, self.shape.width * k
+
+    @property
+    def diameter(self) -> Optional[float]:
+        """Il diametro di un foro: quello scritto nella quota, o il disegnato alla scala della vista."""
+        if self.kind != "hole":
+            return None
+        if self.callout is not None:
+            return self.callout.nominal
+        return self.shape.diameter * (self.scale or 1.0)
+
+    def to_dict(self) -> dict:
+        """La feature come dati: niente geometria, i contorni restano nel risultato di forge."""
+        r = lambda v: None if v is None else round(v, 4)
+        c = self.callout
+        return {
+            "kind": self.kind, "hole_type": self.hole_type, "role": self.role,
+            "view": self.view, "path": self.path, "shape": self.shape.to_dict(),
+            "diameter": r(self.diameter), "size": [r(v) for v in self.size],
+            "thread_diameter": r(self.thread_diameter),
+            "seat": None if self.outer_shape is None else {"path": self.outer_path, "shape": self.outer_shape.to_dict(),
+                                                           "depth": r(self.seat_depth)},
+            "callout": None if c is None else {"text": c.text, "designation": c.designation, "nominal": c.nominal,
+                                               "upper": c.upper, "lower": c.lower, "count": c.count, "rest": c.rest},
+            "through": self.through, "depth": r(self.depth), "drawn_depth": r(self.drawn_depth),
+            "scale": r(self.scale), "hidden": self.hidden,
+            "source": self.source, "confidence": self.confidence, "flags": list(self.flags),
+        }
 
 
 @dataclass
-class HoleGroup:
-    """Fori uguali: stessa quota, stessa tolleranza, stesso tipo e profondità."""
-    holes:       List[Hole]
-    designation: Optional[str]
-    diameter:    Optional[float]
-    upper:       Optional[float]
-    lower:       Optional[float]
-    through:     Optional[bool]
-    depth:       Optional[float]
+class FeatureGroup:
+    """Feature uguali: stesso tipo, stessa misura e tolleranza, stesso passante e profondità."""
+    features:  List[Feature]
+    kind:      str
+    hole_type: Optional[str]
 
     @property
     def count(self) -> int:
-        return len(self.holes)
+        return len(self.features)
+
+    @property
+    def first(self) -> Feature:
+        return self.features[0]
 
 
 @dataclass
-class HoleLayout:
+class FeatureLayout:
     """
-    Il risultato di `sd.read_holes(doc, result, views)`.
+    Il risultato di `sd.read_features(doc, result, views)`.
 
-    holes  : un Hole per cerchio della vista principale
-    groups : i fori raggruppati come li direbbe una distinta
-    scale  : valore scritto / valore misurato dalle quote di diametro (0.8 = geometria a 1,25:1), o None
-    flags  : "holes: no principal view", "scale: inconsistent", ...
+    features : una Feature per contorno interno riconosciuto, su tutte le viste ortogonali
+    groups   : le feature raggruppate come le direbbe una distinta
+    scales   : vista → scala (scritto / misurato dalle sue quote), None se la vista non ha quote
+    flags    : "scale: view 2 mixed", "features: no orthographic view", ...
     """
-    holes:  List[Hole] = field(default_factory=list)
-    groups: List[HoleGroup] = field(default_factory=list)
-    scale:  Optional[float] = None
-    flags:  List[str] = field(default_factory=list)
+    features: List[Feature] = field(default_factory=list)
+    groups:   List[FeatureGroup] = field(default_factory=list)
+    scales:   Dict[int, Optional[float]] = field(default_factory=dict)
+    flags:    List[str] = field(default_factory=list)
+
+    def of_kind(self, kind: str) -> List[Feature]:
+        return [f for f in self.features if f.kind == kind]
+
+    def to_dict(self) -> dict:
+        return {"features": [f.to_dict() for f in self.features],
+                "scales": {str(k): v for k, v in sorted(self.scales.items())},
+                "flags": list(self.flags)}

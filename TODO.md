@@ -46,11 +46,9 @@
       riferimenti stabili (`clusters[i].inners[j]`, `view_<i>.png`) — senza,
       un portale di strumenti non può esporre niente.
 
-- [ ] **fori (MAP D19)**: giudicare i DXF di `pipeline_output/holes/`;
-      poi lamature/svasature (cerchi concentrici → un foro solo), callout
-      con conteggio ("3xØ5") e profondità scritta (↧), profondità vera
-      dove sta il foro su un pezzo piegato.
-
+- [ ] **feature (MAP D23)**: giudicare i DXF di `pipeline_output/features/`,
+      poi rigenerare i golden; sezioni fuori dalle compagne; tracce per
+      coincidenza in compagne complesse; rettangoli raccordati.
 - [ ] **ritarare le soglie di `titleblock.py`** (`CONFIDENCE_THRESHOLD`,
       `MIN_FILLED_CELL_FRACTION`, `MAX_DOMINANT_SEGMENT_FRACTION`) sui 22
       disegni reali — oggi sono le prime che fanno passare il round-trip

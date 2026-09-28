@@ -61,57 +61,60 @@
   "principal": 0,
   "depth": 3.0,
   "view_flags": [],
-  "holes": {
-    "summary": "2 fori passanti (quota mancante); 2 fori passanti (quota mancante); 2 fori passanti (quota mancante); 2 fori passanti (quota mancante)",
-    "scale": null,
+  "features": {
+    "summary": "2 fori svasati passanti Ø≈4,2 (sede Ø≈7,8), profondità 1,2; 2 fori svasati passanti Ø≈3,5 (sede Ø≈6,7), profondità 1,4; 1 apertura passante 7,89×4,2, profondità 3",
+    "scales": {
+      "0": 1.0,
+      "1": 1.0,
+      "2": 1.0,
+      "3": 1.0,
+      "4": 1.0
+    },
     "flags": [],
-    "holes": [
+    "features": [
       {
-        "path": "clusters[0].inners[0]",
-        "through": true,
-        "source": "trace",
-        "drawn_depth": 3.0
-      },
-      {
-        "path": "clusters[0].inners[1]",
-        "through": true,
-        "source": "trace",
-        "drawn_depth": 3.0
-      },
-      {
+        "kind": "hole",
+        "hole_type": "countersink",
+        "view": 0,
         "path": "clusters[0].inners[2]",
         "through": true,
         "source": "trace",
         "drawn_depth": 1.2
       },
       {
+        "kind": "hole",
+        "hole_type": "countersink",
+        "view": 0,
         "path": "clusters[0].inners[3]",
         "through": true,
         "source": "trace",
         "drawn_depth": 1.2
       },
       {
+        "kind": "hole",
+        "hole_type": "countersink",
+        "view": 0,
         "path": "clusters[0].inners[4]",
         "through": true,
         "source": "trace",
         "drawn_depth": 1.4
       },
       {
+        "kind": "hole",
+        "hole_type": "countersink",
+        "view": 0,
         "path": "clusters[0].inners[5]",
         "through": true,
         "source": "trace",
         "drawn_depth": 1.4
       },
       {
-        "path": "clusters[0].inners[7]",
+        "kind": "opening",
+        "hole_type": null,
+        "view": 0,
+        "path": "clusters[0].inners[6]",
         "through": true,
-        "source": "convention",
-        "drawn_depth": 3.0
-      },
-      {
-        "path": "clusters[0].inners[8]",
-        "through": true,
-        "source": "convention",
+        "source": "trace",
         "drawn_depth": 3.0
       }
     ]

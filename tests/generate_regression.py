@@ -7,7 +7,8 @@ Scrive il golden di ogni foglio in `tests/examples/regression/`:
 Si lancia una volta, quando la lettura è giusta (controllata a occhio sul
 DXF). Mai per far passare un test: prima si dimostra che il codice è
 giusto, poi si rigenera, un foglio alla volta, guardando il diff. Le
-chiavi in `known_wrong` (verità scritta a mano) restano come sono.
+chiavi in `known_wrong` (verità scritta a mano) restano come sono, e resta
+l'elenco `unchecked` (letture non ancora controllate).
 
     python tests/generate_regression.py            # solo i fogli senza golden
     python tests/generate_regression.py --force    # riscrive tutti
@@ -47,9 +48,11 @@ def main():
                 reading[key] = old[key]
             if known_wrong:
                 reading["known_wrong"] = known_wrong
+            if old.get("unchecked"):
+                reading["unchecked"] = old["unchecked"]
         target.write_text(json.dumps(reading, indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"scritto {target.name}: {reading['clusters']} isole, principale {reading['principal']}, "
-              f"fori: {reading['holes']['summary'] or '—'}")
+              f"feature: {reading['features']['summary'] or '—'}")
 
 
 if __name__ == "__main__":
