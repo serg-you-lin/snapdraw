@@ -559,6 +559,37 @@ test e `lab/`; docs e voci precedenti di questo MAP riscritte col nome nuovo
 nel repo di forge. Non toccati: la cartella locale (si chiama ancora
 `framer/`) e i riferimenti a framer dentro forge.
 
+### D21 — Il ritaglio delle viste: `render_views`, in snapdraw  ✅
+
+Un PNG per vista da passare a un modello (Pippo). Sta in snapdraw e non in
+Pippo: disegna una cosa che definisce snapdraw (la vista, il suo riquadro,
+i suoi edge), senza interpretare niente, come `forge.to_svg` sta in forge.
+Pippo sceglie quali immagini mandare e con che domanda, e confronta con i
+numeri.
+
+- **`snapdraw/render.py`**: `view_edges(doc, bbox)`, `render_view(...)`,
+  ricetta `render_views(doc, views, folder)` → `view_<indice>.png`.
+- Dall'esperimento di forge: **una vista per immagine**, ritagliata;
+  **l'indice del cluster** stampato sopra; **niente quote né testi** (il
+  modello leggerebbe i numeri invece della forma).
+- **Quali edge**: quelli interamente dentro il riquadro della vista (±0,5
+  mm), così entrano nascoste e pieghe; richiami di quota e assi escono dal
+  riquadro e restano fuori da soli. Cornice, cartiglio, costruzione mai.
+  Il tratteggio resta tratteggio.
+- Ogni primitiva di forge ha `discretize()`: spline ed ellissi escono
+  anche loro, senza casi per tipo. matplotlib è opzionale (`render`),
+  importato solo quando si disegna.
+- Vista sottile (laterale 5×27): si allarga col bianco fino a 1:4, non si
+  deforma.
+- **Visto sul campione**: `assieme_014` vista 3 (assonometria) esce senza
+  basamento e anima. Non è il render: l'isola ha 317 edge (y 267–587) ma il
+  contorno esterno chiude solo la parte alta (y 402–587), 94 edge restano
+  `outside`. Stesso limite di "un outer che non chiude" (TODO). Il render lo
+  rende visibile.
+
+Suite: 58 passed (2 nuovi in `test_render.py`). Immagini:
+`scripts/06_render_views.py` → `pipeline_output/views/`.
+
 ---
 
 ## Appunti (aperti — non decisioni)
@@ -629,8 +660,23 @@ snapdraw, qui c'è *cosa* sono.
   l'occhio ha sbagliato (8 asole chiamate "fori" su `tavola_06`) e forge
   aveva ragione.
 - **snapdraw misura, non guarda** (D18): le regole delle viste sono conti
-  sulle primitive. Le immagini sono di Pippo: ritagli delle viste passati al
-  modello, controllati contro i numeri di forge + snapdraw.
+  sulle primitive. Le immagini le produce snapdraw (D21, `render_views`) e le
+  usa Pippo: le passa al modello e le controlla contro i numeri di forge +
+  snapdraw.
+- **Pippo come portale, non come agente (idea di Federico, aperta).** Nei
+  documenti Pippo ha tre definizioni: agente tarato su un cliente (ROADMAP),
+  pipeline file→forge→pippo→bendly (snapbend), modello con strumenti e
+  contesto (forge `INTERPRETER.md`). La terza presa sul serio: Pippo è un
+  punto d'accesso — un server di strumenti (es. MCP) che espone forge,
+  snapdraw e snapbend ("apri disegno", "le viste", "l'immagine della vista
+  2", "i fori", "la sezione") più il profilo del cliente come contesto;
+  l'agente che si collega è intercambiabile. Il ragionamento lo fa il
+  modello, "tarare su un cliente" = affinare il profilo, la parte privata
+  vive nel portale e mai nelle librerie. Attenzione: il portale resta
+  sottile (se ragiona diventa una quarta libreria), pochi strumenti grossi.
+  Per snapdraw vuol dire: ogni risultato serializzabile e indirizzabile
+  (`to_dict()`, riferimenti stabili come `clusters[0].inners[2]`,
+  `view_2.png`) — oggi manca, vedi TODO.
 - **Fingerprint (idea di Federico, aperta)**: un descrittore compatto e
   versionato di una vista, calcolato da snapdraw, che risparmi la creazione
   dell'immagine e un domani serva anche ad addestrare qualcosa. Non
@@ -652,7 +698,7 @@ snapdraw, qui c'è *cosa* sono.
 - **Nome: `snapdraw`** (`import snapdraw as sd`), deciso da Federico;
   `snapsheet` scartato perché richiama la lamiera. Stessa famiglia di
   `snapbend` (`sb`). Rinomina del package fatta (D20); cartella locale ancora `framer/`.
-- Repo GitHub remoto: non ancora creato. snapdraw resta locale finché non serve.
+- Repo GitHub remoto: niente GitHub per ora (Federico, 28/09/2026). snapdraw resta locale.
 - Fixture reali (un A3/A4 con cornice e cartiglio veri, rilevamento non
   generazione) da mettere in `tests/examples/` — vedi TODO.md.
 

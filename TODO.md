@@ -36,6 +36,11 @@
 
 ## Prossimi passi
 
+- [ ] **risultati serializzabili** (Appunti, "Pippo come portale"):
+      `to_dict()` su `ViewLayout`, `HoleLayout`, `FrameLayout`, con
+      riferimenti stabili (`clusters[i].inners[j]`, `view_<i>.png`) — senza,
+      un portale di strumenti non può esporre niente.
+
 - [ ] **fori (MAP D19)**: giudicare i DXF di `pipeline_output/holes/`;
       poi lamature/svasature (cerchi concentrici → un foro solo), callout
       con conteggio ("3xØ5") e profondità scritta (↧), profondità vera

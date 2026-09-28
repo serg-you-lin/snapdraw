@@ -52,6 +52,7 @@ from .model import (BBox, Cell, FieldSlot, FrameInfo, FrameLayout, Hole, HoleCal
 from .roles import CONSTRUCTION, FRAME, TITLE_BLOCK
 from .rules import load_rules, rules_from_dict
 from .recipe import detect_frame
+from .render import render_view, render_views, view_edges
 from .tag import tag_layout
 from .titleblock import extend_titleblock, find_titleblock, read_titleblock
 from .views import classify_view, principal_view, projection_mates, read_views, view_depth
@@ -82,6 +83,9 @@ __all__ = [
     "view_depth",
     "View",
     "ViewLayout",
+    "render_views",
+    "render_view",
+    "view_edges",
     "read_holes",
     "describe_holes",
     "principal_circles",
