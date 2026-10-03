@@ -36,6 +36,24 @@
 
 ## Prossimi passi
 
+- [ ] **test "lettura per un agente AI" sui disegni veri** (deciso con
+      Federico il 3 ottobre; contesto e prima prova in `forge/MAP.md`, nota
+      aperta "forge as the step before an AI reads a drawing"). Si fa
+      **qui**, non in forge, e **dopo** due cose: `detect_feature` sulle
+      isole e `detect_combined` (feature lette mettendo insieme viste e
+      sezioni). Il motivo: su `anch_01` la lettura fatta con il solo
+      `island()` ha perso le svasature (cerchi concentrici che diventano
+      mezzi archi o spariscono) e non separava le viste (la cornice
+      diventava l'outer di tutto). Non è un difetto di `island()`: manca la
+      detection, che è di snapdraw.
+      Come si fa: tre agenti nuovi con le stesse domande a risposta nota,
+      (a) solo PNG, (b) PNG + lettura, (c) solo DXF grezzo; si contano le
+      risposte giuste e i token consumati. Prima prova (6 domande, un
+      disegno): (a) 2/6 con ~45k token, (b) 6/6 con ~50k, (c) 6/6 con ~178k.
+      Solo su disegni **anonimizzati** (il lotto `anonimizzati/`), perché il
+      risultato è fatto per essere mostrato. Il DXF grezzo solo su 1–2
+      disegni medi: quelli grandi non entrano nel contesto di un agente.
+
 - [ ] **cartiglio sulle fixture** (MAP D22): falso positivo su `regr_03`
       (la fascia della griglia di riferimento), campi letti male su
       `regr_05`/`regr_02`/`regr_04` — ritarare `detect_titleblock` e la
