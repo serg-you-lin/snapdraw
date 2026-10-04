@@ -43,8 +43,7 @@ from typing import Dict, List, Optional, Tuple
 
 import forge
 from forge.core.primitives.segments import ArcSeg, LineSeg
-from forge.tools.hole_detector import is_threaded_hole
-from forge.tools.model.detected_features import DetectedFeatures
+from forge.model.detected import DetectedFeatures
 
 from .model import Callout, Feature, FeatureGroup, FeatureLayout, Trace, ViewLayout
 from .roles import (CONSTRUCTION, COUNTERBORE, COUNTERSINK, FRAME, HOLE, OPENING, SEATED_HOLE, SLOT, THREADED_HOLE,
@@ -56,6 +55,11 @@ SPAN_TOLERANCE = 1.0     # mm — stessa tolleranza dei compagni di proiezione (
 TOUCH_TOLERANCE = 0.05   # mm — due contorni più vicini di così si toccano: non è una feature isolata
 SCALE_AGREEMENT = 0.01   # scarto relativo massimo fra le scale lette da quote diverse
 COLLECTION = "view_features"   # nome sotto cui `tag_features` le attacca a `cluster.detected`
+# Cresta del filetto: un arco attorno al foro (`forge.arcs_around`), a ~270°,
+# poco più grande — per le metriche diametro nominale / preforo ~1.1–1.3.
+THREAD_SWEEP, THREAD_SWEEP_TOLERANCE = 270.0, 35.0   # gradi
+THREAD_MAX_RADIUS_RATIO = 1.6
+THREAD_CENTER_TOLERANCE = 1.0   # mm
 
 KINDS = {"circle": "hole", "stadium": "slot"}   # ogni altra forma: "opening"
 PLAIN, THREADED, COUNTERBORED, COUNTERSUNK, SEATED = "plain", "threaded", "counterbore", "countersink", "seated"
@@ -309,22 +313,23 @@ def describe_features(layout: FeatureLayout) -> str:
 
 def _pair_concentric(found):
     """
-    (percorso, contorno, forma, sede) — un cerchio che ne contiene un altro
-    con lo stesso centro diventa la sede del più piccolo (lamatura,
-    svasatura); gli altri contorni passano da soli con sede None.
+    (percorso, contorno, forma, sede) — nei gruppi di cerchi concentrici
+    (`forge.concentric_groups`) ogni cerchio prende come sede il più piccolo
+    dei cerchi più grandi ancora liberi (lamatura, svasatura); gli altri
+    contorni passano da soli con sede None.
     """
-    circles = [item for item in found if item[2].kind == "circle"]
+    by_id = {id(item[1]): item for item in found}
     seats, used = {}, set()
-    for path, inner, shape in sorted(circles, key=lambda item: item[2].diameter):
-        if path in used:
-            continue
-        for other in sorted(circles, key=lambda item: item[2].diameter):
-            o_path, _, o_shape = other
-            if o_path != path and o_path not in used and o_shape.diameter > shape.diameter + WALL_TOLERANCE \
-                    and math.dist(o_shape.center, shape.center) <= WALL_TOLERANCE:
-                seats[path] = (o_path, other[1], o_shape)
-                used.add(o_path)
-                break
+    for group in forge.concentric_groups([inner for _, inner, _ in found], tolerance=WALL_TOLERANCE):
+        members = [by_id[id(c)] for c in group.items]
+        for i, (path, _, shape) in enumerate(members):
+            if path in used:
+                continue
+            other = next((m for m in members[i + 1:]
+                          if m[0] not in used and m[2].diameter > shape.diameter + WALL_TOLERANCE), None)
+            if other is not None:
+                seats[path] = other
+                used.add(other[0])
     return [(path, inner, shape, seats.get(path)) for path, inner, shape in found if path not in used]
 
 
@@ -343,9 +348,10 @@ def _feature(doc, views, view: int, path: str, contour, shape, callouts, depth, 
 
 
 def _thread_crest(shape, arcs) -> Optional[ArcSeg]:
-    """L'arco di cresta del filetto attorno al foro, col criterio di forge (`is_threaded_hole`: ~270°, concentrico, poco più grande)."""
-    r = shape.diameter / 2
-    return next((a for a in arcs if is_threaded_hole(tuple(shape.center), r, [a])), None)
+    """L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`forge.arcs_around`)."""
+    found = forge.arcs_around(tuple(shape.center), shape.diameter / 2, arcs, tolerance=THREAD_CENTER_TOLERANCE)
+    return next((a.arc for a in found if abs(a.sweep - THREAD_SWEEP) < THREAD_SWEEP_TOLERANCE
+                 and a.radius_ratio <= THREAD_MAX_RADIUS_RATIO), None)
 
 
 def _mates(views, view: int) -> List[int]:

@@ -723,6 +723,19 @@ sulle viste lo fa snapdraw. Supera D19 (clean break: `holes.py` rimosso).
 Suite: 79 passed. DXF da guardare: `scripts/05_read_features.py` →
 `pipeline_output/features/`.
 
+### D24 — Fori sulle due funzioni geometriche di forge (forge D91)  ✅
+
+L'accoppiamento dei cerchi concentrici e la cresta del filetto si leggevano
+con codice proprio e con `forge.tools.hole_detector.is_threaded_hole`, che
+forge D88 aveva tolto: snapdraw non si importava più. Ora `_pair_concentric`
+gira su `forge.concentric_groups` (ogni cerchio prende come sede il più
+piccolo dei cerchi più grandi ancora liberi del suo gruppo) e `_thread_crest`
+su `forge.arcs_around`, con le soglie qui (`THREAD_SWEEP` 270° ±35°,
+`THREAD_MAX_RADIUS_RATIO` 1.6, centro entro 1 mm): forge dà il fatto
+geometrico, il significato (sede, filetto) resta di snapdraw.
+`DetectedFeatures` da `forge.model.detected`. Suite 78 passati; resta il
+fallimento di `test_rules` sulla vista in pianta, presente già prima.
+
 ---
 
 ## Appunti (aperti — non decisioni)
