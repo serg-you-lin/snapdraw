@@ -201,7 +201,7 @@ class Feature:
 
     kind      : "hole" (cerchio) / "slot" (stadio: asola) / "opening"
                 (ogni altra forma: rettangolo, poligono, forma libera) —
-                dalla forma di `forge.contour_shape` (`shape.kind`), un
+                dalla forma di `forge.geometry.contour_shape` (`shape.kind`), un
                 fatto geometrico
     hole_type : solo per i fori — "plain", "threaded" (arco di cresta a ~270°
                 o quota M), "counterbore" (lamatura: sede concentrica con
@@ -214,7 +214,7 @@ class Feature:
     view      : indice della vista (cluster) dove sta
     path      : percorso del contorno in `result` al momento della lettura,
                 es. "clusters[0].inners[2]" (`tag_features` lo sposta dopo)
-    shape     : la `forge.ContourShape` del contorno
+    shape     : la `forge.geometry.ContourShape` del contorno
     contours  : i contorni della feature (il foro, e la sede se c'è) — la
                 geometria che un exporter scrive
     outer_path/outer_shape : la sede concentrica di una lamatura/svasatura

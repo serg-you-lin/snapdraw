@@ -4,7 +4,7 @@ snapdraw/geometry.py
 Le letture geometriche di snapdraw sugli `Edge` di forge: rettangoli di bordo,
 contenimento, formato ISO, griglia di un cartiglio, densità di testo. La
 geometria pura (rettangoli coperti da tratti, linee che attraversano un
-rettangolo) è di forge, `forge.core.axis` (forge MAP.md D94); qui restano le
+rettangolo) è di forge, `forge.core.geometry.axis` (forge MAP.md D94); qui restano le
 soglie di disegno e il significato.
 
 Nessuna decisione semantica: chi decide "questa è la cornice" è `frame.py`.
@@ -15,7 +15,7 @@ from __future__ import annotations
 import math
 from typing import List, Optional, Tuple
 
-from forge.core.axis import CoveredRectangle, covered_rectangles, items_inside, spanning_lines
+from forge.core.geometry.axis import CoveredRectangle, covered_rectangles, items_inside, spanning_lines
 from forge.core.primitives.segments import LineSeg
 
 ISO_RATIO = math.sqrt(2)          # ≈ 1.41421 — rapporto lato lungo / lato corto dei formati ISO

@@ -2,7 +2,7 @@
 snapdraw/features.py
 --------------------
 Le feature delle viste: su ogni vista ortogonale, ogni contorno interno
-isolato letto con `forge.contour_shape` — cerchio → foro, stadio → asola,
+isolato letto con `forge.geometry.contour_shape` — cerchio → foro, stadio → asola,
 rettangolo/poligono → apertura — con la traccia nelle viste compagne
 (passante, cieco, profondità), la quota agganciata e la scala della vista.
 
@@ -42,7 +42,7 @@ from collections import Counter
 from typing import Dict, List, Optional, Tuple
 
 import forge
-from forge.core.axis import merge_intervals
+from forge.core.geometry.axis import merge_intervals
 from forge.core.primitives.segments import ArcSeg, LineSeg
 from forge.model.detected import DetectedFeatures
 
@@ -56,7 +56,7 @@ SPAN_TOLERANCE = 1.0     # mm — stessa tolleranza dei compagni di proiezione (
 TOUCH_TOLERANCE = 0.05   # mm — due contorni più vicini di così si toccano: non è una feature isolata
 SCALE_AGREEMENT = 0.01   # scarto relativo massimo fra le scale lette da quote diverse
 COLLECTION = "view_features"   # nome sotto cui `tag_features` le attacca a `cluster.detected`
-# Cresta del filetto: un arco attorno al foro (`forge.arcs_around`), a ~270°,
+# Cresta del filetto: un arco attorno al foro (`forge.geometry.arcs_around`), a ~270°,
 # poco più grande — per le metriche diametro nominale / preforo ~1.1–1.3.
 THREAD_SWEEP, THREAD_SWEEP_TOLERANCE = 270.0, 35.0   # gradi
 THREAD_MAX_RADIUS_RATIO = 1.6
@@ -116,7 +116,7 @@ def view_scales(result, views: ViewLayout, agreement: float = SCALE_AGREEMENT) -
 def feature_contours(result, view: int, tolerance: float = TOUCH_TOLERANCE) -> List[Tuple[int, object, object]]:
     """
     (indice, contorno, forma) dei contorni interni della vista con una forma
-    (`forge.contour_shape` non None): i cerchi sempre, le altre forme solo se
+    (`forge.geometry.contour_shape` non None): i cerchi sempre, le altre forme solo se
     isolate — non toccano l'esterno né un vicino che non le contiene e non è
     contenuto in loro.
     """
@@ -125,7 +125,7 @@ def feature_contours(result, view: int, tolerance: float = TOUCH_TOLERANCE) -> L
     outer = cluster.outer.polygon.exterior
     candidates = []
     for j, inner in enumerate(inners):
-        shape = forge.contour_shape(inner)
+        shape = forge.geometry.contour_shape(inner)
         if shape is None or inner.polygon is None:
             continue
         if shape.kind == "circle":
@@ -315,13 +315,13 @@ def describe_features(layout: FeatureLayout) -> str:
 def _pair_concentric(found):
     """
     (percorso, contorno, forma, sede) — nei gruppi di cerchi concentrici
-    (`forge.concentric_groups`) ogni cerchio prende come sede il più piccolo
+    (`forge.geometry.concentric_groups`) ogni cerchio prende come sede il più piccolo
     dei cerchi più grandi ancora liberi (lamatura, svasatura); gli altri
     contorni passano da soli con sede None.
     """
     by_id = {id(item[1]): item for item in found}
     seats, used = {}, set()
-    for group in forge.concentric_groups([inner for _, inner, _ in found], tolerance=WALL_TOLERANCE):
+    for group in forge.geometry.concentric_groups([inner for _, inner, _ in found], tolerance=WALL_TOLERANCE):
         members = [by_id[id(c)] for c in group.items]
         for i, (path, _, shape) in enumerate(members):
             if path in used:
@@ -349,8 +349,8 @@ def _feature(doc, views, view: int, path: str, contour, shape, callouts, depth, 
 
 
 def _thread_crest(shape, arcs) -> Optional[ArcSeg]:
-    """L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`forge.arcs_around`)."""
-    found = forge.arcs_around(tuple(shape.center), shape.diameter / 2, arcs, tolerance=THREAD_CENTER_TOLERANCE)
+    """L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`forge.geometry.arcs_around`)."""
+    found = forge.geometry.arcs_around(tuple(shape.center), shape.diameter / 2, arcs, tolerance=THREAD_CENTER_TOLERANCE)
     return next((a.arc for a in found if abs(a.sweep - THREAD_SWEEP) < THREAD_SWEEP_TOLERANCE
                  and a.radius_ratio <= THREAD_MAX_RADIUS_RATIO), None)
 

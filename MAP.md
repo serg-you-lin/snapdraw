@@ -751,6 +751,14 @@ significato e i numeri: lato di cornice ≥ 30% del disegno, lato di cartiglio
 ≥ 40 mm, rapporto e formati ISO, metà della lunghezza sugli assi = vista
 ortogonale, densità di testo del cartiglio. Suite: 80 passati, invariata.
 
+
+### D26 — Geometria di forge da `forge.geometry` (forge D95)  ✅
+
+forge ha messo la sua geometria nel package `forge/core/geometry/` e l'ha tolta
+dalla radice: snapdraw chiama `forge.geometry.contour_shape`,
+`forge.geometry.concentric_groups`, `forge.geometry.arcs_around` e importa da
+`forge.core.geometry.axis`. Nessun cambiamento di comportamento (80 passati).
+
 ---
 
 ## Appunti (aperti — non decisioni)

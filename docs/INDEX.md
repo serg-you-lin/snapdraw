@@ -93,7 +93,7 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `_split_labeled_text` | func | `snapdraw/titleblock.py:312` | Ogni etichetta trovata in `text` → valore = il testo fino alla prossima etichetta (o fine stringa). |
 | `tag_features` | func | `snapdraw/features.py:279` | Attacca le feature ai loro cluster (`cluster.detected["view_features"]`, |
 | `tag_layout` | func | `snapdraw/tag.py:28` | Setta `edge.role` sugli Edge di cornice e cartiglio in `layout`. |
-| `_thread_crest` | func | `snapdraw/features.py:351` | L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`forge.arcs_around`). |
+| `_thread_crest` | func | `snapdraw/features.py:351` | L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`forge.geometry.arcs_around`). |
 | `TitleBlock` | class | `snapdraw/model.py:48` | Il cartiglio: il riquadro delle informazioni, suddiviso in celle. |
 | `TitleBlockTemplate` | class | `snapdraw/model.py:76` | Il design di un cartiglio da generare: righe strette impilate in |
 | `_to_scale` | func | `snapdraw/features.py:494` | Profondità alla scala della vista; senza scala, flag e profondità disegnata soltanto. |
@@ -148,7 +148,7 @@ _snapdraw/features.py_
 - `describe_features(layout: FeatureLayout) -> str` — L308 — I gruppi come li scriverebbe una persona: "2 fori passanti Ø5,3 +0,05/0, profondità 4".
 - `_pair_concentric(found)` — L315 — (percorso, contorno, forma, sede) — nei gruppi di cerchi concentrici
 - `_feature(doc, views, view: int, path: str, contour, shape, callouts, depth, scales, arcs) -> Feature` — L337 — Una feature da un contorno: tipo dalla forma, filetto, quota, traccia e profondità (senza sede).
-- `_thread_crest(shape, arcs) -> Optional[ArcSeg]` — L351 — L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`forge.arcs_around`).
+- `_thread_crest(shape, arcs) -> Optional[ArcSeg]` — L351 — L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`forge.geometry.arcs_around`).
 - `_mates(views, view: int) -> List[int]` — L358
 - `_anchor_by_center(result, features: List[Feature], tolerance: float=0.5) -> None` — L363 — Le quote di diametro che forge non ha agganciato: i due punti misurati
 - `_share_callouts(features: List[Feature], tolerance: float=WALL_TOLERANCE) -> None` — L389 — Un richiamo che dice quante feature copre ("n°30 fori") vale per i fori

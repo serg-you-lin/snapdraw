@@ -28,7 +28,7 @@ from typing import Dict, List, Optional, Tuple
 from shapely.geometry import LineString
 from shapely.strtree import STRtree
 
-from forge.core.axis import CoveredRectangle, axis_lines, items_inside
+from forge.core.geometry.axis import CoveredRectangle, axis_lines, items_inside
 
 from .geometry import TEXT_BORDER_TOL, annotation_density_ratio, find_rectangles, grid_dividers, line_edges
 from .model import Cell, FrameInfo, TitleBlock

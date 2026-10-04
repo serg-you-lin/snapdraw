@@ -23,7 +23,7 @@ from __future__ import annotations
 
 from typing import Dict, List, Optional, Tuple
 
-from forge.core.axis import axis_aligned_share
+from forge.core.geometry.axis import axis_aligned_share
 
 from .model import View, ViewLayout
 

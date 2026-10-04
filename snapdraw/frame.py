@@ -27,7 +27,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from forge.core.axis import CoveredRectangle
+from forge.core.geometry.axis import CoveredRectangle
 
 from .geometry import (
     AXIS_EPS, containment, find_rectangles, is_iso_ratio, iso_format,
