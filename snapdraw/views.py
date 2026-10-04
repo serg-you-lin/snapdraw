@@ -21,10 +21,9 @@ Stesso schema di `detect_frame`: passi pubblici (`classify_view`,
 
 from __future__ import annotations
 
-import math
 from typing import Dict, List, Optional, Tuple
 
-from forge.core.primitives.segments import LineSeg
+from forge.core.axis import axis_aligned_share
 
 from .model import View, ViewLayout
 
@@ -46,20 +45,9 @@ def classify_view(cluster, angle_tolerance: float = AXIS_ANGLE_TOLERANCE) -> str
     verticali per costruzione, un'assonometria no. Un'isola senza LineSeg
     (solo archi e cerchi) resta "orthographic".
     """
-    axis = total = 0.0
     segments = list(cluster.outer.segments) + [s for inner in cluster.inners for s in inner.segments]
-    for seg in segments:
-        if not isinstance(seg, LineSeg):
-            continue
-        dx, dy = seg.end[0] - seg.start[0], seg.end[1] - seg.start[1]
-        length = math.hypot(dx, dy)
-        angle = math.degrees(math.atan2(dy, dx)) % 90
-        if min(angle, 90 - angle) <= angle_tolerance:
-            axis += length
-        total += length
-    if total == 0:
-        return ORTHOGRAPHIC
-    return ORTHOGRAPHIC if axis / total >= ORTHOGRAPHIC_SHARE else PICTORIAL
+    share = axis_aligned_share(segments, angle_tolerance)
+    return ORTHOGRAPHIC if share is None or share >= ORTHOGRAPHIC_SHARE else PICTORIAL
 
 
 def projection_mates(views: List[View], tolerance: float = MATE_TOLERANCE) -> Dict[int, Tuple[List[int], List[int]]]:

@@ -27,8 +27,10 @@ from __future__ import annotations
 
 from typing import Optional
 
+from forge.core.axis import CoveredRectangle
+
 from .geometry import (
-    AXIS_EPS, Rect, containment, find_rectangles, is_iso_ratio, iso_format,
+    AXIS_EPS, containment, find_rectangles, is_iso_ratio, iso_format,
 )
 from .model import FrameInfo
 
@@ -57,7 +59,7 @@ def find_frame(doc, containment_threshold: float = CONTAINMENT_THRESHOLD) -> Opt
     seen: set = set()
     edges = []
     for rect, _ in kept:
-        for e in rect.edges:
+        for e in rect.items:
             if id(e) not in seen:
                 seen.add(id(e))
                 edges.append(e)
@@ -71,7 +73,7 @@ def find_frame(doc, containment_threshold: float = CONTAINMENT_THRESHOLD) -> Opt
     )
 
 
-def rejected_border(doc, title_block) -> Optional[Rect]:
+def rejected_border(doc, title_block) -> Optional[CoveredRectangle]:
     """
     Il riquadro di bordo più grande che racchiude `title_block` ma che
     `find_frame` non ha accettato (rapporto non ISO, o contenimento sotto
@@ -97,7 +99,7 @@ def rejected_border(doc, title_block) -> Optional[Rect]:
     return max(enclosing, key=lambda r: r.area) if enclosing else None
 
 
-def _confidence(rect: Rect, cont: float, n_borders: int) -> float:
+def _confidence(rect: CoveredRectangle, cont: float, n_borders: int) -> float:
     """
     Confidenza grezza: parte dal contenimento, bonus se il formato ISO torna,
     bonus se ci sono due bordi (cornice a doppia squadratura, molto tipica).

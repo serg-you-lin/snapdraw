@@ -42,6 +42,7 @@ from collections import Counter
 from typing import Dict, List, Optional, Tuple
 
 import forge
+from forge.core.axis import merge_intervals
 from forge.core.primitives.segments import ArcSeg, LineSeg
 from forge.model.detected import DetectedFeatures
 
@@ -532,7 +533,7 @@ def _trace_in(doc, bbox, axis: int, lo_level: float, hi_level: float,
             a, b = max(a, start), min(b, end)
             if b - a > tolerance:
                 intervals.append((a, b))
-        walls.append(_merge(intervals, tolerance))
+        walls.append(merge_intervals(intervals, tolerance))
     if not all(len(w) == 1 for w in walls):
         return None
     (a1, b1), (a2, b2) = walls[0][0], walls[1][0]
@@ -583,17 +584,6 @@ def _end_kind(doc, axis: int, along: int, e: float, level: float, outward: int,
             if step < -tolerance:
                 bottom = True
     return BOTTOM if bottom else None
-
-
-def _merge(intervals, tolerance: float):
-    """Unisce intervalli che si toccano o si sovrappongono."""
-    merged = []
-    for a, b in sorted(intervals):
-        if merged and a <= merged[-1][1] + tolerance:
-            merged[-1] = (merged[-1][0], max(merged[-1][1], b))
-        else:
-            merged.append((a, b))
-    return merged
 
 
 def _mode(values: List[float], agreement: float) -> float:

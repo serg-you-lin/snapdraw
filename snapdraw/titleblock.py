@@ -28,7 +28,9 @@ from typing import Dict, List, Optional, Tuple
 from shapely.geometry import LineString
 from shapely.strtree import STRtree
 
-from .geometry import TEXT_BORDER_TOL, Rect, _axis_lines, annotation_density_ratio, find_rectangles, grid_dividers, line_edges
+from forge.core.axis import CoveredRectangle, axis_lines, items_inside
+
+from .geometry import TEXT_BORDER_TOL, annotation_density_ratio, find_rectangles, grid_dividers, line_edges
 from .model import Cell, FrameInfo, TitleBlock
 
 TITLEBLOCK_MIN_SIDE = 40.0             # mm — lato minimo assoluto plausibile (vedi geometry.find_rectangles)
@@ -66,7 +68,7 @@ def find_titleblock(doc, frame: Optional[FrameInfo] = None) -> Optional[TitleBlo
     `frame.find_frame`): è quello che racchiude l'intero cartiglio, non una
     sua riga.
     """
-    kept: List[Tuple[Rect, List[Cell], float]] = []
+    kept: List[Tuple[CoveredRectangle, List[Cell], float]] = []
 
     for rect in find_rectangles(doc, min_side_length=TITLEBLOCK_MIN_SIDE):
         row_ys, col_xs = grid_dividers(rect, doc)
@@ -124,8 +126,8 @@ def extend_titleblock(title_block: TitleBlock, doc, frame: Optional[FrameInfo] =
     def in_env(e) -> bool:
         return all(env[0] <= p[0] <= env[2] and env[1] <= p[1] <= env[3] for p in (e.start, e.end))
 
-    horiz, vert = _axis_lines([e for e in line_edges(doc) if e.role == "unknown"])
-    candidates = [t[0] for t in horiz + vert if id(t[0]) not in taken and in_env(t[0])]
+    horiz, vert = axis_lines([e for e in line_edges(doc) if e.role == "unknown"])
+    candidates = [t.item for t in horiz + vert if id(t.item) not in taken and in_env(t.item)]
     if not candidates:
         return title_block
     geoms = [LineString([e.start, e.end]) for e in candidates]
@@ -168,17 +170,10 @@ def _edges_inside(bbox: Tuple[float, float, float, float], doc) -> list:
     layer `title_block` con lui, non finire in `trash_entities` (o peggio,
     in un cluster spurio) solo perché nessuno l'ha marcato.
     """
-    xmin, ymin, xmax, ymax = bbox
-    xmin, ymin = xmin - _CONTAINMENT_TOL, ymin - _CONTAINMENT_TOL
-    xmax, ymax = xmax + _CONTAINMENT_TOL, ymax + _CONTAINMENT_TOL
-
-    def inside(pt) -> bool:
-        return xmin <= pt[0] <= xmax and ymin <= pt[1] <= ymax
-
-    return [e for e in doc.edges if inside(e.start) and inside(e.end)]
+    return items_inside(bbox, doc.edges, _CONTAINMENT_TOL)
 
 
-def _is_genuine_grid(row_ys: List[float], col_xs: List[float], rect: Rect) -> bool:
+def _is_genuine_grid(row_ys: List[float], col_xs: List[float], rect: CoveredRectangle) -> bool:
     """
     True se almeno un asse è suddiviso in segmenti **comparabili**, non
     dominati da uno solo. Distingue una vera griglia di celle da un secondo
@@ -198,7 +193,7 @@ def _is_genuine_grid(row_ys: List[float], col_xs: List[float], rect: Rect) -> bo
     return dominant_ok(row_ys, ymin, ymax) or dominant_ok(col_xs, xmin, xmax)
 
 
-def _confidence(row_ys: List[float], col_xs: List[float], density: float, rect: Rect, frame: Optional[FrameInfo]) -> float:
+def _confidence(row_ys: List[float], col_xs: List[float], density: float, rect: CoveredRectangle, frame: Optional[FrameInfo]) -> float:
     """
     Confidenza grezza, stesso spirito additivo di `frame._confidence` — da
     tarare sulle fixture reali (TODO.md), non ancora disponibili.
@@ -218,7 +213,7 @@ def _confidence(row_ys: List[float], col_xs: List[float], density: float, rect: 
     return max(0.0, min(1.0, score))
 
 
-def _build_cells(rect: Rect, row_ys: List[float], col_xs: List[float], doc) -> List[Cell]:
+def _build_cells(rect: CoveredRectangle, row_ys: List[float], col_xs: List[float], doc) -> List[Cell]:
     """
     I divisori tagliano `rect` in celle; ogni cella raccoglie il testo delle
     annotazioni che contiene, dall'alto in basso. Con `TEXT_BORDER_TOL` sul

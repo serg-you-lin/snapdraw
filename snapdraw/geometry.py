@@ -1,23 +1,13 @@
 """
 snapdraw/geometry.py
 --------------------
-Le primitive geometriche di snapdraw, scritte sugli `Edge` di forge.
+Le letture geometriche di snapdraw sugli `Edge` di forge: rettangoli di bordo,
+contenimento, formato ISO, griglia di un cartiglio, densità di testo. La
+geometria pura (rettangoli coperti da tratti, linee che attraversano un
+rettangolo) è di forge, `forge.core.axis` (forge MAP.md D94); qui restano le
+soglie di disegno e il significato.
 
-Un `Edge` (`forge.core.topology.edge.Edge`) porta `start` / `end` (endpoint già
-arrotondati alla tolerance da forge) e `segment` (primitiva nativa: `LineSeg`,
-`ArcSeg`, ...). Cornice e cartiglio sono fatti di segmenti dritti, quindi qui
-si guardano solo i `LineSeg`.
-
-Nessuna decisione semantica: trova rettangoli di bordo, misura contenimento,
-riconosce un formato ISO. Chi decide "questa è la cornice" è `frame.py`.
-
-Il rilevamento rettangoli **non** usa `polygonize`: su un disegno reale il bordo
-della cornice è coperto di tacche di graduazione (le zone A/B/C/1/2/3) che
-spezzano ogni faccia pulita — `polygonize` restituisce un poligono da 45 punti
-con 13 buchi, non un rettangolo. Si cercano invece i **lati** direttamente:
-linee axis-aligned lunghe almeno una frazione della dimensione del disegno, che
-coprono per intero i quattro lati di un rettangolo. Così una cornice a doppio
-bordo dà due rettangoli, non zero.
+Nessuna decisione semantica: chi decide "questa è la cornice" è `frame.py`.
 """
 
 from __future__ import annotations
@@ -25,11 +15,8 @@ from __future__ import annotations
 import math
 from typing import List, Optional, Tuple
 
-from shapely.geometry import box
-
+from forge.core.axis import CoveredRectangle, covered_rectangles, items_inside, spanning_lines
 from forge.core.primitives.segments import LineSeg
-
-from .model import BBox
 
 ISO_RATIO = math.sqrt(2)          # ≈ 1.41421 — rapporto lato lungo / lato corto dei formati ISO
 RATIO_TOLERANCE = 0.05            # ±5% sul rapporto
@@ -56,37 +43,6 @@ _ISO_SIZE_TOLERANCE = 0.03        # ±3% sulle dimensioni nominali
 _ISO_MARGINS = (0.0, 5.0, 10.0, 20.0, 25.0)   # rientri tipici del riquadro di squadratura
 
 
-class Rect:
-    """Un rettangolo candidato: il poligono shapely e gli Edge che lo bordano."""
-
-    def __init__(self, polygon, edges: list):
-        self.polygon = polygon
-        self.edges = edges
-
-    @property
-    def bbox(self) -> BBox:
-        return tuple(self.polygon.bounds)  # (xmin, ymin, xmax, ymax)
-
-    @property
-    def area(self) -> float:
-        return self.polygon.area
-
-    @property
-    def long_side(self) -> float:
-        minx, miny, maxx, maxy = self.polygon.bounds
-        return max(maxx - minx, maxy - miny)
-
-    @property
-    def short_side(self) -> float:
-        minx, miny, maxx, maxy = self.polygon.bounds
-        return min(maxx - minx, maxy - miny)
-
-    @property
-    def ratio(self) -> float:
-        s = self.short_side
-        return (self.long_side / s) if s else 0.0
-
-
 def line_edges(doc) -> list:
     """Gli Edge di doc.edges il cui segmento è un LineSeg."""
     return [e for e in doc.edges if isinstance(e.segment, LineSeg)]
@@ -100,7 +56,7 @@ def find_rectangles(
     doc,
     min_side_fraction: float = BORDER_MIN_SIDE_FRACTION,
     min_side_length: Optional[float] = None,
-) -> List[Rect]:
+) -> List[CoveredRectangle]:
     """
     Trova i rettangoli axis-aligned "di bordo": quelli i cui quattro lati sono
     coperti da linee lunghe. Prende sia il riquadro esterno sia quello di
@@ -114,7 +70,7 @@ def find_rectangles(
     su un disegno grande. `min_side_length` (mm, assoluto) sostituisce la
     frazione quando è dato — lo usa `titleblock.py`.
 
-    Non usa `polygonize` — vedi il docstring del modulo.
+    Il lavoro geometrico è `forge.core.axis.covered_rectangles`.
     """
     edges = line_edges(doc)
     if len(edges) < 4:
@@ -130,142 +86,33 @@ def find_rectangles(
             return []
         min_len = big * min_side_fraction
 
-    horiz, vert = _axis_lines(edges)
-    long_h = [h for h in horiz if (h[2] - h[1]) >= min_len]
-    long_v = [v for v in vert if (v[2] - v[1]) >= min_len]
-    if len(long_h) < 2 or len(long_v) < 2:
-        return []
-
-    ys = _cluster_coords([h[3] for h in long_h])
-    xs = _cluster_coords([v[3] for v in long_v])
-
-    rects: List[Rect] = []
-    seen: set = set()
-    for i in range(len(ys)):
-        for j in range(i + 1, len(ys)):
-            y_lo, y_hi = ys[i], ys[j]
-            for k in range(len(xs)):
-                for m in range(k + 1, len(xs)):
-                    x_lo, x_hi = xs[k], xs[m]
-                    if not _sides_covered(x_lo, y_lo, x_hi, y_hi, horiz, vert):
-                        continue
-                    key = (round(x_lo, 1), round(y_lo, 1), round(x_hi, 1), round(y_hi, 1))
-                    if key in seen:
-                        continue
-                    seen.add(key)
-                    poly = box(x_lo, y_lo, x_hi, y_hi)
-                    rects.append(Rect(polygon=poly, edges=_edges_on_border(x_lo, y_lo, x_hi, y_hi, edges)))
-    return rects
-
-
-def _axis_lines(edges, eps: float = AXIS_EPS):
-    """
-    Divide gli Edge dritti in orizzontali e verticali.
-
-    horiz: (edge, x_lo, x_hi, y)   —  vert: (edge, y_lo, y_hi, x)
-    """
-    horiz, vert = [], []
-    for e in edges:
-        (x0, y0), (x1, y1) = e.start, e.end
-        if abs(y0 - y1) <= eps and abs(x0 - x1) > eps:
-            horiz.append((e, min(x0, x1), max(x0, x1), (y0 + y1) / 2.0))
-        elif abs(x0 - x1) <= eps and abs(y0 - y1) > eps:
-            vert.append((e, min(y0, y1), max(y0, y1), (x0 + x1) / 2.0))
-    return horiz, vert
-
-
-def _cluster_coords(values, tol: float = COORD_CLUSTER_TOL) -> List[float]:
-    """Fonde coordinate più vicine di `tol` nel loro valore medio."""
-    out: List[float] = []
-    for v in sorted(values):
-        if out and v - out[-1] <= tol:
-            continue
-        out.append(v)
-    return out
-
-
-def _coverage(segments: List[Tuple[float, float]], lo: float, hi: float) -> float:
-    """Frazione di [lo, hi] coperta dall'unione degli intervalli `segments`."""
-    if hi <= lo:
-        return 0.0
-    clipped = sorted(
-        (max(lo, a), min(hi, b)) for a, b in segments if min(hi, b) > max(lo, a)
-    )
-    covered, cur = 0.0, None
-    for a, b in clipped:
-        if cur is None:
-            cur = [a, b]
-        elif a <= cur[1]:
-            cur[1] = max(cur[1], b)
-        else:
-            covered += cur[1] - cur[0]
-            cur = [a, b]
-    if cur:
-        covered += cur[1] - cur[0]
-    return covered / (hi - lo)
-
-
-def _sides_covered(x_lo, y_lo, x_hi, y_hi, horiz, vert, tol: float = 2 * AXIS_EPS) -> bool:
-    """True se tutti e 4 i lati del rettangolo sono coperti ≥ SIDE_COVERAGE."""
-    for y in (y_lo, y_hi):
-        segs = [(h[1], h[2]) for h in horiz if abs(h[3] - y) <= tol]
-        if _coverage(segs, x_lo, x_hi) < SIDE_COVERAGE:
-            return False
-    for x in (x_lo, x_hi):
-        segs = [(v[1], v[2]) for v in vert if abs(v[3] - x) <= tol]
-        if _coverage(segs, y_lo, y_hi) < SIDE_COVERAGE:
-            return False
-    return True
-
-
-def _edges_on_border(x_lo, y_lo, x_hi, y_hi, edges, tol: float = 2 * AXIS_EPS) -> list:
-    """
-    Gli Edge che giacciono su uno dei 4 lati del rettangolo — i lati veri più
-    le tacche di graduazione collineari (anche loro sono arredo di cornice).
-    """
-    owned = []
-    for e in edges:
-        (x0, y0), (x1, y1) = e.start, e.end
-        on_h = abs(y0 - y1) <= tol and (abs((y0 + y1) / 2 - y_lo) <= tol or abs((y0 + y1) / 2 - y_hi) <= tol) \
-            and min(x0, x1) >= x_lo - tol and max(x0, x1) <= x_hi + tol
-        on_v = abs(x0 - x1) <= tol and (abs((x0 + x1) / 2 - x_lo) <= tol or abs((x0 + x1) / 2 - x_hi) <= tol) \
-            and min(y0, y1) >= y_lo - tol and max(y0, y1) <= y_hi + tol
-        if on_h or on_v:
-            owned.append(e)
-    return owned
+    return list(covered_rectangles(edges, min_len, eps=AXIS_EPS, cluster_tolerance=COORD_CLUSTER_TOL,
+                                   coverage=SIDE_COVERAGE))
 
 
 # ---------------------------------------------------------------------------
 # Misure
 # ---------------------------------------------------------------------------
 
-def is_iso_ratio(rect: Rect, tolerance: float = RATIO_TOLERANCE) -> bool:
+def is_iso_ratio(rect: CoveredRectangle, tolerance: float = RATIO_TOLERANCE) -> bool:
     """True se il rapporto dei lati è ≈ √2 (formati ISO)."""
     return abs(rect.ratio - ISO_RATIO) <= tolerance
 
 
-def containment(rect: Rect, doc) -> float:
+def containment(rect: CoveredRectangle, doc) -> float:
     """
     Frazione degli Edge esterni al rettangolo i cui endpoint stanno dentro la
     sua bbox (con un piccolo margine). 1.0 = il rettangolo racchiude tutto.
     """
-    minx, miny, maxx, maxy = rect.polygon.bounds
-    margin = rect.short_side * CONTAINMENT_MARGIN_FACTOR
-    minx, miny, maxx, maxy = minx - margin, miny - margin, maxx + margin, maxy + margin
-
-    owned = {id(e) for e in rect.edges}
+    owned = {id(e) for e in rect.items}
     others = [e for e in doc.edges if id(e) not in owned]
     if not others:
         return 0.0
-
-    def inside(pt) -> bool:
-        return minx <= pt[0] <= maxx and miny <= pt[1] <= maxy
-
-    n_in = sum(1 for e in others if inside(e.start) and inside(e.end))
-    return n_in / len(others)
+    margin = rect.short_side * CONTAINMENT_MARGIN_FACTOR
+    return len(items_inside(rect.bbox, others, margin)) / len(others)
 
 
-def iso_format(rect: Rect, tolerance: float = _ISO_SIZE_TOLERANCE) -> Optional[str]:
+def iso_format(rect: CoveredRectangle, tolerance: float = _ISO_SIZE_TOLERANCE) -> Optional[str]:
     """
     Formato ISO dedotto dalle dimensioni del rettangolo, o None. Assume mm.
 
@@ -290,7 +137,7 @@ def iso_format(rect: Rect, tolerance: float = _ISO_SIZE_TOLERANCE) -> Optional[s
 GRID_COVERAGE = 0.85  # frazione minima di lato coperta da un divisore di riga/colonna
 
 
-def grid_dividers(rect: Rect, doc, coverage: float = GRID_COVERAGE) -> Tuple[List[float], List[float]]:
+def grid_dividers(rect: CoveredRectangle, doc, coverage: float = GRID_COVERAGE) -> Tuple[List[float], List[float]]:
     """
     Linee dritte STRETTAMENTE interne a `rect` (bordo escluso) che lo
     attraversano per almeno `coverage` della larghezza/altezza — i divisori
@@ -300,29 +147,13 @@ def grid_dividers(rect: Rect, doc, coverage: float = GRID_COVERAGE) -> Tuple[Lis
     produce un cartiglio a righe piene, senza colonne.
 
     Ritorna `(row_ys, col_xs)`, ciascuna ordinata, bordo del rettangolo
-    escluso.
+    escluso. Il lavoro geometrico è `forge.core.axis.spanning_lines`.
     """
-    edges = line_edges(doc)
-    horiz, vert = _axis_lines(edges)
-    xmin, ymin, xmax, ymax = rect.bbox
-    tol = 2 * AXIS_EPS
-
-    row_ys = []
-    for y in _cluster_coords([h[3] for h in horiz if ymin + tol < h[3] < ymax - tol]):
-        segs = [(h[1], h[2]) for h in horiz if abs(h[3] - y) <= tol]
-        if _coverage(segs, xmin, xmax) >= coverage:
-            row_ys.append(y)
-
-    col_xs = []
-    for x in _cluster_coords([v[3] for v in vert if xmin + tol < v[3] < xmax - tol]):
-        segs = [(v[1], v[2]) for v in vert if abs(v[3] - x) <= tol]
-        if _coverage(segs, ymin, ymax) >= coverage:
-            col_xs.append(x)
-
-    return row_ys, col_xs
+    return spanning_lines(rect.bbox, line_edges(doc), coverage=coverage, eps=AXIS_EPS,
+                          cluster_tolerance=COORD_CLUSTER_TOL)
 
 
-def annotation_density_ratio(rect: Rect, doc) -> float:
+def annotation_density_ratio(rect: CoveredRectangle, doc) -> float:
     """
     Quante volte più annotazioni per unità di area cadono dentro `rect`
     rispetto alla densità media dell'intero disegno (annotazioni + geometria,

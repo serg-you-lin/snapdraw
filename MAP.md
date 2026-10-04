@@ -737,6 +737,20 @@ geometrico, il significato (sede, filetto) resta di snapdraw.
 `DetectedFeatures` da `forge.model.detected`. Suite 78 passati; resta il
 fallimento di `test_rules` sulla vista in pianta, presente già prima.
 
+
+### D25 — La geometria di cornice, cartiglio e viste sta in forge (forge D94)  ✅
+
+Come snapbend (forge D93): in snapdraw non resta geometria sua. La ricerca dei
+rettangoli di bordo, la copertura dei lati, i divisori del cartiglio, il
+contenimento, la quota di linee sugli assi di `classify_view` e l'unione di
+intervalli di `features` (scritta due volte) sono in `forge.core.axis`
+(`covered_rectangles`, `spanning_lines`, `items_inside`, `axis_aligned_share`,
+`merge_intervals`, `axis_lines`). `Rect` non c'è più: si usa
+`forge.CoveredRectangle` (`items` al posto di `edges`). Qui restano il
+significato e i numeri: lato di cornice ≥ 30% del disegno, lato di cartiglio
+≥ 40 mm, rapporto e formati ISO, metà della lunghezza sugli assi = vista
+ortogonale, densità di testo del cartiglio. Suite: 80 passati, invariata.
+
 ---
 
 ## Appunti (aperti — non decisioni)
