@@ -759,6 +759,14 @@ dalla radice: snapdraw chiama `forge.geometry.contour_shape`,
 `forge.geometry.concentric_groups`, `forge.geometry.arcs_around` e importa da
 `forge.core.geometry.axis`. Nessun cambiamento di comportamento (80 passati).
 
+
+### D27 — Cornice e cartiglio generati come `polygon` (forge D96)  ✅
+
+forge ha tolto `polyline` dallo schema di `load_geometry` (parola del DXF): la
+cornice e il cartiglio di `generate.py` e i test passano `{"type": "polygon",
+"points": [...]}`, chiuso per definizione. Nessun cambiamento di
+comportamento (80 passati).
+
 ---
 
 ## Appunti (aperti — non decisioni)

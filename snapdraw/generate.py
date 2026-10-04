@@ -229,7 +229,7 @@ def _frame_entities(xmin: float, ymin: float, xmax: float, ymax: float) -> list:
     mid_x, mid_y = (xmin + xmax) / 2.0, (ymin + ymax) / 2.0
 
     def rect(x0, y0, x1, y1):
-        return {"type": "polyline", "points": [(x0, y0), (x1, y0), (x1, y1), (x0, y1)], "closed": True, "role": FRAME}
+        return {"type": "polygon", "points": [(x0, y0), (x1, y0), (x1, y1), (x0, y1)], "role": FRAME}
 
     def tick(x0, y0, x1, y1):
         return {"type": "line", "start": (x0, y0), "end": (x1, y1), "role": FRAME}
@@ -288,7 +288,7 @@ def _place(template: TitleBlockTemplate, anchor: Tuple[float, float], fields: Di
         (bl_x, bl_y), (bl_x + template.width, bl_y),
         (bl_x + template.width, bl_y + template.height), (bl_x, bl_y + template.height),
     ]
-    entities = [{"type": "polyline", "points": corners, "closed": True, "role": TITLE_BLOCK}]
+    entities = [{"type": "polygon", "points": corners, "role": TITLE_BLOCK}]
 
     # divisori orizzontali fra le righe (i confini che coincidono col
     # perimetro, 0 e height, sono già il rettangolo esterno — non duplicarli)

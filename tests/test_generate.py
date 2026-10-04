@@ -16,7 +16,7 @@ from snapdraw.roles import FRAME, TITLE_BLOCK
 def _part_doc(w, h):
     """Un pezzo rettangolare w x h, angolo in basso a sinistra nell'origine."""
     return forge.load_geometry([{
-        "type": "polyline", "closed": True, "role": "outer",
+        "type": "polygon", "role": "outer",
         "points": [(0, 0), (w, 0), (w, h), (0, h)],
     }])
 

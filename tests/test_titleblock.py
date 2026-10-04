@@ -20,7 +20,7 @@ from snapdraw.titleblock import _FIELD_PATTERNS, extend_titleblock, find_titlebl
 
 def _part_doc(w=200.0, h=100.0):
     return forge.load_geometry([{
-        "type": "polyline", "closed": True, "role": "outer",
+        "type": "polygon", "role": "outer",
         "points": [(0, 0), (w, 0), (w, h), (0, h)],
     }])
 
@@ -72,7 +72,7 @@ class TestDetectTitleblockConservativo(unittest.TestCase):
 
     def test_un_rettangolo_senza_griglia_non_basta(self):
         doc = forge.load_geometry([
-            {"type": "polyline", "closed": True, "role": "unknown",
+            {"type": "polygon", "role": "unknown",
              "points": [(0, 0), (90, 0), (90, 50), (0, 50)]},
         ])
         self.assertIsNone(find_titleblock(doc))
@@ -95,13 +95,13 @@ class TestTitleblockAssorbeInteriore(unittest.TestCase):
 
     def _symbol(self, x0, y0, x1, y1):
         return {
-            "type": "polyline", "closed": True, "role": "unknown",
+            "type": "polygon", "role": "unknown",
             "points": [(x0, y0), (x1, y0), (x1, y1), (x0, y1)],
         }
 
     def test_un_simbolo_isolato_dentro_il_cartiglio_viene_marcato(self):
         doc = forge.load_geometry([{
-            "type": "polyline", "closed": True, "role": "outer",
+            "type": "polygon", "role": "outer",
             "points": [(0, 0), (200, 0), (200, 100), (0, 100)],
         }])
         frame = sd.add_frame(doc)
@@ -123,7 +123,7 @@ class TestTitleblockAssorbeInteriore(unittest.TestCase):
 
     def test_dopo_heal_il_simbolo_e_in_trash_col_ruolo_title_block(self):
         doc = forge.load_geometry([{
-            "type": "polyline", "closed": True, "role": "outer",
+            "type": "polygon", "role": "outer",
             "points": [(0, 0), (200, 0), (200, 100), (0, 100)],
         }])
         sd.add_frame(doc)
@@ -153,7 +153,7 @@ class TestExtendTitleblock(unittest.TestCase):
     """
 
     def _rect(self, x0, y0, x1, y1):
-        return {"type": "polyline", "closed": True, "role": "unknown",
+        return {"type": "polygon", "role": "unknown",
                 "points": [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]}
 
     def _doc_con_striscia(self):
@@ -200,11 +200,11 @@ class TestTestoSulBordoCella(unittest.TestCase):
     def test_testo_agganciato_sul_bordo_sinistro_conta(self):
         # MTEXT agganciato a sinistra: il punto d'inserimento cade
         # esattamente sul bordo (sviluppo_01, cartiglio perso)
-        grid = [{"type": "polyline", "closed": True, "role": "unknown",
+        grid = [{"type": "polygon", "role": "unknown",
                  "points": [(0, 0), (80, 0), (80, 45), (0, 45)]}]
         grid += [{"type": "line", "role": "unknown", "start": (0, y), "end": (80, y)} for y in (15, 30)]
         # il pezzo, lontano: senza, la densità di testo del riquadro è la media
-        grid.append({"type": "polyline", "closed": True, "role": "outer",
+        grid.append({"type": "polygon", "role": "outer",
                      "points": [(200, 0), (400, 0), (400, 200), (200, 200)]})
         doc = forge.load_geometry(grid)
         doc.annotations.extend(

@@ -14,7 +14,7 @@ import snapdraw as sd
 
 
 def _rect(x, y, w, h):
-    return {"type": "polyline", "closed": True,
+    return {"type": "polygon",
             "points": [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]}
 
 

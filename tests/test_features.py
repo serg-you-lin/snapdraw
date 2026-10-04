@@ -21,7 +21,7 @@ HIDDEN = EdgeStyle(linetype="HIDDEN", linetype_pattern=(1.0, 0.5, -0.25))
 
 
 def _rect(x, y, w, h):
-    return {"type": "polyline", "closed": True,
+    return {"type": "polygon",
             "points": [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]}
 
 
@@ -177,7 +177,7 @@ class TestOtherShapes(unittest.TestCase):
 
     def test_forma_libera_isolata_e_un_apertura(self):
         # una cava a L: né cerchio né stadio né rettangolo, ma un'apertura lo stesso
-        cava = {"type": "polyline", "closed": True, "points": [(40, 20), (60, 20), (60, 26), (48, 26), (48, 32), (40, 32)]}
+        cava = {"type": "polygon", "points": [(40, 20), (60, 20), (60, 26), (48, 26), (48, 32), (40, 32)]}
         opening, = _read([_rect(0, 0, 100, 50), cava, SIDE]).features
         self.assertEqual((opening.kind, opening.role, opening.shape.kind), ("opening", sd.OPENING, "polygon"))
 

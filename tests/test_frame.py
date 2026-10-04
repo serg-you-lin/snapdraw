@@ -18,7 +18,7 @@ from snapdraw.frame import find_frame
 
 def _rect(x0, y0, x1, y1, role="unknown"):
     return {
-        "type": "polyline", "closed": True, "role": role,
+        "type": "polygon", "role": role,
         "points": [(x0, y0), (x1, y0), (x1, y1), (x0, y1)],
     }
 
