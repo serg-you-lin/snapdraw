@@ -63,6 +63,14 @@ desktop.ini
 # disegni reali dei clienti, grezzi: solo locali. In git vanno solo i fogli
 # ripuliti di tests/examples/regression/ (controllati con 07_check_client_info.py)
 tests/examples/complete_drawings/
+# disegni in attesa (da anonimizzare, da aggiungere): grezzi, solo locali
+tests/examples/drafts/
+tests/examples/to_add_frame/
+# sorgenti CAD/PDF dei clienti: in git entrano solo DXF ripuliti
+*.dwg
+*.DWG
+*.SLDDRW
+*.SLDPRT
 
 pipeline_output/
 output/
