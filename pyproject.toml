@@ -37,5 +37,10 @@ render = ["matplotlib"]   # sd.render_views: importato solo quando si disegna
 where = ["."]
 include = ["snapdraw*"]
 
+# Regola di dipendenza controllata da scripts/gen_index.py: snapdraw legge solo
+# attraverso forge (mai ezdxf diretto) e non sa niente di processo (snapbend).
+[tool.gen_index.layers]
+"(root)" = ["snapbend", "ezdxf"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
