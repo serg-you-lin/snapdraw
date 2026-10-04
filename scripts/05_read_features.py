@@ -7,9 +7,7 @@ import snapdraw as sd
 
 # --- CONFIG ---------------------------------------------------------------
 SHEETS = [r"tests/examples/regression/regr_0{}.dxf".format(i) for i in range(1, 6)] + [
-    r"../forge/tests/examples/islands/tavola_06.dxf",
-    r"../forge/tests/examples/islands/tavola_03.dxf",
-    r"../forge/tests/examples/islands/tavola_01.dxf",
+    r"tests/examples/rules/vista_pianta_assi.dxf",
 ]
 OUTPUT = r"pipeline_output/features"
 RULES  = "generic"

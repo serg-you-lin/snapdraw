@@ -6,8 +6,8 @@ import forge
 import snapdraw as sd
 
 # --- CONFIG ---------------------------------------------------------------
-FOLDER = r"../forge/tests/examples/islands"
-NAMES  = ["leva_01", "tavola_02", "assieme_014", "3d_1"]
+FOLDER = r"tests/examples/regression"
+NAMES  = ["regr_05", "regr_01", "regr_03"]
 OUTPUT = r"pipeline_output/views"
 RULES  = "generic"
 # -----------------------------------------------------------------------------

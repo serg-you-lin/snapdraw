@@ -4,8 +4,9 @@ tests/test_rules.py
 Test delle regole di ruolo (MAP D17): `rules/<nome>.json` → `forge.RoleRule`,
 da passare a `forge.load_dxf(role_rules=...)`.
 
-Il caso vero è `tavola_03` (tests/examples/complete_drawings): la vista in
-pianta mancava perché i suoi assi la legavano alle quote. Con le regole
+Il caso vero è `vista_pianta_assi` (tests/examples/rules, copia anonimizzata
+di un disegno reale): la vista in pianta mancava perché i suoi assi la
+legavano alle quote. Con le regole
 generiche gli assi sono `construction` al caricamento e `forge.island()` la
 ritrova.
 """
@@ -18,7 +19,7 @@ from pathlib import Path
 import forge
 import snapdraw as sd
 
-EXAMPLES = Path(__file__).parent / "examples" / "complete_drawings"
+EXAMPLES = Path(__file__).resolve().parent / "examples" / "rules"
 
 
 class TestLoadRules(unittest.TestCase):
@@ -52,11 +53,10 @@ class TestLoadRules(unittest.TestCase):
         self.assertEqual(rules[1].role, sd.CONSTRUCTION)
 
 
-@unittest.skipUnless((EXAMPLES / "tavola_03.dxf").is_file(), "fixture reale assente")
 class TestRegoleSuDisegnoVero(unittest.TestCase):
 
     def _island_bounds(self, role_rules):
-        doc = forge.load_dxf(str(EXAMPLES / "tavola_03.dxf"), role_rules=role_rules)
+        doc = forge.load_dxf(str(EXAMPLES / "vista_pianta_assi.dxf"), role_rules=role_rules)
         sd.tag_layout(doc, sd.detect_frame(doc))
         return [tuple(round(v) for v in c.outer.polygon.bounds) for c in forge.island(doc).clusters]
 
