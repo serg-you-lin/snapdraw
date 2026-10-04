@@ -9,7 +9,7 @@ una nuova voce che supera la precedente.
 
 ### D1 — snapdraw è un repo a sé, consumatore di forge  ✅
 
-Nasce come modulo scorporato dalla specifica `FRAMER.md` (repo forge). Repo
+Nasce come modulo scorporato dalla specifica `SNAPDRAW.md` (repo forge). Repo
 separato (non cartella dentro l'interprete, che ancora non esiste), sibling di
 `forge`, package `snapdraw`. Quando l'interprete esisterà lo importerà come
 libreria. Precedente: `unfold`.
@@ -48,7 +48,7 @@ ricerca combinatoria a quadruple. Stesse soglie: ratio √2 ±5%, contenimento
 
 ### D4 — snapdraw è importato dall'interprete; la lettura del cartiglio sta qui  ✅
 
-Chiuse le due domande aperte di FRAMER.md:
+Chiuse le due domande aperte di SNAPDRAW.md:
 
 - **snapdraw è un progetto a sé che l'interprete importa** come libreria, come
   `unfold`. Non è una cartella dentro l'interprete. L'interprete è **solo un
@@ -117,7 +117,7 @@ da `import snapdraw`.
 
 ### D8 — Generazione cartiglio+cornice: `snapdraw/generate.py`, un template condiviso  ✅
 
-Il verso "aggiungi" era solo una nota futura in `forge/FRAMER.md` e in
+Il verso "aggiungi" era solo una nota futura in `forge/SNAPDRAW.md` e in
 `TODO.md`. Nessun cartiglio reale è stato trovato tra i repo sibling
 (`DxfTagCreator`, `dxf_archive`, `bendly` verificati — niente su disco): il
 design qui sotto è "inventato da noi", deliberatamente semplice.
@@ -555,9 +555,9 @@ Il nome deciso negli Appunti ("Repo"), ora applicato: package `snapdraw/`,
 `name = "snapdraw"` in `pyproject.toml`, `import snapdraw as sd` in script,
 test e `lab/`; docs e voci precedenti di questo MAP riscritte col nome nuovo
 (la storia col nome vecchio resta nei commit fino a `d89839b`). `sd`, non
-`sdr`: coppia con `snapbend as sb`. `FRAMER.md` resta: è il nome di un file
-nel repo di forge. Non toccati: la cartella locale (si chiama ancora
-`framer/`) e i riferimenti a framer dentro forge.
+`sdr`: coppia con `snapbend as sb`. `FRAMER.md` restava: era il nome di un
+file nel repo di forge, poi rinominato `SNAPDRAW.md`. Non toccati: la cartella
+locale (si chiama ancora `framer/`) e i riferimenti a framer dentro forge.
 
 ### D21 — Il ritaglio delle viste: `render_views`, in snapdraw  ✅
 
@@ -722,6 +722,7 @@ sulle viste lo fa snapdraw. Supera D19 (clean break: `holes.py` rimosso).
 
 Suite: 79 passed. DXF da guardare: `scripts/05_read_features.py` →
 `pipeline_output/features/`.
+
 
 ### D24 — Fori sulle due funzioni geometriche di forge (forge D91)  ✅
 

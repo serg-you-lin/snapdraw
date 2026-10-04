@@ -1,6 +1,6 @@
 # snapdraw — design
 
-Origine: `FRAMER.md` nel repo di forge (la specifica dalla quale nasce questo
+Origine: `SNAPDRAW.md` nel repo di forge (la specifica dalla quale nasce questo
 modulo). Qui la versione operativa, allineata al codice.
 
 ## Dove gira nella pipeline

@@ -5,7 +5,7 @@ Rilevamento della cornice di formato.
 
 Porta l'algoritmo del vecchio `core/classification/frame_detector.py` di forge
 (rimosso in forge MAP D24 perché girava *prima* di heal — cioè è roba del
-consumatore, vedi FRAMER.md) e lo riscrive sugli `Edge` / `LineSeg` di forge.
+consumatore, vedi SNAPDRAW.md) e lo riscrive sugli `Edge` / `LineSeg` di forge.
 
 Algoritmo:
     1. tra i rettangoli di bordo (`geometry.find_rectangles`), tieni quelli con

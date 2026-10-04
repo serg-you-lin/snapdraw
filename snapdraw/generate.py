@@ -4,7 +4,7 @@ snapdraw/generate.py
 Il verso "aggiungi": genera cornice e cartiglio e li appende a un
 `ForgeDocument` esistente — l'opposto di `detect_frame` + `tag_layout` (che li riconoscono su
 geometria già disegnata). Annotato come
-idea futura in `forge/FRAMER.md` ("Il verso 'aggiungi'") e in `TODO.md`; qui
+idea futura in `forge/SNAPDRAW.md` ("Il verso 'aggiungi'") e in `TODO.md`; qui
 diventa codice.
 
 Cornice e cartiglio sono presi a riferimento da due file in `templates/`

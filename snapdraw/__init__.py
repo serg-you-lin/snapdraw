@@ -8,7 +8,7 @@ suo lavoro geometrico sulla geometria grezza, e riporta le decisioni a forge
 settando `edge.role` prima della lettura di forge — `heal` o `island`, scelta
 del chiamante (aggancio "opzione B", forge D30).
 Non modifica forge e non ragiona dentro forge: forge resta neutro e
-deterministico, snapdraw si adatta (vedi FRAMER.md nel repo di forge, DESIGN.md
+deterministico, snapdraw si adatta (vedi SNAPDRAW.md nel repo di forge, DESIGN.md
 qui).
 
 Workflow di rilevamento — `detect_frame` è una ricetta sopra passi pubblici
