@@ -28,7 +28,7 @@ sd.detect_frame(doc)    → FrameLayout: cornice + cartiglio (la ricetta)
 sd.tag_layout(doc, l)   → setta edge.role su doc.edges (frame / title_block)
    │
    ▼
-forge.heal(doc) | forge.island(doc)
+forge.heal(doc) | sd.sheet_islands(doc)   (forge.island con la distanza di snapdraw, D29)
                             → cluster puliti: frame e title_block fuori dal grafo,
                               in trash_entities col loro ruolo, non cluster
 ```

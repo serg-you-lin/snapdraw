@@ -45,8 +45,7 @@ def sheet_islands(doc: forge.ForgeDocument) -> forge.ForgeResult:
     """
     Le isole di un foglio: `forge.island` con la distanza scelta da
     snapdraw. forge non ha default (forge D98): tutti gli script e i test di
-    snapdraw passano di qui, e qui entrerà la regola letta dalla scala delle
-    isole al posto dei due numeri fissi.
+    snapdraw passano di qui, così la distanza si cambia in un posto solo.
     """
     return forge.island(doc, island_gap=SHEET_GAP, max_gap=SHEET_MAX_GAP)
 

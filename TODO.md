@@ -83,11 +83,11 @@
       grande, distribuzione angoli — utile anche a distinguere viste
       assonometriche, angoli non 0°/90°). Non ancora iniziato: serve prima
       un numero decente di disegni etichettati.
-- [ ] **scala delle isole (forge TODO punto 13), giudizi del 5 ottobre**
-      (pagina "Scala delle isole", `lab/island_scale.py`; giudizi nel
+- [ ] **isole di un foglio, giudizi del 5 ottobre** (dalla prova sulla
+      scala, forge TODO punto 13, chiuso; pagina "Scala delle isole", `lab/island_scale.py`; giudizi nel
       database della pagina, collezione `picks`). Su 13 disegni: 9 con una
       distanza giusta, tutte fra 17 e 78 mm; la proposta automatica coincide
-      con 6 delle 9. Tre fili per framer:
+      con 6 delle 9. Quello che resta per framer:
       - **una vista non si riconosce dalla grandezza.** In `anch_07` e
         `regr_05` la vista laterale (25×32 mm) resta "piccola" perché è sotto
         un quarto della diagonale della vista principale: verificato. Vale
@@ -103,18 +103,10 @@
         foglio, trattate come le informazioni del cartiglio — non ancora
         fatto. In `anch_08` restano due tratti di 136×4 mm nel disegno, da
         capire cosa sono.
-      - **come framer sceglierà la distanza** (idea del 5 ottobre, nata
-        dalla nota di Federico "dipenderà dalla scala"): i simboli e le
-        scritte hanno una misura fissa *sulla carta* (altezza del testo,
-        frecce, segni di rugosità), le viste crescono con la scala del
-        disegno. Letta la scala dal cartiglio, la grandezza di un'isola si
-        misura in mm di carta e non rispetto alla vista più grande: così la
-        vista laterale piccola di `anch_07` non passa più per simbolo e il
-        pezzo lungo di `anch_02` non schiaccia il resto. I 9 giudizi salvati
-        nella pagina sono il banco di prova: una regola deve ritrovarli.
-        Quando restano due gradini simili, decide l'agente e la scelta si
-        registra (forge TODO punto 13). La regola entra in
-        `sheet_islands(doc)` (MAP D29), l'unico posto dove si sceglie.
+      - ❌ **scartato: scegliere la distanza dalla scala** (delle isole o del
+        disegno letta dal cartiglio). Federico, 5 ottobre: la scala non
+        c'entra e non c'entrerà mai con la detection delle isole (forge D98).
+        La distanza resta in `sheet_islands(doc)` (MAP D29).
       Positivo: in `regr_01` l'isola di sotto ora si legge intera (prima a
       metà) — non per la cornice tolta, ha detto Federico.
 - [ ] **`test_rules` fallisce dal 4 ottobre** (verificato il 5 ottobre: fallisce

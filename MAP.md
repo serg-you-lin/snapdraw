@@ -802,8 +802,10 @@ snapdraw la scelta sta in `sheet_islands(doc)` (`views.py`), con
 `SHEET_GAP = 10.0` e `SHEET_MAX_GAP = 0.5`, gli stessi valori di prima:
 nessun risultato cambia, nessun golden rigenerato. Script, test, docstring
 d'uso e README chiamano `sd.sheet_islands(doc)`, mai `forge.island` coi
-numeri scritti a mano: quando la regola letta dalla scala delle isole (TODO)
-sostituirà i due numeri fissi, cambierà qui e basta.
+numeri scritti a mano, così la distanza si cambia in un posto solo. La
+scala (delle isole o del disegno) non è la strada per sceglierla: Federico,
+5 ottobre, "non c'entra e non c'entrerà mai con la detection delle isole"
+(forge D98).
 
 Suite: 82 passati, 1 fallito (`test_rules`, già prima: vedi TODO).
 
