@@ -206,9 +206,16 @@
       fa tutta la sagoma (206 edge, si chiude), ma passa due volte per due
       nodi dove si incontrano 4 linee; l'anello che ne esce si incrocia,
       le due metà hanno verso opposto e l'area si annulla (347 mm², il 5%
-      del rettangolo). Da capire perché in quei nodi il giro "attraversa"
-      invece di girare (sospetto, non verificato: la direzione di uscita
-      letta a 3 mm sugli archi). Pagina "Contorni delle isole" (anch_02,
+      del rettangolo). Verificato dopo: la direzione di uscita NON è il
+      problema (angoli di forge entro 1° da quelli veri). Nei due nodi si
+      incrociano un arco e una linea quasi paralleli (2–6°), tratti di
+      0,13 mm; il giro va da un capo all'altro della vista lungo due
+      percorsi che stanno dallo stesso lato e si incrociano lì: l'area
+      racchiusa è quella fra i due (347 = 1001,7 − 654,6). I fori 5×5 e
+      3×4 della vista stanno nel suo rettangolo ma fuori da quell'anello.
+      Da capire sul disegno (pagina "Contorni delle isole", anch_07, cerchi
+      rossi) com'è fatta la sagoma vera di quella vista 3D: se le sue linee
+      non chiudono una faccia, il contorno esterno non può contenere i fori. Pagina "Contorni delle isole" (anch_02,
       anch_07) con i contorni in verde.
       Fori, controllati il 5 ottobre: anch_02, isola 0 (contorno giusto per
       Federico): 49 cerchi dentro, 49 ritrovati come interni — se sulla
