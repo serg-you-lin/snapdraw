@@ -71,31 +71,40 @@ def find_titleblock(doc, frame: Optional[FrameInfo] = None) -> Optional[TitleBlo
     sua riga.
     """
     kept: List[Tuple[CoveredRectangle, List[Cell], float]] = []
+    blank: List[Tuple[CoveredRectangle, List[Cell], float]] = []   # griglie vuote in basso a destra (MAP D32)
     border = None if frame is None else (frame.inner_bbox or frame.bbox)
 
     for rect in find_rectangles(doc, min_side_length=TITLEBLOCK_MIN_SIDE):
         # con la cornice, il cartiglio sta sul suo bordo interno (MAP D31)
-        if border is not None and not forge.geometry.sides_on_border(rect.bbox, border, FRAME_TOUCH_TOL):
+        sides = forge.geometry.sides_on_border(rect.bbox, border, FRAME_TOUCH_TOL) if border is not None else None
+        if border is not None and not sides:
             continue
         row_ys, col_xs = grid_dividers(rect, doc)
         if not _is_genuine_grid(row_ys, col_xs, rect):
             continue
 
         cells = _build_cells(rect, row_ys, col_xs, doc)
-        filled = sum(1 for c in cells if c.text)
-        if not cells or filled / len(cells) < MIN_FILLED_CELL_FRACTION:
+        if not cells:
             continue
-
         density = annotation_density_ratio(rect, doc)
         score = _confidence(row_ys, col_xs, density, rect, frame)
-        if score >= CONFIDENCE_THRESHOLD:
-            kept.append((rect, cells, score))
+        filled = sum(1 for c in cells if c.text)
+        if filled / len(cells) >= MIN_FILLED_CELL_FRACTION:
+            if score >= CONFIDENCE_THRESHOLD:
+                kept.append((rect, cells, score))
+        elif sides is not None and set(sides) == {"bottom", "right"}:
+            # senza testo il punteggio non dice niente: la prova è l'angolo
+            # in basso a destra della cornice (MAP D32)
+            blank.append((rect, cells, score))
 
-    if not kept:
+    if not kept and not blank:
         return None
 
-    rect, cells, score = max(kept, key=lambda k: k[0].area)
-    return TitleBlock(edges=_edges_inside(rect.bbox, doc), bbox=rect.bbox, cells=cells, confidence=score)
+    # una griglia con il testo vince sempre su una vuota
+    rect, cells, score = max(kept or blank, key=lambda k: k[0].area)
+    return TitleBlock(edges=_edges_inside(rect.bbox, doc), bbox=rect.bbox, cells=cells, confidence=score,
+                      has_text=bool(kept))
+
 
 
 def extend_titleblock(title_block: TitleBlock, doc, frame: Optional[FrameInfo] = None) -> TitleBlock:

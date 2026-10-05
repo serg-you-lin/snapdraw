@@ -60,6 +60,8 @@ def detect_frame(doc) -> FrameLayout:
     title_block = find_titleblock(doc, frame=layout.frame)
     if title_block is None:
         layout.flags.append("title_block: uncertain")
+    elif not title_block.has_text:
+        layout.flags.append("title_block: grid in the bottom-right corner of the frame, no text")
 
     # sul cartiglio prima dell'estensione: le tabelle attaccate possono
     # uscire dal riquadro (B1250136, la tabella di distribuzione a sinistra)

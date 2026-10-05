@@ -97,9 +97,12 @@
       un numero decente di disegni etichettati.
 - [ ] **isole: quello che resta dopo forge D99-D100** (Federico, 5 ottobre,
       "questo è un buon set di golden"; golden delle isole su anch_01-08):
-      - **anch_07: il cartiglio diventa un'isola.** `detect_frame` non
-        trova il cartiglio su anch_07 (nessun edge `title_block`): da capire
-        perché, con la regola D31 (lato sul bordo interno della cornice).
+      - ✅ **anch_07: il cartiglio diventava un'isola** (nessun testo nelle
+        celle): MAP D32, griglia in basso a destra anche senza testo.
+      - **cartiglio di un disegno reale non trovato** (`complete_drawings`,
+        Federico l'ha segnato: la fascia bassa in basso a destra): non è fra
+        i candidati che toccano il bordo interno della cornice. Da capire se
+        `find_rectangles` non lo vede o se non tocca il bordo.
       - **anch_08, vista frontale: un leader esploso** (freccia e linea
         disegnate come geometria, non come annotazione) si attacca alla
         vista. Federico: "almeno il leader non ha senso che sia rosso".

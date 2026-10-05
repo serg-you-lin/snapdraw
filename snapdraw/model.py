@@ -56,11 +56,13 @@ class TitleBlock:
     bbox       : (xmin, ymin, xmax, ymax) del riquadro
     cells      : le celle interne con il testo contenuto
     confidence : 0..1
+    has_text   : False se è una griglia vuota presa perché sta nell'angolo in basso a destra della cornice (MAP D32)
     """
     edges:      list
     bbox:       BBox
     cells:      List[Cell] = field(default_factory=list)
     confidence: float = 0.0
+    has_text:   bool = True
 
 
 @dataclass

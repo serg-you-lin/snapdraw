@@ -859,6 +859,32 @@ contorno a otto, TODO). Nuovo golden delle isole, `tests/test_islands.py`,
 su anch_01-06 (copie anonimizzate dai fixture di forge): riquadro e numero di
 contorni interni di ogni isola. Suite 89. Versione **0.3.0**, serve forge 0.13.0.
 
+### D32 — Una griglia nell'angolo in basso a destra è il cartiglio anche senza testo  ✅
+
+anch_07 (5 ottobre): il cartiglio non ha testo — il blocco era stato
+esploso e i testi non sono arrivati — e `find_titleblock` lo scartava
+(filtro "80% di celle con testo"), così diventava un'isola. Federico: "con
+reticolo e regola in basso a destra, anche senza testo, c'è un'ottima
+possibilità che sia cartiglio".
+
+Regola: una griglia genuina con due lati sul bordo interno della cornice, il
+basso e il destro, vale come cartiglio anche se le sue celle sono vuote. Per
+queste il punteggio non si usa (sale col testo, senza testo non dice niente):
+la prova è la posizione. Una griglia con il testo vince sempre su una vuota;
+il cartiglio preso senza testo porta `has_text = False` e la segnalazione
+`title_block: grid in the bottom-right corner of the frame, no text`.
+
+Solo l'angolo in basso a destra: provata prima su tutti e quattro gli angoli,
+prendeva su un disegno reale la vista in alto a destra con le sue quote
+(griglia di quote, angolo alto-destra). Il bug di D31 (righe dentro le viste
+prese per cartiglio) non può tornare: senza testo serve l'angolo.
+
+Verificato su 106 disegni prima di chiuderla: cambia solo anch_07, dove ora il
+cartiglio è il blocco in basso più la tabella attaccata sopra (172,6–357,5 ×
+7,5–107,5), come l'ha segnato Federico; anch_07 passa da 4 a 3 isole (golden
+delle isole rigenerato). Aperto: su un disegno reale il cartiglio vero, una
+fascia in basso a destra, non è fra i candidati che toccano la cornice (TODO).
+
 ---
 
 ## Appunti (aperti — non decisioni)
