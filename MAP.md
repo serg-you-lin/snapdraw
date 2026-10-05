@@ -807,7 +807,8 @@ scala (delle isole o del disegno) non è la strada per sceglierla: Federico,
 5 ottobre, "non c'entra e non c'entrerà mai con la detection delle isole"
 (forge D98).
 
-Suite: 82 passati, 1 fallito (`test_rules`, già prima: vedi TODO).
+Suite: 82 passati, 1 fallito (`test_rules`, già prima: vedi TODO). Versione **0.2.0**:
+`sheet_islands` è nuova e serve forge 0.12.0.
 
 ---
 
