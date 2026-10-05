@@ -215,7 +215,16 @@
       3×4 della vista stanno nel suo rettangolo ma fuori da quell'anello.
       Da capire sul disegno (pagina "Contorni delle isole", anch_07, cerchi
       rossi) com'è fatta la sagoma vera di quella vista 3D: se le sue linee
-      non chiudono una faccia, il contorno esterno non può contenere i fori. Pagina "Contorni delle isole" (anch_02,
+      non chiudono una faccia, il contorno esterno non può contenere i fori.
+      Federico (5 ottobre, pagina "Il contorno a otto"): il giro non deve
+      tornare indietro ("il sorriso"), deve proseguire la curva e chiudere
+      la parte sotto; le linee in mezzo non sono contorno. Indizio suo: la
+      vista 3D di anch_02, tutta a spigoli, si chiude bene e prende tutte
+      le feature; quella di anch_07, con gli archi, no. Misurato: andata e
+      ritorno del giro a ~3 mm per tutta la lunghezza (banda da 347 mm²,
+      anche unendo le due parti). Pista: dove una linea è tangente a un arco,
+      si incrociano quasi parallele (2–6°) in due punti a 0,13 mm, e lì il
+      giro sceglie il ramo sbagliato. Pagina "Contorni delle isole" (anch_02,
       anch_07) con i contorni in verde.
       Fori, controllati il 5 ottobre: anch_02, isola 0 (contorno giusto per
       Federico): 49 cerchi dentro, 49 ritrovati come interni — se sulla
