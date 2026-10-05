@@ -26,12 +26,15 @@ class FrameInfo:
 
     edges       : gli Edge di doc.edges che compongono il riquadro
     bbox        : (xmin, ymin, xmax, ymax) del riquadro
+    inner_bbox  : il riquadro più interno (la squadratura) se la cornice ha più
+                  bordi, o None; fra i due sta la fascia della cornice
     iso_format  : formato ISO riconosciuto dalle dimensioni ("A4", "A3", ...) o None
     containment : frazione della geometria restante contenuta nella bbox (0..1)
     confidence  : 0..1 — quanto snapdraw è sicuro che questo sia la cornice
     """
     edges:       list
     bbox:        BBox
+    inner_bbox:  Optional[BBox] = None
     iso_format:  Optional[str] = None
     containment: float = 0.0
     confidence:  float = 0.0

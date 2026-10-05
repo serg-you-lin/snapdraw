@@ -25,9 +25,11 @@ bbox e il formato sono quelli del più grande.
 
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import Optional
 
 from forge.core.geometry.axis import CoveredRectangle
+from forge.core.geometry.measure import length_inside, segment_length
 
 from .geometry import (
     AXIS_EPS, containment, find_rectangles, is_iso_ratio, iso_format,
@@ -55,6 +57,11 @@ def find_frame(doc, containment_threshold: float = CONTAINMENT_THRESHOLD) -> Opt
         return None
 
     largest, largest_cont = max(kept, key=lambda rc: rc[0].area)
+    # la squadratura lato per lato: il lato più interno fra i riquadri tenuti
+    # (find_rectangles dà anche riquadri misti, lati del bordo esterno e
+    # dell'interno insieme)
+    inner = (max(r.bbox[0] for r, _ in kept), max(r.bbox[1] for r, _ in kept),
+             min(r.bbox[2] for r, _ in kept), min(r.bbox[3] for r, _ in kept))
 
     seen: set = set()
     edges = []
@@ -67,10 +74,42 @@ def find_frame(doc, containment_threshold: float = CONTAINMENT_THRESHOLD) -> Opt
     return FrameInfo(
         edges=edges,
         bbox=largest.bbox,
+        inner_bbox=inner if inner != largest.bbox and inner[0] < inner[2] and inner[1] < inner[3] else None,
         iso_format=iso_format(largest),
         containment=largest_cont,
         confidence=_confidence(largest, largest_cont, n_borders=len(kept)),
     )
+
+
+def extend_frame(frame: FrameInfo, doc) -> FrameInfo:
+    """
+    Estende `frame` a quello che sta nella sua fascia, fra bordo esterno e
+    squadratura: lineette delle zone, segni di centratura, scritte (MAP D28).
+    Un edge non marcato è della cornice se sta dentro il bordo esterno, ha
+    un tratto nella fascia e dentro la squadratura entra al più quanto è
+    larga la fascia.
+    Senza squadratura non c'è fascia: ritorna `frame` com'è. Non muta `doc`.
+    """
+    if frame.inner_bbox is None:
+        return frame
+    ox0, oy0, ox1, oy1 = frame.bbox
+    ix0, iy0, ix1, iy1 = frame.inner_bbox
+    band = min(ix0 - ox0, iy0 - oy0, ox1 - ix1, oy1 - iy1)
+    if band <= 0:
+        return frame
+    outer = (ox0 - AXIS_EPS, oy0 - AXIS_EPS, ox1 + AXIS_EPS, oy1 + AXIS_EPS)
+    taken = {id(e) for e in frame.edges}
+    extra = []
+    for e in doc.edges:
+        if e.role != "unknown" or id(e) in taken:
+            continue
+        total, inner = segment_length(e.segment), length_inside(e.segment, frame.inner_bbox)
+        in_sheet = total - length_inside(e.segment, outer) <= AXIS_EPS
+        if in_sheet and total - inner > AXIS_EPS and inner <= band:
+            extra.append(e)
+    if not extra:
+        return frame
+    return replace(frame, edges=frame.edges + extra)
 
 
 def rejected_border(doc, title_block) -> Optional[CoveredRectangle]:

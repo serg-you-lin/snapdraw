@@ -5,7 +5,7 @@ La ricetta di snapdraw: `detect_frame(doc)` → `FrameLayout`.
 
 Stesso schema di forge D62 (`heal()` è una ricetta sopra passi pubblici):
 qui c'è solo la composizione di default, i passi stanno nei loro moduli e
-sono pubblici — `find_frame` e `rejected_border` (`frame.py`),
+sono pubblici — `find_frame`, `extend_frame` e `rejected_border` (`frame.py`),
 `find_titleblock` e `extend_titleblock` (`titleblock.py`), `tag_layout`
 (`tag.py`). Chi vuole un'altra lettura li compone a mano (per esempio solo
 la cornice, o il cartiglio con una cornice nota da `add_frame`).
@@ -29,7 +29,7 @@ Uso tipico:
 
 from __future__ import annotations
 
-from .frame import find_frame, rejected_border
+from .frame import extend_frame, find_frame, rejected_border
 from .model import FrameLayout
 from .titleblock import extend_titleblock, find_titleblock
 
@@ -54,6 +54,8 @@ def detect_frame(doc) -> FrameLayout:
     layout.frame = find_frame(doc)
     if layout.frame is None:
         layout.flags.append("frame: uncertain")
+    else:
+        layout.frame = extend_frame(layout.frame, doc)
 
     title_block = find_titleblock(doc, frame=layout.frame)
     if title_block is None:

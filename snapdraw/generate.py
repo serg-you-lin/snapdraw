@@ -136,6 +136,8 @@ def add_frame(
     return FrameInfo(
         edges=list(generated.edges),
         bbox=(frame_xmin, frame_ymin, frame_xmax, frame_ymax),
+        inner_bbox=(frame_xmin + _BORDER_GAP, frame_ymin + _BORDER_GAP,
+                    frame_xmax - _BORDER_GAP, frame_ymax - _BORDER_GAP),
         iso_format=iso_name,
         containment=1.0,
         confidence=1.0,

@@ -98,6 +98,44 @@ class TestDetectFrameRecipe(unittest.TestCase):
         self.assertFalse(any("rejected border" in f for f in layout.flags))
 
 
+class TestExtendFrame(unittest.TestCase):
+    """La cornice si prende quello che sta nella sua fascia (MAP D28)."""
+
+    def _letto_da_file(self):
+        # viste (una griglia di riquadri, più edge della cornice come su un
+        # foglio vero) + cornice generata da snapdraw (doppio bordo, lineette
+        # delle zone e di centratura), poi ruoli azzerati: come letto da file
+        doc = forge.load_geometry([_rect(x, y, x + 15, y + 15, role="outer")
+                                   for x in range(0, 200, 20) for y in range(0, 100, 20)])
+        generated = sd.add_frame(doc)
+        for e in doc.edges:
+            e.role = "unknown"
+        return doc, generated
+
+    def test_le_lineette_della_fascia_sono_della_cornice(self):
+        doc, generated = self._letto_da_file()
+        frame = sd.detect_frame(doc).frame
+        self.assertEqual({id(e) for e in frame.edges}, {id(e) for e in generated.edges})
+
+    def test_un_tratto_corto_dentro_il_disegno_resta(self):
+        doc, generated = self._letto_da_file()
+        ix0, iy0, _, _ = generated.inner_bbox
+        corto = forge.load_geometry([{"type": "line", "start": (ix0 + 20, iy0 + 20), "end": (ix0 + 23, iy0 + 20)}]).edges
+        doc.edges.extend(corto)
+        frame = sd.detect_frame(doc).frame
+        self.assertNotIn(id(corto[0]), {id(e) for e in frame.edges})
+
+    def test_un_tratto_che_dalla_fascia_entra_poco_e_della_cornice(self):
+        doc, generated = self._letto_da_file()
+        x0, y0, _, _ = generated.bbox
+        ix0, _, _, _ = generated.inner_bbox
+        band = ix0 - x0
+        segno = forge.load_geometry([{"type": "line", "start": (x0, y0 + 40), "end": (ix0 + band / 2, y0 + 40)}]).edges
+        doc.edges.extend(segno)
+        frame = sd.detect_frame(doc).frame
+        self.assertIn(id(segno[0]), {id(e) for e in frame.edges})
+
+
 class TestTagLayoutIntegration(unittest.TestCase):
     """L'aggancio: marca gli Edge, heal esclude la cornice dai cluster."""
 

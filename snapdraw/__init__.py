@@ -43,7 +43,7 @@ logo/immagine — vedi TODO.md.
 
 from __future__ import annotations
 
-from .frame import find_frame, rejected_border
+from .frame import extend_frame, find_frame, rejected_border
 from .generate import DEFAULT_TITLE_BLOCK_TEMPLATE, add_frame, add_title_block
 from .features import (describe_features, diameter_callouts, feature_contours, feature_metadata, feature_trace,
                        group_features, parse_callout, read_features, tag_features, view_scales)
@@ -70,6 +70,7 @@ except ImportError:  # pragma: no cover
 __all__ = [
     "detect_frame",
     "find_frame",
+    "extend_frame",
     "rejected_border",
     "find_titleblock",
     "extend_titleblock",

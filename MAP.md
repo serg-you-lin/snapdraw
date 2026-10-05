@@ -767,6 +767,33 @@ cornice e il cartiglio di `generate.py` e i test passano `{"type": "polygon",
 "points": [...]}`, chiuso per definizione. Nessun cambiamento di
 comportamento (80 passati).
 
+### D28 — La cornice si prende la sua fascia (`extend_frame`)  ✅
+
+Federico (5 ottobre): quello che sta nella cornice — lineette di
+riferimento, segni di centratura, scritte, appunti — lo assorbe la cornice.
+Visto sulla scala delle isole (forge TODO punto 13): dopo `find_frame`
+restavano decine di isole piccole, **tutte** nella fascia fra bordo esterno
+e squadratura; erano anche le lineette che `add_frame` stesso disegna.
+
+- `FrameInfo.inner_bbox`: la squadratura, presa lato per lato come il lato
+  più interno fra i riquadri tenuti da `find_frame` (`find_rectangles` dà
+  anche riquadri misti, lati esterni e interni insieme). `None` con un bordo
+  solo; `add_frame` la scrive dal suo `_BORDER_GAP`.
+- `extend_frame(frame, doc)`, chiamata da `detect_frame`: un edge non
+  marcato è della cornice se sta dentro il bordo esterno, ha un tratto nella
+  fascia, e dentro la squadratura entra al più quanto è larga la fascia. Il
+  terzo criterio prende i segni di centratura che passano la squadratura e
+  lascia una linea di vista che la tocca. Un tratto corto tutto dentro il
+  disegno non tocca la fascia e resta. Senza squadratura non c'è fascia e
+  non si prende niente: conservativo come `find_frame`.
+- Misura in forge: `forge.core.geometry.measure.length_inside(segment,
+  bounds)`, la lunghezza di una primitiva dentro un rettangolo (le curve
+  sulla loro discretizzazione).
+
+Effetto alla distanza scelta da Federico: `anch_08` da 30 isole a 6,
+`regr_04` da 28 a 4, `anch_01`/`regr_03` da 17 a 5; gli altri invariati.
+Le note fuori dalla fascia non sono toccate: vedi TODO.
+
 ---
 
 ## Appunti (aperti — non decisioni)
