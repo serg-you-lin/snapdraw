@@ -32,7 +32,7 @@ from forge.core.geometry.axis import CoveredRectangle
 from forge.core.geometry.measure import length_inside, segment_length
 
 from .geometry import (
-    AXIS_EPS, containment, find_rectangles, is_iso_ratio, iso_format,
+    AXIS_EPS, containment, find_rectangles, is_iso_ratio, iso_format, marked_sides,
 )
 from .model import FrameInfo
 
@@ -48,7 +48,8 @@ def find_frame(doc, containment_threshold: float = CONTAINMENT_THRESHOLD) -> Opt
     racchiudono il disegno, oppure `None` se non c'è un candidato convincente
     (il chiamante mette "frame: uncertain" nei flag e non marca niente).
     """
-    candidates = [r for r in find_rectangles(doc) if is_iso_ratio(r)]
+    # ISO, oppure con le tacche di riferimento su tutti e quattro i lati (MAP D33)
+    candidates = [r for r in find_rectangles(doc) if is_iso_ratio(r) or len(marked_sides(r.bbox, doc.edges)) == 4]
     if not candidates:
         return None
 

@@ -34,6 +34,29 @@
       loghi), non solo il proprio bordo — altrimenti finiva in
       `trash_entities` senza ruolo o in un cluster spurio (MAP D12)
 
+## Dove siamo (fine sessione del 5 ottobre) — si riparte da qui
+
+Fatto oggi: isole senza distanza (forge D99), contorno esterno come unione
+delle facce chiuse su tutto il pezzo (forge D100, viste 3D intere), cartiglio
+solo sul bordo interno della cornice (D31), griglia in basso a destra anche
+senza testo (D32), cornice riconosciuta dalle tacche (D33). Golden delle isole
+in forge (`tests/real/test_golden_islands.py`) e nel framer
+(`tests/test_islands.py`), su anch_01-08, regr_01-05, drw_0001, drw_0011.
+Pagine di controllo (lab/, locali): "Scala delle isole" con tutti i disegni e
+i giudizi di Federico (`real_picks`), "Contorni delle isole", "Il contorno a
+otto", "Cartiglio trovato".
+
+Prossimi, in ordine:
+1. **detection sulle isole e combinata sulle viste** (voce sotto): era la
+   seconda cosa chiesta in apertura, non ancora iniziata. Dentro c'è anche
+   l'assemblato (saldato) riconosciuto dalla geometria.
+2. **lettura delle viste nel framer** dai casi annotati oggi: viste spezzate
+   (drw_0011 nel golden apposta), vista laterale spostata e ingrandita
+   (drw_0013), tabellina presa per vista (drw_0014), foglio ruotato di 90°
+   (drw_0010), leader esploso attaccato alla vista frontale (anch_08).
+3. **cartiglio di un disegno reale non trovato** (la fascia bassa, vedi sotto).
+4. regr_03 e regr_05: feature in `unchecked`, da guardare.
+
 ## Prossimi passi
 
 - [ ] **test "lettura per un agente AI" sui disegni veri** (deciso con

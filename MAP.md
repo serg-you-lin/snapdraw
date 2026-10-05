@@ -885,6 +885,32 @@ cartiglio è il blocco in basso più la tabella attaccata sopra (172,6–357,5 �
 delle isole rigenerato). Aperto: su un disegno reale il cartiglio vero, una
 fascia in basso a destra, non è fra i candidati che toccano la cornice (TODO).
 
+### D33 — La cornice si riconosce anche dalle sue tacche  ✅
+
+drw_0001, 0007, 0009 (`examples/anonymus`, esportati da un altro CAD): la
+cornice c'è, un rettangolo con le tacche di riferimento che escono verso il
+bordo del foglio (Federico: "quelle che mettiamo anche noi nel nostro
+cartiglio sintetico"). Due motivi la scartavano: su drw_0001 le tacche stanno
+fuori dal rettangolo e il contenimento scendeva a 0,77 (soglia 0,80); su
+drw_0007/0009 il rettangolo è 254×190, non ISO (un formato Letter). Senza
+cornice il cartiglio si prendeva il foglio intero, e non restava nessuna isola.
+
+- **Una tacca è del rettangolo**: un edge che parte da un lato, va fuori ed è
+  corto — al massimo il 10% del lato corto (misurate: 7,5 e 9,5 mm su lati
+  corti di 190, il 4–5%). Nel contenimento non conta.
+- **La proporzione ISO resta un requisito, salvo tacche su tutti e quattro i
+  lati**: un rettangolo non ISO è una cornice se ha tacche su ogni lato, come i
+  segni di centratura di un foglio.
+
+Provate prima e scartate (misurate su 106 disegni): togliere il requisito ISO
+— cinque pezzi di lamiera rettangolari diventavano "cornice"; due lati con
+segni qualsiasi — il contorno di un pezzo con le linee di quota (110 mm) che
+escono passava; escludere ogni segno dal contenimento — le linee verticali del
+cartiglio, che scendono dal bordo della zona del disegno, spostavano il bordo
+interno e accorciavano il cartiglio su tre fogli ISO. Con la regola finale
+cambiano solo drw_0001, 0007, 0009 (e tre loro copie in altre cartelle):
+cornice trovata, cartiglio in basso a destra, isole 2, 3 e 5.
+
 ---
 
 ## Appunti (aperti — non decisioni)

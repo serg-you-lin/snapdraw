@@ -26,6 +26,8 @@ AXIS_EPS = 0.5                    # mm — scarto per considerare una linea oriz
 COORD_CLUSTER_TOL = 1.5          # mm — due bordi più vicini di così sono lo stesso bordo
 SIDE_COVERAGE = 0.85            # frazione minima di un lato coperta da linee collineari
 CONTAINMENT_MARGIN_FACTOR = 0.02  # margine sulla bbox, frazione del lato corto
+MARK_TOUCH_TOL = 0.5              # mm — un segno parte dal lato del rettangolo se il suo capo ci sta entro questa distanza
+MARK_MAX_FRACTION = 0.10          # una tacca è corta: al massimo questa frazione del lato corto del rettangolo
 TEXT_BORDER_TOL = 0.5            # mm — un testo sul bordo di un rettangolo conta come dentro
 
 # Formati ISO in mm (lato corto, lato lungo). Il disegno può essere in
@@ -103,13 +105,53 @@ def containment(rect: CoveredRectangle, doc) -> float:
     """
     Frazione degli Edge esterni al rettangolo i cui endpoint stanno dentro la
     sua bbox (con un piccolo margine). 1.0 = il rettangolo racchiude tutto.
+    Una tacca — un edge corto che parte da un lato e va verso l'esterno — è
+    un segno del rettangolo stesso (i riferimenti di una cornice): non conta
+    (MAP D33).
     """
     owned = {id(e) for e in rect.items}
-    others = [e for e in doc.edges if id(e) not in owned]
+    others = [e for e in doc.edges if id(e) not in owned and not _is_tick(e, rect.bbox)]
     if not others:
         return 0.0
     margin = rect.short_side * CONTAINMENT_MARGIN_FACTOR
     return len(items_inside(rect.bbox, others, margin)) / len(others)
+
+
+def marked_sides(bounds, edges, tol: float = MARK_TOUCH_TOL) -> set:
+    """I lati di `bounds` da cui parte almeno una tacca (edge corto verso l'esterno)."""
+    x0, y0, x1, y1 = bounds
+    sides = set()
+    for e in edges:
+        if not _is_tick(e, bounds, tol):
+            continue
+        p = e.start if _on_side(e.start, bounds, tol) else e.end
+        sides.update(n for n, d in (("left", abs(p[0] - x0)), ("right", abs(p[0] - x1)),
+                                    ("bottom", abs(p[1] - y0)), ("top", abs(p[1] - y1))) if d <= tol)
+    return sides
+
+
+def _is_tick(edge, bounds, tol: float = MARK_TOUCH_TOL) -> bool:
+    """Una tacca del rettangolo: parte da un lato, va fuori, ed è corta."""
+    short = min(bounds[2] - bounds[0], bounds[3] - bounds[1])
+    length = math.dist(edge.start, edge.end)
+    return length <= MARK_MAX_FRACTION * short and _mark_outside(edge, bounds, tol)
+
+
+def _on_side(p, bounds, tol: float) -> bool:
+    x0, y0, x1, y1 = bounds
+    inside = x0 - tol <= p[0] <= x1 + tol and y0 - tol <= p[1] <= y1 + tol
+    return inside and min(abs(p[0] - x0), abs(p[0] - x1), abs(p[1] - y0), abs(p[1] - y1)) <= tol
+
+
+def _mark_outside(edge, bounds, tol: float = MARK_TOUCH_TOL) -> bool:
+    """Un capo dell'edge sta su un lato di `bounds`, l'altro fuori."""
+    x0, y0, x1, y1 = bounds
+
+    def outside(p):
+        return p[0] < x0 - tol or p[0] > x1 + tol or p[1] < y0 - tol or p[1] > y1 + tol
+
+    a, b = edge.start, edge.end
+    return (_on_side(a, bounds, tol) and outside(b)) or (_on_side(b, bounds, tol) and outside(a))
 
 
 def iso_format(rect: CoveredRectangle, tolerance: float = _ISO_SIZE_TOLERANCE) -> Optional[str]:
