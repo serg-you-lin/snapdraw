@@ -911,6 +911,8 @@ interno e accorciavano il cartiglio su tre fogli ISO. Con la regola finale
 cambiano solo drw_0001, 0007, 0009 (e tre loro copie in altre cartelle):
 cornice trovata, cartiglio in basso a destra, isole 2, 3 e 5.
 
+Suite 94. Versione **0.3.1** (D32-D33, `TitleBlock.has_text`), serve forge 0.13.1.
+
 ---
 
 ## Appunti (aperti — non decisioni)
