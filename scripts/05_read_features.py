@@ -18,7 +18,7 @@ for path in SHEETS:
     name = os.path.splitext(os.path.basename(path))[0]
     doc = forge.load_dxf(path, role_rules=sd.load_rules(RULES))
     sd.tag_layout(doc, sd.detect_frame(doc))
-    result = forge.island(doc)
+    result = sd.sheet_islands(doc)
     views = sd.read_views(result)
     features = sd.read_features(doc, result, views)
 

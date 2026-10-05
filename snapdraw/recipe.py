@@ -24,7 +24,7 @@ Uso tipico:
     doc = forge.load_dxf("disegno.dxf")
     layout = sd.detect_frame(doc)   # cornice + cartiglio, doc non mutato
     sd.tag_layout(doc, layout)      # marca gli Edge → role="frame" / "title_block"
-    result = forge.island(doc)          # oppure forge.heal(doc): li lasciano fuori entrambi
+    result = sd.sheet_islands(doc)  # oppure forge.heal(doc): li lasciano fuori entrambi
 """
 
 from __future__ import annotations

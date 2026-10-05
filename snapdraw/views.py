@@ -1,7 +1,7 @@
 """
 snapdraw/views.py
 -----------------
-Le viste di un foglio: quali isole di `forge.island(...)` sono viste
+Le viste di un foglio: quali isole di `sheet_islands(doc)` sono viste
 ortogonali, quali assonometrie, quali simboli; come si corrispondono per
 proiezione; qual è la vista principale e che profondità ha il pezzo.
 
@@ -12,17 +12,19 @@ non in forge.
 
 Stesso schema di `detect_frame`: passi pubblici (`classify_view`,
 `projection_mates`, `principal_view`, `view_depth`) e una ricetta,
-`read_views(result)`.
+`read_views(result)`. `sheet_islands(doc)` è l'unico posto dove snapdraw
+sceglie a che distanza le isole di un foglio si uniscono (MAP D29).
 
     doc = forge.load_dxf("disegno.dxf", role_rules=sd.load_rules("generic"))
     sd.tag_layout(doc, sd.detect_frame(doc))
-    views = sd.read_views(forge.island(doc))
+    views = sd.read_views(sd.sheet_islands(doc))
 """
 
 from __future__ import annotations
 
 from typing import Dict, List, Optional, Tuple
 
+import forge
 from forge.core.geometry.axis import axis_aligned_share
 
 from .model import View, ViewLayout
@@ -35,6 +37,18 @@ AXIS_ANGLE_TOLERANCE = 2.0   # gradi — un LineSeg entro 2° da 0/90 è orizzon
 ORTHOGRAPHIC_SHARE = 0.5     # quota minima di lunghezza orizzontale/verticale per una vista ortogonale
 MATE_TOLERANCE = 1.0         # mm — due viste in proiezione hanno la stessa estensione
 SYMBOL_RATIO = 0.1           # un'isola senza compagni sotto 1/10 della dimensione minore della vista di riferimento
+SHEET_GAP = 10.0             # mm — distanza massima fra due edge della stessa isola di un foglio
+SHEET_MAX_GAP = 0.5          # mm — gap chiusi fra estremi liberi di una vista
+
+
+def sheet_islands(doc: forge.ForgeDocument) -> forge.ForgeResult:
+    """
+    Le isole di un foglio: `forge.island` con la distanza scelta da
+    snapdraw. forge non ha default (forge D98): tutti gli script e i test di
+    snapdraw passano di qui, e qui entrerà la regola letta dalla scala delle
+    isole al posto dei due numeri fissi.
+    """
+    return forge.island(doc, island_gap=SHEET_GAP, max_gap=SHEET_MAX_GAP)
 
 
 def classify_view(cluster, angle_tolerance: float = AXIS_ANGLE_TOLERANCE) -> str:

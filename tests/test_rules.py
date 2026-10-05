@@ -58,7 +58,7 @@ class TestRegoleSuDisegnoVero(unittest.TestCase):
     def _island_bounds(self, role_rules):
         doc = forge.load_dxf(str(EXAMPLES / "vista_pianta_assi.dxf"), role_rules=role_rules)
         sd.tag_layout(doc, sd.detect_frame(doc))
-        return [tuple(round(v) for v in c.outer.polygon.bounds) for c in forge.island(doc).clusters]
+        return [tuple(round(v) for v in c.outer.polygon.bounds) for c in sd.sheet_islands(doc).clusters]
 
     def test_la_vista_in_pianta_ritorna(self):
         plan_view = (36, 218, 136, 268)

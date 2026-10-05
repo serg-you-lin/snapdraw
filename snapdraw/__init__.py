@@ -25,7 +25,7 @@ Workflow di rilevamento — `detect_frame` è una ricetta sopra passi pubblici
 
     # solo se servono le viste: marca, poi leggi per isole (MAP D14)
     sd.tag_layout(doc, layout)       # marca gli Edge → role="frame" / "title_block"
-    result = forge.island(doc)
+    result = sd.sheet_islands(doc)
 
 Workflow di generazione (il verso "aggiungi" — un disegno senza cornice):
 
@@ -56,7 +56,7 @@ from .recipe import detect_frame
 from .render import render_view, render_views, view_edges
 from .tag import tag_layout
 from .titleblock import extend_titleblock, find_titleblock, read_titleblock
-from .views import classify_view, principal_view, projection_mates, read_views, view_depth
+from .views import classify_view, principal_view, projection_mates, read_views, sheet_islands, view_depth
 
 try:
     from importlib.metadata import version as _pkg_version, PackageNotFoundError
@@ -79,6 +79,7 @@ __all__ = [
     "rules_from_dict",
     "read_titleblock",
     "read_views",
+    "sheet_islands",
     "classify_view",
     "projection_mates",
     "principal_view",

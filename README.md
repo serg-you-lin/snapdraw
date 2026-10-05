@@ -44,7 +44,7 @@ fields = sd.read_titleblock(layout)
 
 # only when you need the parts: mark, then pick forge's reading
 sd.tag_layout(doc, layout)       # mark the Edges → role="frame" / "title_block"
-result = forge.island(doc)           # a sheet of views is read by islands
+result = sd.sheet_islands(doc)   # a sheet of views is read by islands
 ```
 
 Roles are assigned at load time by rule files in `rules/`, turned into

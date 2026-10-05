@@ -44,7 +44,7 @@ fields = sd.read_titleblock(layout)
 
 # solo se servono i pezzi: marca, poi scegli la lettura di forge
 sd.tag_layout(doc, layout)       # marca gli Edge → role="frame" / "title_block"
-result = forge.island(doc)           # una messa in tavola si legge per isole
+result = sd.sheet_islands(doc)   # una messa in tavola si legge per isole
 ```
 
 I ruoli si assegnano al caricamento con i file di regole in `rules/`, che

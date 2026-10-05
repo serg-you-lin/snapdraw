@@ -3,7 +3,7 @@ tests/test_render.py
 --------------------
 Test del ritaglio delle viste: quali edge entrano in una vista, un PNG per
 vista con le proporzioni della vista. Fogli costruiti con
-`forge.load_geometry` e letti con `forge.island`.
+`forge.load_geometry` e letti con `sd.sheet_islands`.
 """
 
 import os
@@ -33,7 +33,7 @@ class TestRender(unittest.TestCase):
             _rect(0, 0, 100, 50), {"type": "circle", "center": (30, 25), "radius": 3}, _rect(150, 0, 5, 50),
             {"type": "line", "start": (30, -10), "end": (30, 60)},
         ])
-        self.views = sd.read_views(forge.island(self.doc))
+        self.views = sd.read_views(sd.sheet_islands(self.doc))
 
     def test_nella_vista_solo_gli_edge_che_ci_stanno_dentro(self):
         front = next(v for v in self.views.views if round(v.width) == 100)

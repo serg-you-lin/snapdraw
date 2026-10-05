@@ -27,7 +27,7 @@ Passi pubblici (`view_scales`, `feature_contours`, `feature_trace`,
 `read_features(doc, result, views)`. `tag_features` le attacca al risultato
 per chi esporta.
 
-    result = forge.island(doc)
+    result = sd.sheet_islands(doc)
     views = sd.read_views(result)
     features = sd.read_features(doc, result, views)
     sd.describe_features(features)   # "2 fori passanti Ø5,3 +0,05/0, profondità 4; ..."

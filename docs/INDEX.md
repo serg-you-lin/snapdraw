@@ -8,7 +8,7 @@ python scripts/gen_index.py
 
 What this is: the lookup table of *what already exists* in the package, down to internal helpers. `docs/API.md` documents the public surface (`snapdraw.<name>`) with full cards; this file lists every module-level function and class so nothing gets rewritten because it was not found. Signatures and docstring lines come straight from the source, so they cannot drift.
 
-`13` modules · `73` module-level functions · `13` classes · `2624` lines of code.
+`13` modules · `74` module-level functions · `13` classes · `2639` lines of code.
 
 Sections: [Lookup](#lookup) · [Duplicate names](#duplicate-names) · [Dependency rule](#dependency-rule) · [By module](#by-module) · [Internal dependencies](#internal-dependencies)
 
@@ -24,11 +24,11 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `add_title_block` | func | `snapdraw/generate.py:147` | Genera un cartiglio e lo appende a `doc` (mutazione in place, stesso |
 | `_anchor_by_center` | func | `snapdraw/features.py:363` | Le quote di diametro che forge non ha agganciato: i due punti misurati |
 | `annotation_density_ratio` | func | `snapdraw/geometry.py:156` | Quante volte più annotazioni per unità di area cadono dentro `rect` |
-| `_area` | func | `snapdraw/views.py:148` |  |
+| `_area` | func | `snapdraw/views.py:162` |  |
 | `_build_cells` | func | `snapdraw/titleblock.py:216` | I divisori tagliano `rect` in celle; ogni cella raccoglie il testo delle |
 | `Callout` | class | `snapdraw/model.py:163` | La quota di diametro agganciata a una feature, letta. |
 | `Cell` | class | `snapdraw/model.py:44` | Una cella del cartiglio: un rettangolo interno e il testo che racchiude. |
-| `classify_view` | func | `snapdraw/views.py:40` | "orthographic" se almeno metà della lunghezza dei LineSeg (contorno e |
+| `classify_view` | func | `snapdraw/views.py:54` | "orthographic" se almeno metà della lunghezza dei LineSeg (contorno e |
 | `_confidence` | func | `snapdraw/frame.py:141` | Confidenza grezza: parte dal contenimento, bonus se il formato ISO torna, |
 | `_confidence` | func | `snapdraw/titleblock.py:196` | Confidenza grezza, stesso spirito additivo di `frame._confidence` — da |
 | `_conical` | func | `snapdraw/features.py:458` | Nelle compagne, per ognuno dei due lati una linea obliqua che va dal |
@@ -73,15 +73,15 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `_pair_concentric` | func | `snapdraw/features.py:315` | (percorso, contorno, forma, sede) — nei gruppi di cerchi concentrici |
 | `parse_callout` | func | `snapdraw/features.py:181` | Il testo di una quota di diametro: "Ø"/"M", il valore, la tolleranza |
 | `_place` | func | `snapdraw/generate.py:273` | Pura: template + anchor + valori → entità per `forge.load_geometry`, |
-| `principal_view` | func | `snapdraw/views.py:70` | La vista con compagni in tutte e due le direzioni (la più grande, se più |
-| `projection_mates` | func | `snapdraw/views.py:53` | Per ogni vista ortogonale: (height_mates, width_mates). Stessa |
+| `principal_view` | func | `snapdraw/views.py:84` | La vista con compagni in tutte e due le direzioni (la più grande, se più |
+| `projection_mates` | func | `snapdraw/views.py:67` | Per ogni vista ortogonale: (height_mates, width_mates). Stessa |
 | `_read_callout` | func | `snapdraw/features.py:407` |  |
 | `_read_depth` | func | `snapdraw/features.py:418` | Passante e profondità disegnata: dalla traccia, altrimenti per convenzione. |
 | `read_features` | func | `snapdraw/features.py:230` | Ricetta: la scala di ogni vista; per ogni vista ortogonale i contorni |
 | `_read_seat` | func | `snapdraw/features.py:434` | La sede concentrica (non passante: quella la separa `read_features`), |
 | `read_titleblock` | func | `snapdraw/titleblock.py:278` | Legge le celle del cartiglio → dict dei campi |
-| `read_views` | func | `snapdraw/views.py:108` | Ricetta: classifica ogni cluster, trova i compagni di proiezione, la |
-| `_reference` | func | `snapdraw/views.py:140` | La vista che fa da metro per i simboli: la principale, o la più grande. |
+| `read_views` | func | `snapdraw/views.py:122` | Ricetta: classifica ogni cluster, trova i compagni di proiezione, la |
+| `_reference` | func | `snapdraw/views.py:154` | La vista che fa da metro per i simboli: la principale, o la più grande. |
 | `register_defaults` | func | `snapdraw/roles.py:64` | Registra colore + nome layer di default per cornice, cartiglio, costruzione e feature — |
 | `rejected_border` | func | `snapdraw/frame.py:115` | Il riquadro di bordo più grande che racchiude `title_block` ma che |
 | `render_view` | func | `snapdraw/render.py:57` | Disegna `edges` in un PNG ritagliato su `bbox`, nero su bianco, con |
@@ -90,6 +90,7 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `_round` | func | `snapdraw/features.py:634` |  |
 | `rules_from_dict` | func | `snapdraw/rules.py:61` | Come `load_rules`, da un dict già letto. |
 | `_share_callouts` | func | `snapdraw/features.py:389` | Un richiamo che dice quante feature copre ("n°30 fori") vale per i fori |
+| `sheet_islands` | func | `snapdraw/views.py:44` | Le isole di un foglio: `forge.island` con la distanza scelta da |
 | `_signed` | func | `snapdraw/features.py:646` |  |
 | `_split_labeled_text` | func | `snapdraw/titleblock.py:312` | Ogni etichetta trovata in `text` → valore = il testo fino alla prossima etichetta (o fine stringa). |
 | `tag_features` | func | `snapdraw/features.py:279` | Attacca le feature ai loro cluster (`cluster.detected["view_features"]`, |
@@ -100,8 +101,8 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `_to_scale` | func | `snapdraw/features.py:494` | Profondità alla scala della vista; senza scala, flag e profondità disegnata soltanto. |
 | `Trace` | class | `snapdraw/model.py:186` | La traccia di una feature in una vista compagna: le due pareti (linee |
 | `_trace_in` | func | `snapdraw/features.py:512` | Le due pareti dentro `bbox` alle quote `lo_level`/`hi_level` lungo |
-| `View` | class | `snapdraw/model.py:118` | Un'isola di `forge.island(...)` letta come vista del foglio. |
-| `view_depth` | func | `snapdraw/views.py:89` | La terza dimensione della vista principale: la larghezza dei compagni in |
+| `View` | class | `snapdraw/model.py:118` | Un'isola di `sheet_islands(...)` letta come vista del foglio. |
+| `view_depth` | func | `snapdraw/views.py:103` | La terza dimensione della vista principale: la larghezza dei compagni in |
 | `view_edges` | func | `snapdraw/render.py:40` | Gli edge di `doc` interamente dentro `bbox`: contorni, linee nascoste, |
 | `view_scales` | func | `snapdraw/features.py:79` | La scala di ogni vista: valore scritto / valore misurato, il più |
 | `ViewLayout` | class | `snapdraw/model.py:144` | Il risultato di `sd.read_views(result)`. |
@@ -127,7 +128,7 @@ Same name defined at module level in different modules. Not automatically a bug 
 
 ### `snapdraw/` (root)
 
-#### `snapdraw/__init__.py` — 126 lines
+#### `snapdraw/__init__.py` — 127 lines
 
 _snapdraw_
 
@@ -213,7 +214,7 @@ _snapdraw/model.py_
 - **class** `TitleBlockTemplate` — L79 — Il design di un cartiglio da generare: righe strette impilate in
 - **class** `FrameLayout` — L99 — Il risultato di `sd.detect_frame(doc)`.
   - methods: `is_empty`
-- **class** `View` — L118 — Un'isola di `forge.island(...)` letta come vista del foglio.
+- **class** `View` — L118 — Un'isola di `sheet_islands(...)` letta come vista del foglio.
   - methods: `width`, `height`
 - **class** `ViewLayout` — L144 — Il risultato di `sd.read_views(result)`.
 - **class** `Callout` — L163 — La quota di diametro agganciata a una feature, letta.
@@ -272,17 +273,18 @@ _snapdraw/titleblock.py_
 - `read_titleblock(layout) -> dict` — L278 — Legge le celle del cartiglio → dict dei campi
 - `_split_labeled_text(text: str, cell_index: int) -> Dict[str, dict]` — L312 — Ogni etichetta trovata in `text` → valore = il testo fino alla prossima etichetta (o fine stringa).
 
-#### `snapdraw/views.py` — 149 lines
+#### `snapdraw/views.py` — 163 lines
 
 _snapdraw/views.py_
 
-- `classify_view(cluster, angle_tolerance: float=AXIS_ANGLE_TOLERANCE) -> str` — L40 — "orthographic" se almeno metà della lunghezza dei LineSeg (contorno e
-- `projection_mates(views: List[View], tolerance: float=MATE_TOLERANCE) -> Dict[int, Tuple[List[int], List[int]]]` — L53 — Per ogni vista ortogonale: (height_mates, width_mates). Stessa
-- `principal_view(views: List[View]) -> Tuple[Optional[int], List[str]]` — L70 — La vista con compagni in tutte e due le direzioni (la più grande, se più
-- `view_depth(views: List[View], principal: Optional[int], tolerance: float=MATE_TOLERANCE) -> Tuple[Optional[float], List[str]]` — L89 — La terza dimensione della vista principale: la larghezza dei compagni in
-- `read_views(result, tolerance: float=MATE_TOLERANCE) -> ViewLayout` — L108 — Ricetta: classifica ogni cluster, trova i compagni di proiezione, la
-- `_reference(views: List[View]) -> Optional[View]` — L140 — La vista che fa da metro per i simboli: la principale, o la più grande.
-- `_area(view: View) -> float` — L148
+- `sheet_islands(doc: forge.ForgeDocument) -> forge.ForgeResult` — L44 — Le isole di un foglio: `forge.island` con la distanza scelta da
+- `classify_view(cluster, angle_tolerance: float=AXIS_ANGLE_TOLERANCE) -> str` — L54 — "orthographic" se almeno metà della lunghezza dei LineSeg (contorno e
+- `projection_mates(views: List[View], tolerance: float=MATE_TOLERANCE) -> Dict[int, Tuple[List[int], List[int]]]` — L67 — Per ogni vista ortogonale: (height_mates, width_mates). Stessa
+- `principal_view(views: List[View]) -> Tuple[Optional[int], List[str]]` — L84 — La vista con compagni in tutte e due le direzioni (la più grande, se più
+- `view_depth(views: List[View], principal: Optional[int], tolerance: float=MATE_TOLERANCE) -> Tuple[Optional[float], List[str]]` — L103 — La terza dimensione della vista principale: la larghezza dei compagni in
+- `read_views(result, tolerance: float=MATE_TOLERANCE) -> ViewLayout` — L122 — Ricetta: classifica ogni cluster, trova i compagni di proiezione, la
+- `_reference(views: List[View]) -> Optional[View]` — L154 — La vista che fa da metro per i simboli: la principale, o la più grande.
+- `_area(view: View) -> float` — L162
 
 ## Internal dependencies
 

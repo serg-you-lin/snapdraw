@@ -794,6 +794,19 @@ Effetto alla distanza scelta da Federico: `anch_08` da 30 isole a 6,
 `regr_04` da 28 a 4, `anch_01`/`regr_03` da 17 a 5; gli altri invariati.
 Le note fuori dalla fascia non sono toccate: vedi TODO.
 
+### D29 — Un posto solo dove snapdraw sceglie la distanza delle isole: `sheet_islands`  ✅
+
+forge D98 ha tolto il default di `island_gap` (10 mm) e `max_gap` (0,5 mm) a
+`forge.island()`: sono scelte di chi legge il disegno, non di forge. In
+snapdraw la scelta sta in `sheet_islands(doc)` (`views.py`), con
+`SHEET_GAP = 10.0` e `SHEET_MAX_GAP = 0.5`, gli stessi valori di prima:
+nessun risultato cambia, nessun golden rigenerato. Script, test, docstring
+d'uso e README chiamano `sd.sheet_islands(doc)`, mai `forge.island` coi
+numeri scritti a mano: quando la regola letta dalla scala delle isole (TODO)
+sostituirà i due numeri fissi, cambierà qui e basta.
+
+Suite: 82 passati, 1 fallito (`test_rules`, già prima: vedi TODO).
+
 ---
 
 ## Appunti (aperti — non decisioni)

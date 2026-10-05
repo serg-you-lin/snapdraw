@@ -5,7 +5,7 @@ Test della lettura delle feature sulle viste: fori, asole, aperture su ogni
 vista ortogonale; traccia nelle viste compagne (passante, cieco, ala di
 lamiera); sede concentrica (lamatura, svasatura); quota di diametro; scala
 per vista; le facce di una vista non sono aperture; `tag_features`. Fogli
-costruiti con `forge.load_geometry` e letti con `forge.island`; il caso vero
+costruiti con `forge.load_geometry` e letti con `sd.sheet_islands`; il caso vero
 è `regr_05` (leva_01, tests/examples/regression).
 """
 
@@ -47,7 +47,7 @@ def _load(entities, hidden=0, dimensions=()):
         for edge in doc.edges[-hidden:]:
             edge.style = HIDDEN
     doc.annotations.extend(dimensions)
-    result = forge.island(doc)
+    result = sd.sheet_islands(doc)
     return doc, result, sd.read_views(result)
 
 
@@ -249,7 +249,7 @@ class TestLevaInox(unittest.TestCase):
     def test_due_da_5_3_e_uno_da_4_3_passanti_profondita_4(self):
         doc = forge.load_dxf(str(REGRESSION / "regr_05.dxf"), role_rules=sd.load_rules("generic"))
         sd.tag_layout(doc, sd.detect_frame(doc))
-        result = forge.island(doc)
+        result = sd.sheet_islands(doc)
         layout = sd.read_features(doc, result, sd.read_views(result))
         self.assertTrue(all(abs(s - 0.8) < 1e-6 for s in layout.scales.values() if s))
         self.assertEqual(sd.describe_features(layout),

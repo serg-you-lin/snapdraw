@@ -70,7 +70,7 @@ for name in names:
         kept = frame_free_edges(doc, layout)
         removed = len(doc.edges) - len(kept)
         doc.edges = kept
-        result = forge.island(doc)
+        result = sd.sheet_islands(doc)
         if not result.is_valid:
             print(f"  [SALTATO] {name}: island non valido dopo la rimozione — {result.errors}")
             skipped += 1

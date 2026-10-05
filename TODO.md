@@ -83,6 +83,50 @@
       grande, distribuzione angoli — utile anche a distinguere viste
       assonometriche, angoli non 0°/90°). Non ancora iniziato: serve prima
       un numero decente di disegni etichettati.
+- [ ] **scala delle isole (forge TODO punto 13), giudizi del 5 ottobre**
+      (pagina "Scala delle isole", `lab/island_scale.py`; giudizi nel
+      database della pagina, collezione `picks`). Su 13 disegni: 9 con una
+      distanza giusta, tutte fra 17 e 78 mm; la proposta automatica coincide
+      con 6 delle 9. Tre fili per framer:
+      - **una vista non si riconosce dalla grandezza.** In `anch_07` e
+        `regr_05` la vista laterale (25×32 mm) resta "piccola" perché è sotto
+        un quarto della diagonale della vista principale: verificato. Vale
+        anche per il classificatore qui sopra ("piccolo E vicino"): una vista
+        di lato di un pezzo sottile è piccola e vicina come un simbolo;
+      - **i simboli finiscono già nell'isola giusta** (nota di Federico su
+        `anch_06`): manca solo riconoscerli come simboli, non attaccarli;
+        Anche `anch_02`: la vista di 1525×140 mm è il pezzo stesso, lungo e
+        piatto, e fa sembrare piccolo tutto il resto;
+      - ✅ **avanzi di cornice** (MAP D28): la cornice si prende la sua
+        fascia. Resta aperto: **le note del disegno** (testo fuori dalle
+        viste, fuori dalla fascia) vanno tenute come annotazioni generali del
+        foglio, trattate come le informazioni del cartiglio — non ancora
+        fatto. In `anch_08` restano due tratti di 136×4 mm nel disegno, da
+        capire cosa sono.
+      - **come framer sceglierà la distanza** (idea del 5 ottobre, nata
+        dalla nota di Federico "dipenderà dalla scala"): i simboli e le
+        scritte hanno una misura fissa *sulla carta* (altezza del testo,
+        frecce, segni di rugosità), le viste crescono con la scala del
+        disegno. Letta la scala dal cartiglio, la grandezza di un'isola si
+        misura in mm di carta e non rispetto alla vista più grande: così la
+        vista laterale piccola di `anch_07` non passa più per simbolo e il
+        pezzo lungo di `anch_02` non schiaccia il resto. I 9 giudizi salvati
+        nella pagina sono il banco di prova: una regola deve ritrovarli.
+        Quando restano due gradini simili, decide l'agente e la scelta si
+        registra (forge TODO punto 13). La regola entra in
+        `sheet_islands(doc)` (MAP D29), l'unico posto dove si sceglie.
+      Positivo: in `regr_01` l'isola di sotto ora si legge intera (prima a
+      metà) — non per la cornice tolta, ha detto Federico.
+- [ ] **`test_rules` fallisce dal 4 ottobre** (verificato il 5 ottobre: fallisce
+      già al commit che l'ha spostato sulla copia anonimizzata
+      `tests/examples/rules/vista_pianta_assi.dxf`, con forge di quel giorno).
+      Fallisce la prima metà: sulla copia la vista in pianta
+      (36, 218, 136, 268) si trova anche **senza** regole, mentre il test
+      vuole che manchi (gli assi la legavano alle quote, MAP D17). Con le
+      regole generiche c'è, come deve. Causa non ancora cercata: o la copia
+      non riproduce più il caso del disegno originale, o qualcosa a monte
+      (cornice, annotazioni) ha tolto il legame. Da capire prima di toccare
+      il test.
 - [ ] confidenza del frame: la formula in `frame._confidence` è grezza,
       tararla sulle fixture reali.
 - [ ] formato ISO: `iso_format` assume mm. Se il disegno è in altre unità

@@ -31,7 +31,7 @@ riferimento nella skill `code-guardrails`).
 
 ## Regole
 
-- Le viste di un disegno si leggono con `forge.island()`, non con `heal()`.
+- Le viste di un disegno si leggono per isole con `sd.sheet_islands(doc)` — `forge.island()` con la distanza scelta da snapdraw, l'unico posto dove la si sceglie (MAP D29) — non con `heal()`.
 - **Mai `snapbend.flat.detect_flat` sulle viste**: presuppone un pezzo piano visto
   dalla faccia. Su una vista i suoi numeri non hanno senso.
 - Test e prove si costruiscono con le API di forge (`forge.load_dxf`,

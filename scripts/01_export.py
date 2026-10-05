@@ -26,7 +26,7 @@ m = sum(1 for e in doc.edges if e.role == sd.CONSTRUCTION)
 print(f"{n} edge di cornice/cartiglio marcati, {m} linee di costruzione (regole al caricamento)")
 
 # messa in tavola = viste su un foglio: si legge per isole, non con heal
-result = forge.island(doc)
+result = sd.sheet_islands(doc)
 print(f"island: valid={result.is_valid}  isole={len(result.clusters)}  "
       f"trash={len(result.trash_entities)}")
 

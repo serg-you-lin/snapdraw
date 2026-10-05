@@ -15,7 +15,7 @@ Cosa rende un'immagine utile a un modello, dall'esperimento di forge:
 
 Passi pubblici (`view_edges`, `render_view`) e una ricetta, `render_views`.
 
-    views = sd.read_views(forge.island(doc))
+    views = sd.read_views(sd.sheet_islands(doc))
     sd.render_views(doc, views, "out/viste")   # out/viste/view_0.png, view_1.png, ...
 """
 

@@ -117,7 +117,7 @@ class FrameLayout:
 @dataclass
 class View:
     """
-    Un'isola di `forge.island(...)` letta come vista del foglio.
+    Un'isola di `sheet_islands(...)` letta come vista del foglio.
 
     index        : posizione in `result.clusters`
     bbox         : (xmin, ymin, xmax, ymax) del contorno esterno

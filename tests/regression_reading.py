@@ -24,7 +24,7 @@ def read_sheet(path: Path) -> dict:
     doc = forge.load_dxf(str(path), role_rules=sd.load_rules(RULES))
     layout = sd.detect_frame(doc)
     sd.tag_layout(doc, layout)
-    result = forge.island(doc)
+    result = sd.sheet_islands(doc)
     views = sd.read_views(result)
     features = sd.read_features(doc, result, views)
 
