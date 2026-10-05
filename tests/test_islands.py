@@ -14,7 +14,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from islands_reading import GOLDEN, ISLANDS, read_islands  # noqa: E402
+from islands_reading import GOLDEN, read_islands, sheets  # noqa: E402
 from test_regression import _compare  # noqa: E402
 
 
@@ -29,7 +29,7 @@ def _make_test(dxf: Path, golden: Path):
     return test
 
 
-for _dxf in sorted(ISLANDS.glob("*.dxf")):
+for _dxf in sheets():
     _golden = GOLDEN / f"{_dxf.stem}.json"
     if _golden.exists():
         setattr(TestIslands, f"test_{_dxf.stem}", _make_test(_dxf, _golden))

@@ -99,6 +99,18 @@
       "questo è un buon set di golden"; golden delle isole su anch_01-08):
       - ✅ **anch_07: il cartiglio diventava un'isola** (nessun testo nelle
         celle): MAP D32, griglia in basso a destra anche senza testo.
+      - **i 33 fogli di `examples/anonymus`** (giudicati da Federico il 5
+        ottobre sulla pagina, giudizi in `real_picks`): 27 giusti, quasi tutti
+        doppioni. Golden solo su **drw_0011** (vista spezzata: per vedere la
+        differenza quando le viste spezzate saranno lette). Gli altri restano
+        in locale, non in git. Casi aperti, tutti lettura del framer:
+        cornice con le tacche di riferimento verso l'esterno non trovata
+        (drw_0001, 0007, 0009 — drw_0001 caso di riferimento, entra nel golden
+        quando è giusto); foglio ruotato di 90° in senso orario (drw_0010);
+        viste spezzate (drw_0011, 0012, 0013, 0030, 0032); vista laterale
+        portata sotto e ingrandita (drw_0013); tabellina presa per vista
+        (drw_0014); una linea nella vista 3D di drw_0008. drw_0006: rettangolo
+        disegnato male (doveva essere di costruzione), niente da fare.
       - **senza cornice il cartiglio si prende tutto il disegno**
         (`examples/anonymus`, drw_0001, 0007, 0009): nessuna cornice
         trovata, un riquadro passa per cartiglio e assorbe tutti gli edge

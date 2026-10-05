@@ -8,7 +8,8 @@ il golden) e `test_islands.py` (lo confronta).
 
 Fogli in `examples/islands/`: solo quelli che Federico ha giudicato giusti
 sulla pagina "Scala delle isole" (5 ottobre, forge D99-D100, MAP D30-D31);
-anch_07 e anch_08 entrano dopo D100, con le viste 3D intere.
+anch_07 e anch_08 entrano dopo D100, con le viste 3D intere. In `examples/anonymus/`
+hanno il golden solo i fogli giudicati giusti.
 """
 
 from pathlib import Path
@@ -17,8 +18,16 @@ import forge
 import snapdraw as sd
 
 ISLANDS = Path(__file__).parent / "examples" / "islands"
+ANONYMUS = Path(__file__).parent / "examples" / "anonymus"
 GOLDEN = ISLANDS / "json"
+
+
 RULES = "generic"
+
+
+def sheets() -> list:
+    """I fogli delle due cartelle; un foglio ha il test solo se ha il golden (giudicato giusto)."""
+    return sorted(ISLANDS.glob("*.dxf")) + sorted(ANONYMUS.glob("*.dxf"))
 
 
 def read_islands(path: Path) -> dict:
