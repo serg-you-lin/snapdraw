@@ -13,6 +13,7 @@ viste, notazione, scala. Consuma forge, non lo modifica.
 
 | situazione | leggi |
 |---|---|
+| **devi capire cosa c'è o cosa fa una funzione** (di snapdraw o di forge) | prima `docs/INDEX.md` e `../forge/docs/LLM.md`, poi solo le righe che indicano. Mai leggere un modulo intero per capirlo: l'indice c'è per risparmiare token |
 | **stai per scrivere una funzione, un helper, una classe** | `docs/INDEX.md` — ogni nome del package con `file:riga`. Controlla che nome *e* lavoro non esistano già; un fatto geometrico va cercato anche in `../forge/docs/INDEX.md`, e se manca si aggiunge a forge |
 | perché una cosa è fatta così | `MAP.md` (una decisione chiusa non si ridecide) |
 | script da lanciare | `SCRIPTS.md` |
