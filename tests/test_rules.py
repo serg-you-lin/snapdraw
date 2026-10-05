@@ -8,7 +8,7 @@ Il caso vero è `vista_pianta_assi` (tests/examples/rules, copia anonimizzata
 di un disegno reale): la vista in pianta mancava perché i suoi assi la
 legavano alle quote. Con le regole
 generiche gli assi sono `construction` al caricamento e `forge.island()` la
-ritrova.
+ritrova; dopo forge D99-D100 la trova anche senza regole (MAP D30).
 """
 
 import json
@@ -62,8 +62,12 @@ class TestRegoleSuDisegnoVero(unittest.TestCase):
 
     def test_la_vista_in_pianta_ritorna(self):
         plan_view = (36, 218, 136, 268)
-        self.assertNotIn(plan_view, self._island_bounds(()))
         self.assertIn(plan_view, self._island_bounds(sd.load_rules("generic")))
+
+    def test_senza_regole_la_vista_c_e_lo_stesso(self):
+        # dopo forge D99-D100 le isole sono i contorni esterni: gli assi non la legano
+        # più alle quote, la vista si trova anche senza regole (MAP D30)
+        self.assertIn((36, 218, 136, 268), self._island_bounds(()))
 
 
 if __name__ == "__main__":

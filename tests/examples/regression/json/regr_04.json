@@ -17,7 +17,7 @@
     ]
   },
   "frame_flags": [],
-  "clusters": 6,
+  "clusters": 4,
   "views": [
     {
       "kind": "orthographic",
@@ -38,39 +38,21 @@
       ]
     },
     {
+      "kind": "pictorial",
+      "bbox": [
+        808.02,
+        266.6,
+        1118.89,
+        586.83
+      ]
+    },
+    {
       "kind": "orthographic",
       "bbox": [
         1199.847,
         471.499,
         1329.847,
         725.013
-      ]
-    },
-    {
-      "kind": "pictorial",
-      "bbox": [
-        808.016,
-        402.217,
-        1111.775,
-        586.831
-      ]
-    },
-    {
-      "kind": "symbol",
-      "bbox": [
-        1095.731,
-        411.134,
-        1106.212,
-        417.184
-      ]
-    },
-    {
-      "kind": "symbol",
-      "bbox": [
-        872.977,
-        282.541,
-        883.458,
-        288.591
       ]
     }
   ],
@@ -82,7 +64,7 @@
     "scales": {
       "0": 1.0,
       "1": 1.0,
-      "2": 1.0
+      "3": 1.0
     },
     "flags": [],
     "features": [
@@ -143,8 +125,8 @@
       {
         "kind": "opening",
         "hole_type": null,
-        "view": 2,
-        "path": "clusters[2].inners[0]",
+        "view": 3,
+        "path": "clusters[3].inners[0]",
         "through": true,
         "source": "convention",
         "drawn_depth": 522.989
@@ -152,8 +134,8 @@
       {
         "kind": "opening",
         "hole_type": null,
-        "view": 2,
-        "path": "clusters[2].inners[1]",
+        "view": 3,
+        "path": "clusters[3].inners[1]",
         "through": true,
         "source": "convention",
         "drawn_depth": 522.989

@@ -95,6 +95,19 @@
       grande, distribuzione angoli — utile anche a distinguere viste
       assonometriche, angoli non 0°/90°). Non ancora iniziato: serve prima
       un numero decente di disegni etichettati.
+- [ ] **isole: quello che resta dopo forge D99-D100** (Federico, 5 ottobre,
+      "questo è un buon set di golden"; golden delle isole su anch_01-08):
+      - **anch_07: il cartiglio diventa un'isola.** `detect_frame` non
+        trova il cartiglio su anch_07 (nessun edge `title_block`): da capire
+        perché, con la regola D31 (lato sul bordo interno della cornice).
+      - **anch_08, vista frontale: un leader esploso** (freccia e linea
+        disegnate come geometria, non come annotazione) si attacca alla
+        vista. Federico: "almeno il leader non ha senso che sia rosso".
+        Riconoscerlo come leader è lettura della notazione, cioè del framer.
+      - **anch_08, l'angolo**: specifico di quel disegno, non si tocca nel
+        codice generale — sarebbe una regola sul cliente (lavorando sullo
+        spessore), roba da ottimizzazione per cliente.
+
 - [ ] **isole di un foglio, giudizi del 5 ottobre** (dalla prova sulla
       scala, forge TODO punto 13, chiuso; pagina "Scala delle isole", `lab/island_scale.py`; giudizi nel
       database della pagina, collezione `picks`). Su 13 disegni: 9 con una
@@ -241,7 +254,9 @@
       Aperto: su un foglio generato `find_frame` dà un `inner_bbox` misto
       (lati alto/basso del bordo esterno) e il cartiglio rilevato si
       allarga fino al bordo esterno; sui disegni reali non visto.
-- [ ] **`test_rules` fallisce dal 4 ottobre** (verificato il 5 ottobre: fallisce
+- [x] ✅ **chiuso il 5 ottobre**: dopo forge D99-D100 la vista in pianta si trova anche
+      senza regole; il test ora lo dice (`test_senza_regole_la_vista_c_e_lo_stesso`).
+      Storia: **`test_rules` falliva dal 4 ottobre** (verificato il 5 ottobre: falliva
       già al commit che l'ha spostato sulla copia anonimizzata
       `tests/examples/rules/vista_pianta_assi.dxf`, con forge di quel giorno).
       Fallisce la prima metà: sulla copia la vista in pianta

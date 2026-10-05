@@ -85,6 +85,15 @@
     {
       "kind": "symbol",
       "bbox": [
+        788.1,
+        386.47,
+        793.61,
+        394.72
+      ]
+    },
+    {
+      "kind": "symbol",
+      "bbox": [
         785.739,
         238.206,
         791.246,
@@ -108,15 +117,6 @@
         751.272,
         398.029
       ]
-    },
-    {
-      "kind": "symbol",
-      "bbox": [
-        788.104,
-        389.223,
-        793.613,
-        394.72
-      ]
     }
   ],
   "principal": 0,
@@ -129,14 +129,14 @@
       "1": 1.0,
       "3": 1.0,
       "4": 1.0,
-      "8": 1.0,
-      "9": 1.0
+      "9": 1.0,
+      "10": 1.0
     },
     "flags": [
       "scale: view 3 from sheet",
       "scale: view 4 from sheet",
-      "scale: view 8 from sheet",
-      "scale: view 9 from sheet"
+      "scale: view 9 from sheet",
+      "scale: view 10 from sheet"
     ],
     "features": [
       {

@@ -17,7 +17,7 @@
     ]
   },
   "frame_flags": [],
-  "clusters": 6,
+  "clusters": 3,
   "views": [
     {
       "kind": "orthographic",
@@ -32,8 +32,8 @@
       "kind": "pictorial",
       "bbox": [
         35.773,
-        36.243,
-        139.559,
+        35.512,
+        141.188,
         104.406
       ]
     },
@@ -44,33 +44,6 @@
         167.526,
         302.301,
         194.401
-      ]
-    },
-    {
-      "kind": "orthographic",
-      "bbox": [
-        43.64,
-        41.236,
-        48.144,
-        46.457
-      ]
-    },
-    {
-      "kind": "orthographic",
-      "bbox": [
-        134.816,
-        93.699,
-        137.867,
-        98.161
-      ]
-    },
-    {
-      "kind": "orthographic",
-      "bbox": [
-        106.97,
-        73.256,
-        109.747,
-        77.02
       ]
     }
   ],
@@ -83,16 +56,9 @@
     "summary": "2 fori passanti Ø5,3 +0,05/0, profondità 4; 1 foro passante Ø4,3 +0,05/0, profondità 4",
     "scales": {
       "0": 0.8,
-      "2": 0.8,
-      "3": 0.8,
-      "4": 0.8,
-      "5": 0.8
+      "2": 0.8
     },
-    "flags": [
-      "scale: view 3 from sheet",
-      "scale: view 4 from sheet",
-      "scale: view 5 from sheet"
-    ],
+    "flags": [],
     "features": [
       {
         "kind": "hole",
@@ -124,8 +90,6 @@
     ]
   },
   "unchecked": {
-    "clusters": "forge D99 / MAP D30: vista 3D col contorno esterno a otto (TODO): isole e viste non ancora giuste",
-    "views": "forge D99 / MAP D30: vista 3D col contorno esterno a otto (TODO): isole e viste non ancora giuste",
-    "features": "forge D99 / MAP D30: vista 3D col contorno esterno a otto (TODO): isole e viste non ancora giuste"
+    "features": "forge D99-D100: la vista 3D ora è intera, scale e segnalazioni delle feature cambiano: da guardare"
   }
 }
