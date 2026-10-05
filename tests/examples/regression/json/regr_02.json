@@ -17,7 +17,7 @@
     ]
   },
   "frame_flags": [],
-  "clusters": 7,
+  "clusters": 11,
   "views": [
     {
       "kind": "orthographic",
@@ -76,10 +76,46 @@
     {
       "kind": "symbol",
       "bbox": [
+        783.367,
+        150.158,
+        790.529,
+        157.32
+      ]
+    },
+    {
+      "kind": "symbol",
+      "bbox": [
         785.739,
         238.206,
         791.246,
         243.714
+      ]
+    },
+    {
+      "kind": "orthographic",
+      "bbox": [
+        771.78,
+        392.187,
+        777.286,
+        397.693
+      ]
+    },
+    {
+      "kind": "orthographic",
+      "bbox": [
+        745.768,
+        392.528,
+        751.272,
+        398.029
+      ]
+    },
+    {
+      "kind": "symbol",
+      "bbox": [
+        788.104,
+        389.223,
+        793.613,
+        394.72
       ]
     }
   ],
@@ -87,32 +123,27 @@
   "depth": 15.061,
   "view_flags": [],
   "features": {
-    "summary": "4 fori lamati passanti Ø≈8 (sede Ø≈30 prof. 1,5), profondità 13,5; 1 foro filettato passante M8, profondità 15,06; 2 aperture passanti 6,46×4,62, profondità 140; 1 apertura cieca 121,99×60, profondità 1,5; 1 apertura passante 99,99×25, profondità 13,5; 1 apertura passante 6,46×4,43, profondità 15,06; 1 apertura passante 10,06×10,06, profondità 140; 1 apertura passante 11,35×5,68, profondità 140; 1 apertura passante 12,65×6,32",
+    "summary": "4 fori lamati passanti Ø≈8 (sede Ø≈30 prof. 1,5), profondità 13,5; 1 foro filettato passante M8, profondità 15,06; 2 aperture passanti 6,46×4,62, profondità 140; 1 apertura cieca 121,99×60, profondità 1,5; 1 apertura passante 6,46×4,43, profondità 15,06; 1 apertura passante 99,99×25, profondità 13,5; 1 apertura passante 10,06×10,06, profondità 140; 1 apertura passante 11,35×5,68, profondità 140; 1 apertura passante 12,65×6,32",
     "scales": {
       "0": 1.0,
       "1": 1.0,
       "3": 1.0,
-      "4": 1.0
+      "4": 1.0,
+      "8": 1.0,
+      "9": 1.0
     },
     "flags": [
       "scale: view 3 from sheet",
-      "scale: view 4 from sheet"
+      "scale: view 4 from sheet",
+      "scale: view 8 from sheet",
+      "scale: view 9 from sheet"
     ],
     "features": [
-      {
-        "kind": "hole",
-        "hole_type": "threaded",
-        "view": 0,
-        "path": "clusters[0].inners[4]",
-        "through": true,
-        "source": "convention",
-        "drawn_depth": 15.061
-      },
       {
         "kind": "opening",
         "hole_type": null,
         "view": 0,
-        "path": "clusters[0].inners[5]",
+        "path": "clusters[0].inners[0]",
         "through": false,
         "source": "trace",
         "drawn_depth": 1.5
@@ -121,19 +152,28 @@
         "kind": "opening",
         "hole_type": null,
         "view": 0,
-        "path": "clusters[0].inners[6]",
+        "path": "clusters[0].inners[1]",
         "through": true,
-        "source": "trace",
-        "drawn_depth": 13.5
+        "source": "convention",
+        "drawn_depth": 15.061
       },
       {
         "kind": "opening",
         "hole_type": null,
         "view": 0,
+        "path": "clusters[0].inners[2]",
+        "through": true,
+        "source": "trace",
+        "drawn_depth": 13.5
+      },
+      {
+        "kind": "hole",
+        "hole_type": "counterbore",
+        "view": 0,
         "path": "clusters[0].inners[7]",
         "through": true,
-        "source": "convention",
-        "drawn_depth": 15.061
+        "source": "trace",
+        "drawn_depth": 13.5
       },
       {
         "kind": "hole",
@@ -164,12 +204,12 @@
       },
       {
         "kind": "hole",
-        "hole_type": "counterbore",
+        "hole_type": "threaded",
         "view": 0,
         "path": "clusters[0].inners[11]",
         "through": true,
-        "source": "trace",
-        "drawn_depth": 13.5
+        "source": "convention",
+        "drawn_depth": 15.061
       },
       {
         "kind": "opening",

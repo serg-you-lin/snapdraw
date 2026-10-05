@@ -54,6 +54,18 @@
       risultato è fatto per essere mostrato. Il DXF grezzo solo su 1–2
       disegni medi: quelli grandi non entrano nel contesto di un agente.
 
+- [ ] **detection sulle isole e combinata sulle viste** (Federico, 5
+      ottobre): come `detect_flat` per un pezzo piano, ma su un'isola, più
+      una lettura che mette insieme le viste. `read_features` (D23) ne fa
+      già una parte (feature per vista, tracce nelle compagne). In più deve
+      dire **se il pezzo disegnato è un assemblato** (multipezzo), per
+      esempio un saldato: più parti unite che il disegno mostra come un
+      oggetto solo. Federico: non basarsi sui simboli di saldatura, che
+      nei disegni veri spessissimo non ci sono — va letto dalla geometria
+      delle viste. Come, non ancora studiato.
+      Viene dopo le isole: se le isole sono sbagliate, si leggono male
+      anche i pezzi.
+
 - [ ] **cartiglio sulle fixture** (MAP D22): falso positivo su `regr_03`
       (la fascia della griglia di riferimento), campi letti male su
       `regr_05`/`regr_02`/`regr_04` — ritarare `detect_titleblock` e la
@@ -109,6 +121,110 @@
         La distanza resta in `sheet_islands(doc)` (MAP D29).
       Positivo: in `regr_01` l'isola di sotto ora si legge intera (prima a
       metà) — non per la cornice tolta, ha detto Federico.
+      **Misura del 5 ottobre (dopo D28)**: per ogni disegno giudicato,
+      l'intervallo di distanze che dà esattamente le isole scelte (sulla
+      scala della pagina, cioè vicinanza fra pezzi, non `forge.island`
+      stesso): anch_01 e regr_03 6,7–26,6; anch_04 9,5–70; anch_05 15–77;
+      anch_06 19–45; anch_08 20,5–51,6; regr_02 16,9–61,7; regr_04 15–96,7;
+      anch_03 61,7–88,9. **Fra 20,5 e 26,6 vanno bene 8 su 9**; anch_03 da
+      solo vuole oltre 61,7, e i 4 senza distanza giusta restano.
+      Federico: la distanza non è una costante — è flottante, cambia da
+      disegno a disegno, e la distanza come criterio potrebbe essere
+      sbagliata del tutto. Da provare il **ray casting** per decidere a
+      quale isola appartiene un pezzo (proposta sua). Non è il ray casting
+      scartato in forge D59/D65: quello cercava il contorno esterno di una
+      vista; qui servirebbe a dire chi "vede" chi fra i pezzi del foglio.
+      Si giudica sulla pagina "Scala delle isole", non su DXF.
+      Federico, su `anch_02`: la regola della pagina ("grande" = diagonale
+      ≥ 1/4 della più grande, il gradino scelto fra unioni di isole
+      grandi) è sbagliata. Le viste di lato restano grigie perché sono
+      molto più piccole della vista dall'alto, lunghissima — e non è un
+      caso speciale, succede spesso. La grandezza non entra nel criterio.
+      Nota sulla pagina: "a 132,6 ha senso per la vista da sopra e il 3D,
+      ma la vista laterale e la vista ingrandita restano grigie".
+      Il ray casting c'è già in forge e nessuno lo usa:
+      `forge/core/healing/outer_scan.py` (raggi orizzontali e verticali a
+      ogni quota-evento; oggi restituisce solo il primo e l'ultimo punto di
+      ogni raggio, non tutti i pezzi incontrati in ordine).
+      **Prototipo** `lab/island_rays.py` (locale): isole a contatto
+      (`forge.island` a 0,5 mm, i fori stanno dentro per contenimento),
+      raggi solo sui contorni esterni, per ogni coppia di isole che si
+      vedono: raggi, larghezza in comune, vuoto minimo. Primo giro: pochi
+      contorni esterni (3–11 per disegno) ma **molti edge aperti restano
+      fuori** (68–1504 per disegno): parti di vista che a contatto non
+      chiudono un contorno. I raggi devono vedere anche quelli.
+      Federico sul metodo (5 ottobre): **non cercare la soglia che separa
+      i giudizi** — si finisce con un codice perfettamente deterministico
+      su un campione irrilevante. La regola si dice prima, dal motivo
+      geometrico; i disegni servono a vedere dove sbaglia, e dove sbaglia
+      si dichiara incerto (Pippo), non si ritocca. E l'allineamento in
+      proiezione non è una legge: una trave lunghissima ha la vista
+      laterale messa sotto, non allineata, a volte in un'altra scala con
+      le quote di riferimento. Allineate → indizio di viste separate; non
+      allineate → non dice niente.
+      **Proposta di Federico: uno scan invece della distanza.** "Le isole a
+      occhio sono palesemente separate, c'è spazio fra loro." Tradotto: si
+      scorre il foglio con una linea orizzontale e una verticale; dove la
+      linea non attraversa nessuna geometria c'è un corridoio vuoto, e un
+      corridoio vuoto che attraversa tutta la zona separa due parti. Si
+      ripete dentro ogni parte (taglio ricorsivo orizzontale/verticale).
+      Nessuna distanza da scegliere. Limiti da vedere sui disegni: viste
+      incastrate (un'assonometria nell'angolo a L di un'altra vista) non
+      si separano con un taglio dritto → "non so"; simboli disegnati come
+      geometria fuori dalla vista vengono staccati (quote e testi no: sono
+      annotazioni, non entrano). I mattoni dello scan sono già in
+      `outer_scan.py`.
+      **Trovato il 5 ottobre, prima dello scan:** `forge.island` raggruppa
+      per distanza e poi in ogni gruppo tiene **un solo** contorno esterno,
+      il più grande (`outer_face`); gli altri contorni chiusi del gruppo
+      finiscono in `outside_loops` e, se il gruppo non è annidato, nel
+      cestino. A 10 mm capita in 9 disegni su 13. Regola di Federico:
+      **più contorni esterni = isole diverse**. Contato con la regola: il
+      numero di isole quasi non cambia fra 5 e 200 mm (anch_01 5, regr_01
+      3, anch_05 3 a ogni distanza; oggi anch_01 passa da 5 a 1 a 50 mm).
+      Prototipo `lab/island_outers.py`: pezzi a contatto, un'isola per
+      contorno esterno non contenuto in un altro, la distanza attacca solo
+      i pezzi staccati (pochi: 0–5 per disegno). Pagina "Scala delle
+      isole" ripubblicata con questa regola, senza la regola "grande /
+      grigio"; giudizi nuovi in `outer_picks`, i vecchi restano in `picks`.
+      Da giudicare: viste fatte di più contorni che non si toccano
+      (diventano più isole) e simboli chiusi fuori dalle viste (diventano
+      isole loro).
+      **Proposta di Federico (5 ottobre): togliere la distanza del tutto.**
+      Si trovano i contorni esterni (pezzi a contatto, `max_gap`), poi una
+      passata di gerarchia assegna alla stessa vista tutto quello che le
+      sta dentro, chiuso o aperto. Riapre forge D59/D98 (`island_gap`
+      sparisce). Da decidere prima: dove vanno nel modello le linee aperte
+      dentro una vista (oggi in `trash_entities` anche se stanno dentro;
+      `ForgeCluster` ha posto solo per i giri chiusi) e dove vanno i pezzi
+      fuori da ogni contorno (note e segni del foglio, senza distanza non
+      si attaccano a niente).
+      **Fatto in forge (D99, non committato), ma prima di chiudere:** su
+      alcune viste il contorno esterno di forge è sbagliato e dentro non si
+      annida niente (c'era già col codice di prima: stesso risultato).
+      Verificato su anch_07, vista 104×68: il giro lungo la faccia esterna
+      fa tutta la sagoma (206 edge, si chiude), ma passa due volte per due
+      nodi dove si incontrano 4 linee; l'anello che ne esce si incrocia,
+      le due metà hanno verso opposto e l'area si annulla (347 mm², il 5%
+      del rettangolo). Da capire perché in quei nodi il giro "attraversa"
+      invece di girare (sospetto, non verificato: la direzione di uscita
+      letta a 3 mm sugli archi). Pagina "Contorni delle isole" (anch_02,
+      anch_07) con i contorni in verde.
+      Fori, controllati il 5 ottobre: anch_02, isola 0 (contorno giusto per
+      Federico): 49 cerchi dentro, 49 ritrovati come interni — se sulla
+      pagina sembravano persi era la pagina. anch_03, isola 0: 10 cerchi,
+      8 ritrovati. I due persi (r 4,25 in 171,9/270 e 171,9/363) sono
+      attraversati da linee nascoste: forge li spezza in archi e nessun
+      giro chiuso viene trovato, finiscono fra le linee aperte (con
+      `cluster_ref` 0, quindi non persi dall'isola, ma non sono un foro).
+      Persi anche col codice di prima. Da capire perché il giro del
+      cerchio non si chiude.
+      **Cartiglio (MAP D31):** i fori "persi" di anch_02 erano mangiati da un
+      falso cartiglio; ora 95 su 95. anch_03 dopo D31: 13 cerchi dentro la
+      vista, 9 interni — i due delle linee nascoste più due da guardare.
+      Aperto: su un foglio generato `find_frame` dà un `inner_bbox` misto
+      (lati alto/basso del bordo esterno) e il cartiglio rilevato si
+      allarga fino al bordo esterno; sui disegni reali non visto.
 - [ ] **`test_rules` fallisce dal 4 ottobre** (verificato il 5 ottobre: fallisce
       già al commit che l'ha spostato sulla copia anonimizzata
       `tests/examples/rules/vista_pianta_assi.dxf`, con forge di quel giorno).

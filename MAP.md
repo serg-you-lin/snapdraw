@@ -810,6 +810,55 @@ scala (delle isole o del disegno) non è la strada per sceglierla: Federico,
 Suite: 82 passati, 1 fallito (`test_rules`, già prima: vedi TODO). Versione **0.2.0**:
 `sheet_islands` è nuova e serve forge 0.12.0.
 
+### D30 — Le isole sono i contorni esterni, non una distanza (forge D99)  ✅
+
+Federico (5 ottobre): la distanza fra le isole "è una cazzata". Le prove
+sulla pagina "Scala delle isole" lo hanno mostrato: la distanza giusta andava
+da 17 a 78 mm e su 4 disegni non ce n'era nessuna, e la regola della pagina
+("grande" = diagonale ≥ 1/4 della più grande) era sbagliata perché le viste
+laterali di un pezzo lungo sono piccole per forza. La sua regola: più
+contorni esterni sono isole diverse, e una passata di gerarchia dà a ogni
+isola quello che ha dentro. Messa in forge (D99): `sheet_islands(doc)` chiama
+`forge.island(doc, max_gap=SHEET_MAX_GAP)`; `SHEET_GAP` non esiste più.
+
+Scartati lungo la strada (5 ottobre): una distanza unica scelta sui giudizi
+(fra 20,5 e 26,6 andavano bene 8 su 9, ma era tarare su 13 disegni); i
+raggi fra le isole per scegliere a chi attaccare un pezzo (non servono:
+quello che conta sta dentro un contorno). Lo scan per corridoi vuoti resta
+un'idea, non serve finché i contorni bastano.
+
+### D31 — Con la cornice, il cartiglio sta sul suo bordo interno  ✅
+
+Federico (5 ottobre), guardando i fori spariti in anch_02: "vanno tutti in
+titleblock, perché il titleblock è visto come un reticolo". Verificato: una
+fila di fori a passo costante con le loro linee ha l'aspetto di una griglia, e
+`find_titleblock` prendeva una fascia di 1390×25 mm dentro la vista (46 cerchi,
+poi mangiati da D12). Stesso errore su anch_03 (una vista stretta, 25×140 mm,
+a metà foglio) e su anch_01/regr_03 (la fascia di 6 mm fra i due bordi della
+cornice, falso positivo già nel TODO).
+
+Regola: quando c'è la cornice, un rettangolo è candidato cartiglio solo se ha
+almeno un lato sul bordo interno (`inner_bbox`, o `bbox` senza doppio bordo)
+entro `FRAME_TOUCH_TOL` = 1 mm — fatto geometrico in forge,
+`forge.geometry.sides_on_border`. Senza cornice tutto come prima. Misurato su
+tutti i disegni disponibili prima di scriverla: i 60 cartigli veri con cornice
+hanno un lato a distanza 0, i falsi stanno a 198–201 mm (anch_02, anch_03) e
+5,7 mm (la fascia). Dopo: gli stessi 60, nessun falso. anch_02, vista lunga:
+95 cerchi dentro, 95 interni (prima 49).
+
+`add_title_block` appoggiava il cartiglio 5 mm dentro il bordo interno
+(`margin` = 10 dal bordo esterno): un nostro margine, nessun disegno reale lo
+fa. Ora il default è `_BORDER_GAP`, il cartiglio tocca il bordo interno.
+
+Golden (5 ottobre, dopo D30-D31): regressione rigenerata per regr_01-04
+(isole giudicate giuste; in regr_01 cambia solo la numerazione di un foro);
+regr_03 perde il `known_wrong` del cartiglio (ora giusto: nessun cartiglio) e
+le sue feature vanno in `unchecked` (l'apertura passa da 7,89×4,2 a 7,8×8, da
+guardare); regr_05 ha isole, viste e feature in `unchecked` (vista 3D col
+contorno a otto, TODO). Nuovo golden delle isole, `tests/test_islands.py`,
+su anch_01-06 (copie anonimizzate dai fixture di forge): riquadro e numero di
+contorni interni di ogni isola. Suite 89. Versione **0.3.0**, serve forge 0.13.0.
+
 ---
 
 ## Appunti (aperti — non decisioni)

@@ -37,17 +37,16 @@ AXIS_ANGLE_TOLERANCE = 2.0   # gradi — un LineSeg entro 2° da 0/90 è orizzon
 ORTHOGRAPHIC_SHARE = 0.5     # quota minima di lunghezza orizzontale/verticale per una vista ortogonale
 MATE_TOLERANCE = 1.0         # mm — due viste in proiezione hanno la stessa estensione
 SYMBOL_RATIO = 0.1           # un'isola senza compagni sotto 1/10 della dimensione minore della vista di riferimento
-SHEET_GAP = 10.0             # mm — distanza massima fra due edge della stessa isola di un foglio
-SHEET_MAX_GAP = 0.5          # mm — gap chiusi fra estremi liberi di una vista
+SHEET_MAX_GAP = 0.5          # mm — edge di una vista che si toccano, gap chiusi fra estremi liberi
 
 
 def sheet_islands(doc: forge.ForgeDocument) -> forge.ForgeResult:
     """
-    Le isole di un foglio: `forge.island` con la distanza scelta da
-    snapdraw. forge non ha default (forge D98): tutti gli script e i test di
-    snapdraw passano di qui, così la distanza si cambia in un posto solo.
+    Le isole di un foglio: `forge.island` con il `max_gap` scelto da
+    snapdraw (forge D98). Un'isola per contorno esterno, nessuna distanza
+    fra le viste (forge D99, MAP D30). Tutti gli script e i test passano di qui.
     """
-    return forge.island(doc, island_gap=SHEET_GAP, max_gap=SHEET_MAX_GAP)
+    return forge.island(doc, max_gap=SHEET_MAX_GAP)
 
 
 def classify_view(cluster, angle_tolerance: float = AXIS_ANGLE_TOLERANCE) -> str:

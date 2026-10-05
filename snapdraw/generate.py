@@ -148,7 +148,7 @@ def add_title_block(
     doc,
     fields:   Optional[Dict[str, str]] = None,
     anchor:   Optional[Tuple[float, float]] = None,
-    margin:   float = DEFAULT_MARGIN,
+    margin:   float = _BORDER_GAP,
     template: Optional[TitleBlockTemplate] = None,
 ) -> TitleBlock:
     """
@@ -164,7 +164,8 @@ def add_title_block(
                 l'angolo in basso a destra della bbox corrente di `doc.edges`
                 (meno `margin`) — agnostico rispetto a formato/orientamento
                 del foglio: se `add_frame(doc)` è già stato chiamato, quella
-                bbox è la cornice, e il cartiglio finisce nel suo angolo.
+                bbox è la cornice, e con il `margin` di default il cartiglio
+                si appoggia al bordo interno, nel suo angolo (MAP D31).
                 `ValueError` se `doc.edges` è vuoto e `anchor` non è dato:
                 niente punto a caso.
     `template`: design del cartiglio, default `DEFAULT_TITLE_BLOCK_TEMPLATE`.

@@ -28,6 +28,7 @@ from typing import Dict, List, Optional, Tuple
 from shapely.geometry import LineString
 from shapely.strtree import STRtree
 
+import forge
 from forge.core.geometry.axis import CoveredRectangle, axis_lines, items_inside
 
 from .geometry import TEXT_BORDER_TOL, annotation_density_ratio, find_rectangles, grid_dividers, line_edges
@@ -38,6 +39,7 @@ CONFIDENCE_THRESHOLD = 0.6             # conservativo: sotto questa soglia, None
 MAX_DOMINANT_SEGMENT_FRACTION = 0.6    # vedi _is_genuine_grid
 MIN_FILLED_CELL_FRACTION = 0.8         # vedi find_titleblock: scarta griglie con troppe celle vuote
 EXTEND_TOUCH_TOL = 1.0                 # mm — due linee si toccano se più vicine di così (vedi extend_titleblock)
+FRAME_TOUCH_TOL = 1.0                  # mm — un lato del cartiglio sta sul bordo interno della cornice (MAP D31)
 
 
 def find_titleblock(doc, frame: Optional[FrameInfo] = None) -> Optional[TitleBlock]:
@@ -45,9 +47,9 @@ def find_titleblock(doc, frame: Optional[FrameInfo] = None) -> Optional[TitleBlo
     Delimita il cartiglio nella geometria grezza di `doc`.
 
     Il cartiglio **non è per forza dentro una cornice**: il rilevamento parte
-    da un rettangolo qualsiasi con una griglia interna, `frame` è solo un
-    bonus di punteggio se combacia (di solito il cartiglio sta in un angolo
-    della cornice, in basso a destra).
+    da un rettangolo qualsiasi con una griglia interna. Con la cornice, il
+    rettangolo deve avere almeno un lato sul suo bordo interno (MAP D31);
+    l'angolo in basso a destra resta un bonus di punteggio.
 
     `find_rectangles` su un disegno con più linee parallele (le righe del
     cartiglio) restituisce anche ogni sotto-rettangolo nidificato (una riga
@@ -69,8 +71,12 @@ def find_titleblock(doc, frame: Optional[FrameInfo] = None) -> Optional[TitleBlo
     sua riga.
     """
     kept: List[Tuple[CoveredRectangle, List[Cell], float]] = []
+    border = None if frame is None else (frame.inner_bbox or frame.bbox)
 
     for rect in find_rectangles(doc, min_side_length=TITLEBLOCK_MIN_SIDE):
+        # con la cornice, il cartiglio sta sul suo bordo interno (MAP D31)
+        if border is not None and not forge.geometry.sides_on_border(rect.bbox, border, FRAME_TOUCH_TOL):
+            continue
         row_ys, col_xs = grid_dividers(rect, doc)
         if not _is_genuine_grid(row_ys, col_xs, rect):
             continue

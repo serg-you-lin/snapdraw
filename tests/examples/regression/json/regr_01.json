@@ -56,7 +56,7 @@
         "kind": "hole",
         "hole_type": "countersink",
         "view": 0,
-        "path": "clusters[0].inners[8]",
+        "path": "clusters[0].inners[13]",
         "through": true,
         "source": "trace",
         "drawn_depth": 1.0
@@ -65,7 +65,7 @@
         "kind": "hole",
         "hole_type": "countersink",
         "view": 0,
-        "path": "clusters[0].inners[9]",
+        "path": "clusters[0].inners[14]",
         "through": true,
         "source": "trace",
         "drawn_depth": 1.0
@@ -74,7 +74,7 @@
         "kind": "hole",
         "hole_type": "countersink",
         "view": 0,
-        "path": "clusters[0].inners[10]",
+        "path": "clusters[0].inners[15]",
         "through": true,
         "source": "trace",
         "drawn_depth": 1.0

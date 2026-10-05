@@ -9,7 +9,9 @@
     "iso_format": null
   },
   "title_block": null,
-  "frame_flags": [],
+  "frame_flags": [
+    "title_block: uncertain"
+  ],
   "clusters": 5,
   "views": [
     {
@@ -62,7 +64,7 @@
   "depth": 3.0,
   "view_flags": [],
   "features": {
-    "summary": "2 fori svasati passanti Ø≈4,2 (sede Ø≈7,8), profondità 1,2; 2 fori svasati passanti Ø≈3,5 (sede Ø≈6,7), profondità 1,4; 1 apertura passante 7,89×4,2, profondità 3",
+    "summary": "2 fori svasati passanti Ø≈4,2 (sede Ø≈7,8), profondità 1,2; 2 fori svasati passanti Ø≈3,5 (sede Ø≈6,7), profondità 1,4; 1 apertura passante 7,8×7,79, profondità 3",
     "scales": {
       "0": 1.0,
       "1": 1.0,
@@ -73,31 +75,13 @@
     "flags": [],
     "features": [
       {
-        "kind": "hole",
-        "hole_type": "countersink",
+        "kind": "opening",
+        "hole_type": null,
         "view": 0,
         "path": "clusters[0].inners[2]",
         "through": true,
         "source": "trace",
-        "drawn_depth": 1.2
-      },
-      {
-        "kind": "hole",
-        "hole_type": "countersink",
-        "view": 0,
-        "path": "clusters[0].inners[3]",
-        "through": true,
-        "source": "trace",
-        "drawn_depth": 1.2
-      },
-      {
-        "kind": "hole",
-        "hole_type": "countersink",
-        "view": 0,
-        "path": "clusters[0].inners[4]",
-        "through": true,
-        "source": "trace",
-        "drawn_depth": 1.4
+        "drawn_depth": 3.0
       },
       {
         "kind": "hole",
@@ -106,20 +90,38 @@
         "path": "clusters[0].inners[5]",
         "through": true,
         "source": "trace",
-        "drawn_depth": 1.4
+        "drawn_depth": 1.2
       },
       {
-        "kind": "opening",
-        "hole_type": null,
+        "kind": "hole",
+        "hole_type": "countersink",
         "view": 0,
         "path": "clusters[0].inners[6]",
         "through": true,
         "source": "trace",
-        "drawn_depth": 3.0
+        "drawn_depth": 1.2
+      },
+      {
+        "kind": "hole",
+        "hole_type": "countersink",
+        "view": 0,
+        "path": "clusters[0].inners[7]",
+        "through": true,
+        "source": "trace",
+        "drawn_depth": 1.4
+      },
+      {
+        "kind": "hole",
+        "hole_type": "countersink",
+        "view": 0,
+        "path": "clusters[0].inners[8]",
+        "through": true,
+        "source": "trace",
+        "drawn_depth": 1.4
       }
     ]
   },
-  "known_wrong": {
-    "title_block": "il foglio non ha cartiglio: detect_titleblock prende la fascia della griglia di riferimento in alto"
+  "unchecked": {
+    "features": "forge D99 / MAP D30: l'apertura passa da 7,89×4,2 a 7,8×8 (contorno esterno del pezzo intero invece di metà): da guardare sul DXF"
   }
 }

@@ -8,7 +8,7 @@ python scripts/gen_index.py
 
 What this is: the lookup table of *what already exists* in the package, down to internal helpers. `docs/API.md` documents the public surface (`snapdraw.<name>`) with full cards; this file lists every module-level function and class so nothing gets rewritten because it was not found. Signatures and docstring lines come straight from the source, so they cannot drift.
 
-`13` modules · `74` module-level functions · `13` classes · `2638` lines of code.
+`13` modules · `74` module-level functions · `13` classes · `2644` lines of code.
 
 Sections: [Lookup](#lookup) · [Duplicate names](#duplicate-names) · [Dependency rule](#dependency-rule) · [By module](#by-module) · [Internal dependencies](#internal-dependencies)
 
@@ -24,25 +24,25 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `add_title_block` | func | `snapdraw/generate.py:147` | Genera un cartiglio e lo appende a `doc` (mutazione in place, stesso |
 | `_anchor_by_center` | func | `snapdraw/features.py:363` | Le quote di diametro che forge non ha agganciato: i due punti misurati |
 | `annotation_density_ratio` | func | `snapdraw/geometry.py:156` | Quante volte più annotazioni per unità di area cadono dentro `rect` |
-| `_area` | func | `snapdraw/views.py:161` |  |
-| `_build_cells` | func | `snapdraw/titleblock.py:216` | I divisori tagliano `rect` in celle; ogni cella raccoglie il testo delle |
+| `_area` | func | `snapdraw/views.py:160` |  |
+| `_build_cells` | func | `snapdraw/titleblock.py:222` | I divisori tagliano `rect` in celle; ogni cella raccoglie il testo delle |
 | `Callout` | class | `snapdraw/model.py:163` | La quota di diametro agganciata a una feature, letta. |
 | `Cell` | class | `snapdraw/model.py:44` | Una cella del cartiglio: un rettangolo interno e il testo che racchiude. |
-| `classify_view` | func | `snapdraw/views.py:53` | "orthographic" se almeno metà della lunghezza dei LineSeg (contorno e |
+| `classify_view` | func | `snapdraw/views.py:52` | "orthographic" se almeno metà della lunghezza dei LineSeg (contorno e |
 | `_confidence` | func | `snapdraw/frame.py:141` | Confidenza grezza: parte dal contenimento, bonus se il formato ISO torna, |
-| `_confidence` | func | `snapdraw/titleblock.py:196` | Confidenza grezza, stesso spirito additivo di `frame._confidence` — da |
+| `_confidence` | func | `snapdraw/titleblock.py:202` | Confidenza grezza, stesso spirito additivo di `frame._confidence` — da |
 | `_conical` | func | `snapdraw/features.py:458` | Nelle compagne, per ognuno dei due lati una linea obliqua che va dal |
 | `containment` | func | `snapdraw/geometry.py:102` | Frazione degli Edge esterni al rettangolo i cui endpoint stanno dentro la |
 | `_describe` | func | `snapdraw/features.py:596` |  |
 | `describe_features` | func | `snapdraw/features.py:308` | I gruppi come li scriverebbe una persona: "2 fori passanti Ø5,3 +0,05/0, profondità 4". |
 | `detect_frame` | func | `snapdraw/recipe.py:37` | Rileva cornice e cartiglio nella geometria grezza di `doc`. |
 | `diameter_callouts` | func | `snapdraw/features.py:170` | Percorso dell'elemento quotato → la quota di diametro che lo misura (`forge.dimension_references`). |
-| `_doc_bbox` | func | `snapdraw/generate.py:263` | bbox corrente di doc.edges, o None se non c'è geometria. |
-| `_edges_inside` | func | `snapdraw/titleblock.py:162` | Tutti gli Edge di `doc.edges` (qualunque tipo di segmento — griglia, |
+| `_doc_bbox` | func | `snapdraw/generate.py:264` | bbox corrente di doc.edges, o None se non c'è geometria. |
+| `_edges_inside` | func | `snapdraw/titleblock.py:168` | Tutti gli Edge di `doc.edges` (qualunque tipo di segmento — griglia, |
 | `_end_kind` | func | `snapdraw/features.py:554` | Dove finisce una parete (coordinata `e` lungo la parete, alla quota |
 | `_expand` | func | `snapdraw/rules.py:73` | Una voce del JSON → una o più RoleRule (una per elemento di una lista). |
 | `extend_frame` | func | `snapdraw/frame.py:84` | Estende `frame` a quello che sta nella sua fascia, fra bordo esterno e |
-| `extend_titleblock` | func | `snapdraw/titleblock.py:95` | Estende `title_block` alle tabelle attaccate: ogni linea orizzontale o |
+| `extend_titleblock` | func | `snapdraw/titleblock.py:101` | Estende `title_block` alle tabelle attaccate: ogni linea orizzontale o |
 | `_feature` | func | `snapdraw/features.py:337` | Una feature da un contorno: tipo dalla forma, filetto, quota, traccia e profondità (senza sede). |
 | `Feature` | class | `snapdraw/model.py:201` | Un contorno interno di una vista ortogonale letto come feature. |
 | `feature_contours` | func | `snapdraw/features.py:116` | (indice, contorno, forma) dei contorni interni della vista con una forma |
@@ -53,14 +53,14 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `FieldSlot` | class | `snapdraw/model.py:67` | Una cella di un `TitleBlockTemplate`: nome canonico del campo, bbox |
 | `find_frame` | func | `snapdraw/frame.py:42` | Rileva la cornice di formato nella geometria grezza di `doc` |
 | `find_rectangles` | func | `snapdraw/geometry.py:55` | Trova i rettangoli axis-aligned "di bordo": quelli i cui quattro lati sono |
-| `find_titleblock` | func | `snapdraw/titleblock.py:43` | Delimita il cartiglio nella geometria grezza di `doc`. |
+| `find_titleblock` | func | `snapdraw/titleblock.py:45` | Delimita il cartiglio nella geometria grezza di `doc`. |
 | `_fmt` | func | `snapdraw/features.py:642` |  |
-| `_frame_entities` | func | `snapdraw/generate.py:219` | Pura: bbox esterna della cornice → entità per `forge.load_geometry` — |
+| `_frame_entities` | func | `snapdraw/generate.py:220` | Pura: bbox esterna della cornice → entità per `forge.load_geometry` — |
 | `FrameInfo` | class | `snapdraw/model.py:23` | La cornice di formato: il riquadro esterno del foglio. |
 | `FrameLayout` | class | `snapdraw/model.py:99` | Il risultato di `sd.detect_frame(doc)`. |
 | `grid_dividers` | func | `snapdraw/geometry.py:140` | Linee dritte STRETTAMENTE interne a `rect` (bordo escluso) che lo |
 | `group_features` | func | `snapdraw/features.py:215` | Raggruppa per tipo, misura (scritta o disegnata), tolleranza, sede, passante e profondità. |
-| `_is_genuine_grid` | func | `snapdraw/titleblock.py:176` | True se almeno un asse è suddiviso in segmenti **comparabili**, non |
+| `_is_genuine_grid` | func | `snapdraw/titleblock.py:182` | True se almeno un asse è suddiviso in segmenti **comparabili**, non |
 | `_is_hidden` | func | `snapdraw/features.py:506` | Il contorno è tutto tratteggio uniforme: la feature si vede in trasparenza. |
 | `is_iso_ratio` | func | `snapdraw/geometry.py:97` | True se il rapporto dei lati è ≈ √2 (formati ISO). |
 | `iso_format` | func | `snapdraw/geometry.py:115` | Formato ISO dedotto dalle dimensioni del rettangolo, o None. Assume mm. |
@@ -72,16 +72,16 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `_number` | func | `snapdraw/features.py:638` |  |
 | `_pair_concentric` | func | `snapdraw/features.py:315` | (percorso, contorno, forma, sede) — nei gruppi di cerchi concentrici |
 | `parse_callout` | func | `snapdraw/features.py:181` | Il testo di una quota di diametro: "Ø"/"M", il valore, la tolleranza |
-| `_place` | func | `snapdraw/generate.py:273` | Pura: template + anchor + valori → entità per `forge.load_geometry`, |
-| `principal_view` | func | `snapdraw/views.py:83` | La vista con compagni in tutte e due le direzioni (la più grande, se più |
-| `projection_mates` | func | `snapdraw/views.py:66` | Per ogni vista ortogonale: (height_mates, width_mates). Stessa |
+| `_place` | func | `snapdraw/generate.py:274` | Pura: template + anchor + valori → entità per `forge.load_geometry`, |
+| `principal_view` | func | `snapdraw/views.py:82` | La vista con compagni in tutte e due le direzioni (la più grande, se più |
+| `projection_mates` | func | `snapdraw/views.py:65` | Per ogni vista ortogonale: (height_mates, width_mates). Stessa |
 | `_read_callout` | func | `snapdraw/features.py:407` |  |
 | `_read_depth` | func | `snapdraw/features.py:418` | Passante e profondità disegnata: dalla traccia, altrimenti per convenzione. |
 | `read_features` | func | `snapdraw/features.py:230` | Ricetta: la scala di ogni vista; per ogni vista ortogonale i contorni |
 | `_read_seat` | func | `snapdraw/features.py:434` | La sede concentrica (non passante: quella la separa `read_features`), |
-| `read_titleblock` | func | `snapdraw/titleblock.py:278` | Legge le celle del cartiglio → dict dei campi |
-| `read_views` | func | `snapdraw/views.py:121` | Ricetta: classifica ogni cluster, trova i compagni di proiezione, la |
-| `_reference` | func | `snapdraw/views.py:153` | La vista che fa da metro per i simboli: la principale, o la più grande. |
+| `read_titleblock` | func | `snapdraw/titleblock.py:284` | Legge le celle del cartiglio → dict dei campi |
+| `read_views` | func | `snapdraw/views.py:120` | Ricetta: classifica ogni cluster, trova i compagni di proiezione, la |
+| `_reference` | func | `snapdraw/views.py:152` | La vista che fa da metro per i simboli: la principale, o la più grande. |
 | `register_defaults` | func | `snapdraw/roles.py:64` | Registra colore + nome layer di default per cornice, cartiglio, costruzione e feature — |
 | `rejected_border` | func | `snapdraw/frame.py:115` | Il riquadro di bordo più grande che racchiude `title_block` ma che |
 | `render_view` | func | `snapdraw/render.py:57` | Disegna `edges` in un PNG ritagliato su `bbox`, nero su bianco, con |
@@ -90,9 +90,9 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `_round` | func | `snapdraw/features.py:634` |  |
 | `rules_from_dict` | func | `snapdraw/rules.py:61` | Come `load_rules`, da un dict già letto. |
 | `_share_callouts` | func | `snapdraw/features.py:389` | Un richiamo che dice quante feature copre ("n°30 fori") vale per i fori |
-| `sheet_islands` | func | `snapdraw/views.py:44` | Le isole di un foglio: `forge.island` con la distanza scelta da |
+| `sheet_islands` | func | `snapdraw/views.py:43` | Le isole di un foglio: `forge.island` con il `max_gap` scelto da |
 | `_signed` | func | `snapdraw/features.py:646` |  |
-| `_split_labeled_text` | func | `snapdraw/titleblock.py:312` | Ogni etichetta trovata in `text` → valore = il testo fino alla prossima etichetta (o fine stringa). |
+| `_split_labeled_text` | func | `snapdraw/titleblock.py:318` | Ogni etichetta trovata in `text` → valore = il testo fino alla prossima etichetta (o fine stringa). |
 | `tag_features` | func | `snapdraw/features.py:279` | Attacca le feature ai loro cluster (`cluster.detected["view_features"]`, |
 | `tag_layout` | func | `snapdraw/tag.py:28` | Setta `edge.role` sugli Edge di cornice e cartiglio in `layout`. |
 | `_thread_crest` | func | `snapdraw/features.py:351` | L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`forge.geometry.arcs_around`). |
@@ -102,11 +102,11 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `Trace` | class | `snapdraw/model.py:186` | La traccia di una feature in una vista compagna: le due pareti (linee |
 | `_trace_in` | func | `snapdraw/features.py:512` | Le due pareti dentro `bbox` alle quote `lo_level`/`hi_level` lungo |
 | `View` | class | `snapdraw/model.py:118` | Un'isola di `sheet_islands(...)` letta come vista del foglio. |
-| `view_depth` | func | `snapdraw/views.py:102` | La terza dimensione della vista principale: la larghezza dei compagni in |
+| `view_depth` | func | `snapdraw/views.py:101` | La terza dimensione della vista principale: la larghezza dei compagni in |
 | `view_edges` | func | `snapdraw/render.py:40` | Gli edge di `doc` interamente dentro `bbox`: contorni, linee nascoste, |
 | `view_scales` | func | `snapdraw/features.py:79` | La scala di ogni vista: valore scritto / valore misurato, il più |
 | `ViewLayout` | class | `snapdraw/model.py:144` | Il risultato di `sd.read_views(result)`. |
-| `_zone_count` | func | `snapdraw/generate.py:209` | Quante zone su un lato lungo `length` — ISO 5457: lunghezza di zona fra |
+| `_zone_count` | func | `snapdraw/generate.py:210` | Quante zone su un lato lungo `length` — ISO 5457: lunghezza di zona fra |
 
 ## Duplicate names
 
@@ -114,7 +114,7 @@ Same name defined at module level in different modules. Not automatically a bug 
 
 | name | defined in |
 |---|---|
-| `_confidence` | `snapdraw/frame.py:141` · `snapdraw/titleblock.py:196` |
+| `_confidence` | `snapdraw/frame.py:141` · `snapdraw/titleblock.py:202` |
 
 ## Dependency rule
 
@@ -180,16 +180,16 @@ _snapdraw/frame.py_
 - `rejected_border(doc, title_block) -> Optional[CoveredRectangle]` — L115 — Il riquadro di bordo più grande che racchiude `title_block` ma che
 - `_confidence(rect: CoveredRectangle, cont: float, n_borders: int) -> float` — L141 — Confidenza grezza: parte dal contenimento, bonus se il formato ISO torna,
 
-#### `snapdraw/generate.py` — 319 lines
+#### `snapdraw/generate.py` — 320 lines
 
 _snapdraw/generate.py_
 
 - `add_frame(doc, margin: float=DEFAULT_MARGIN, title_block_template: Optional[TitleBlockTemplate]=None) -> FrameInfo` — L74 — Genera una cornice ISO attorno alla geometria corrente di `doc` e la
-- `add_title_block(doc, fields: Optional[Dict[str, str]]=None, anchor: Optional[Tuple[float, float]]=None, margin: float=DEFAULT_MARGIN, template: Optional[TitleBlockTemplate]=None) -> TitleBlock` — L147 — Genera un cartiglio e lo appende a `doc` (mutazione in place, stesso
-- `_zone_count(length: float) -> int` — L209 — Quante zone su un lato lungo `length` — ISO 5457: lunghezza di zona fra
-- `_frame_entities(xmin: float, ymin: float, xmax: float, ymax: float) -> list` — L219 — Pura: bbox esterna della cornice → entità per `forge.load_geometry` —
-- `_doc_bbox(doc) -> Optional[BBox]` — L263 — bbox corrente di doc.edges, o None se non c'è geometria.
-- `_place(template: TitleBlockTemplate, anchor: Tuple[float, float], fields: Dict[str, str])` — L273 — Pura: template + anchor + valori → entità per `forge.load_geometry`,
+- `add_title_block(doc, fields: Optional[Dict[str, str]]=None, anchor: Optional[Tuple[float, float]]=None, margin: float=_BORDER_GAP, template: Optional[TitleBlockTemplate]=None) -> TitleBlock` — L147 — Genera un cartiglio e lo appende a `doc` (mutazione in place, stesso
+- `_zone_count(length: float) -> int` — L210 — Quante zone su un lato lungo `length` — ISO 5457: lunghezza di zona fra
+- `_frame_entities(xmin: float, ymin: float, xmax: float, ymax: float) -> list` — L220 — Pura: bbox esterna della cornice → entità per `forge.load_geometry` —
+- `_doc_bbox(doc) -> Optional[BBox]` — L264 — bbox corrente di doc.edges, o None se non c'è geometria.
+- `_place(template: TitleBlockTemplate, anchor: Tuple[float, float], fields: Dict[str, str])` — L274 — Pura: template + anchor + valori → entità per `forge.load_geometry`,
 
 #### `snapdraw/geometry.py` — 185 lines
 
@@ -260,31 +260,31 @@ _snapdraw/tag.py_
 
 - `tag_layout(doc, layout: FrameLayout) -> int` — L28 — Setta `edge.role` sugli Edge di cornice e cartiglio in `layout`.
 
-#### `snapdraw/titleblock.py` — 324 lines
+#### `snapdraw/titleblock.py` — 330 lines
 
 _snapdraw/titleblock.py_
 
-- `find_titleblock(doc, frame: Optional[FrameInfo]=None) -> Optional[TitleBlock]` — L43 — Delimita il cartiglio nella geometria grezza di `doc`.
-- `extend_titleblock(title_block: TitleBlock, doc, frame: Optional[FrameInfo]=None) -> TitleBlock` — L95 — Estende `title_block` alle tabelle attaccate: ogni linea orizzontale o
-- `_edges_inside(bbox: Tuple[float, float, float, float], doc) -> list` — L162 — Tutti gli Edge di `doc.edges` (qualunque tipo di segmento — griglia,
-- `_is_genuine_grid(row_ys: List[float], col_xs: List[float], rect: CoveredRectangle) -> bool` — L176 — True se almeno un asse è suddiviso in segmenti **comparabili**, non
-- `_confidence(row_ys: List[float], col_xs: List[float], density: float, rect: CoveredRectangle, frame: Optional[FrameInfo]) -> float` — L196 — Confidenza grezza, stesso spirito additivo di `frame._confidence` — da
-- `_build_cells(rect: CoveredRectangle, row_ys: List[float], col_xs: List[float], doc) -> List[Cell]` — L216 — I divisori tagliano `rect` in celle; ogni cella raccoglie il testo delle
-- `read_titleblock(layout) -> dict` — L278 — Legge le celle del cartiglio → dict dei campi
-- `_split_labeled_text(text: str, cell_index: int) -> Dict[str, dict]` — L312 — Ogni etichetta trovata in `text` → valore = il testo fino alla prossima etichetta (o fine stringa).
+- `find_titleblock(doc, frame: Optional[FrameInfo]=None) -> Optional[TitleBlock]` — L45 — Delimita il cartiglio nella geometria grezza di `doc`.
+- `extend_titleblock(title_block: TitleBlock, doc, frame: Optional[FrameInfo]=None) -> TitleBlock` — L101 — Estende `title_block` alle tabelle attaccate: ogni linea orizzontale o
+- `_edges_inside(bbox: Tuple[float, float, float, float], doc) -> list` — L168 — Tutti gli Edge di `doc.edges` (qualunque tipo di segmento — griglia,
+- `_is_genuine_grid(row_ys: List[float], col_xs: List[float], rect: CoveredRectangle) -> bool` — L182 — True se almeno un asse è suddiviso in segmenti **comparabili**, non
+- `_confidence(row_ys: List[float], col_xs: List[float], density: float, rect: CoveredRectangle, frame: Optional[FrameInfo]) -> float` — L202 — Confidenza grezza, stesso spirito additivo di `frame._confidence` — da
+- `_build_cells(rect: CoveredRectangle, row_ys: List[float], col_xs: List[float], doc) -> List[Cell]` — L222 — I divisori tagliano `rect` in celle; ogni cella raccoglie il testo delle
+- `read_titleblock(layout) -> dict` — L284 — Legge le celle del cartiglio → dict dei campi
+- `_split_labeled_text(text: str, cell_index: int) -> Dict[str, dict]` — L318 — Ogni etichetta trovata in `text` → valore = il testo fino alla prossima etichetta (o fine stringa).
 
-#### `snapdraw/views.py` — 162 lines
+#### `snapdraw/views.py` — 161 lines
 
 _snapdraw/views.py_
 
-- `sheet_islands(doc: forge.ForgeDocument) -> forge.ForgeResult` — L44 — Le isole di un foglio: `forge.island` con la distanza scelta da
-- `classify_view(cluster, angle_tolerance: float=AXIS_ANGLE_TOLERANCE) -> str` — L53 — "orthographic" se almeno metà della lunghezza dei LineSeg (contorno e
-- `projection_mates(views: List[View], tolerance: float=MATE_TOLERANCE) -> Dict[int, Tuple[List[int], List[int]]]` — L66 — Per ogni vista ortogonale: (height_mates, width_mates). Stessa
-- `principal_view(views: List[View]) -> Tuple[Optional[int], List[str]]` — L83 — La vista con compagni in tutte e due le direzioni (la più grande, se più
-- `view_depth(views: List[View], principal: Optional[int], tolerance: float=MATE_TOLERANCE) -> Tuple[Optional[float], List[str]]` — L102 — La terza dimensione della vista principale: la larghezza dei compagni in
-- `read_views(result, tolerance: float=MATE_TOLERANCE) -> ViewLayout` — L121 — Ricetta: classifica ogni cluster, trova i compagni di proiezione, la
-- `_reference(views: List[View]) -> Optional[View]` — L153 — La vista che fa da metro per i simboli: la principale, o la più grande.
-- `_area(view: View) -> float` — L161
+- `sheet_islands(doc: forge.ForgeDocument) -> forge.ForgeResult` — L43 — Le isole di un foglio: `forge.island` con il `max_gap` scelto da
+- `classify_view(cluster, angle_tolerance: float=AXIS_ANGLE_TOLERANCE) -> str` — L52 — "orthographic" se almeno metà della lunghezza dei LineSeg (contorno e
+- `projection_mates(views: List[View], tolerance: float=MATE_TOLERANCE) -> Dict[int, Tuple[List[int], List[int]]]` — L65 — Per ogni vista ortogonale: (height_mates, width_mates). Stessa
+- `principal_view(views: List[View]) -> Tuple[Optional[int], List[str]]` — L82 — La vista con compagni in tutte e due le direzioni (la più grande, se più
+- `view_depth(views: List[View], principal: Optional[int], tolerance: float=MATE_TOLERANCE) -> Tuple[Optional[float], List[str]]` — L101 — La terza dimensione della vista principale: la larghezza dei compagni in
+- `read_views(result, tolerance: float=MATE_TOLERANCE) -> ViewLayout` — L120 — Ricetta: classifica ogni cluster, trova i compagni di proiezione, la
+- `_reference(views: List[View]) -> Optional[View]` — L152 — La vista che fa da metro per i simboli: la principale, o la più grande.
+- `_area(view: View) -> float` — L160
 
 ## Internal dependencies
 

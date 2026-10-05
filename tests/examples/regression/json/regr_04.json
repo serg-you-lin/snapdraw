@@ -17,7 +17,7 @@
     ]
   },
   "frame_flags": [],
-  "clusters": 4,
+  "clusters": 6,
   "views": [
     {
       "kind": "orthographic",
@@ -54,6 +54,24 @@
         1111.775,
         586.831
       ]
+    },
+    {
+      "kind": "symbol",
+      "bbox": [
+        1095.731,
+        411.134,
+        1106.212,
+        417.184
+      ]
+    },
+    {
+      "kind": "symbol",
+      "bbox": [
+        872.977,
+        282.541,
+        883.458,
+        288.591
+      ]
     }
   ],
   "principal": 0,
@@ -69,22 +87,22 @@
     "flags": [],
     "features": [
       {
-        "kind": "hole",
-        "hole_type": "plain",
+        "kind": "opening",
+        "hole_type": null,
         "view": 1,
         "path": "clusters[1].inners[0]",
         "through": true,
-        "source": "trace",
-        "drawn_depth": 15.0
+        "source": "convention",
+        "drawn_depth": 253.514
       },
       {
-        "kind": "hole",
-        "hole_type": "plain",
+        "kind": "opening",
+        "hole_type": null,
         "view": 1,
         "path": "clusters[1].inners[1]",
         "through": true,
-        "source": "trace",
-        "drawn_depth": 15.0
+        "source": "convention",
+        "drawn_depth": 253.514
       },
       {
         "kind": "opening",
@@ -105,22 +123,22 @@
         "drawn_depth": 253.514
       },
       {
-        "kind": "opening",
-        "hole_type": null,
+        "kind": "hole",
+        "hole_type": "plain",
         "view": 1,
         "path": "clusters[1].inners[4]",
         "through": true,
-        "source": "convention",
-        "drawn_depth": 253.514
+        "source": "trace",
+        "drawn_depth": 15.0
       },
       {
-        "kind": "opening",
-        "hole_type": null,
+        "kind": "hole",
+        "hole_type": "plain",
         "view": 1,
         "path": "clusters[1].inners[5]",
         "through": true,
-        "source": "convention",
-        "drawn_depth": 253.514
+        "source": "trace",
+        "drawn_depth": 15.0
       },
       {
         "kind": "opening",
