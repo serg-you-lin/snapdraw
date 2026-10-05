@@ -99,6 +99,12 @@
       "questo è un buon set di golden"; golden delle isole su anch_01-08):
       - ✅ **anch_07: il cartiglio diventava un'isola** (nessun testo nelle
         celle): MAP D32, griglia in basso a destra anche senza testo.
+      - **senza cornice il cartiglio si prende tutto il disegno**
+        (`examples/anonymus`, drw_0001, 0007, 0009): nessuna cornice
+        trovata, un riquadro passa per cartiglio e assorbe tutti gli edge
+        (D12), così non resta nessuna isola. Senza cornice D31-D32 non
+        valgono: serve un altro vincolo. drw_0002 ha solo `3DFACE`, niente
+        da leggere.
       - **cartiglio di un disegno reale non trovato** (`complete_drawings`,
         Federico l'ha segnato: la fascia bassa in basso a destra): non è fra
         i candidati che toccano il bordo interno della cornice. Da capire se
