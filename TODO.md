@@ -36,6 +36,10 @@
 
 ## Dove siamo (fine sessione del 5 ottobre) — si riparte da qui
 
+**16 ottobre:** forge è a 0.14.0. Cinque golden (anch_02/03/06/07, regr_01) sono
+fermi come fallimenti attesi (MAP D34): si rigenerano insieme a quelli di forge
+quando i dubbi su D103 (fantasmi) sono chiariti, guardando prima i DXF.
+
 Fatto oggi: isole senza distanza (forge D99), contorno esterno come unione
 delle facce chiuse su tutto il pezzo (forge D100, viste 3D intere), cartiglio
 solo sul bordo interno della cornice (D31), griglia in basso a destra anche

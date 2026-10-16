@@ -913,6 +913,28 @@ cornice trovata, cartiglio in basso a destra, isole 2, 3 e 5.
 
 Suite 94. Versione **0.3.1** (D32-D33, `TitleBlock.has_text`), serve forge 0.13.1.
 
+### D34 — Con forge 0.14.0 cinque golden sono fermi, come quelli di forge  ✅
+
+forge 0.14.0 porta D101–D107 (nodo a T, fantasmi di D102/D103, facce lette
+dal proprio bordo). Contro 0.13.1 la suite di snapdraw è verde; contro forge
+prima di D106 e contro 0.14.0 falliscono gli stessi cinque test — il
+cambiamento viene da D101–D103, non da D106/D107:
+
+- `test_islands`: anch_02, anch_03, anch_06, anch_07 — numero di inner
+  diverso. D106 su anch_02 *rimette* a posto `islands[1]` (77 → 125, come il
+  golden) e aggiunge 4 facce vere a `islands[0]` (98 → 102, le strisce della
+  sezione di una vite che prima sparivano).
+- `test_regression`: regr_01 — controllato campo per campo: cornice,
+  cartiglio, viste, profondità, scale e i 5 fori svasati identici; cambiano
+  solo gli indici dei `path`, tutti di −8 (`inners[13…17]` → `[5…9]`), perché
+  davanti a quei fori D102/D103 tolgono 8 inner. L'aggancio è giusto.
+
+Segnati `expectedFailure` (`KNOWN_STALE` in `test_islands.py` e
+`test_regression.py`), non rigenerati: i golden di forge sono fermi finché i
+dubbi su D103 non sono chiariti, e questi si rigenerano insieme a quelli,
+guardando prima i DXF. Quando succede, la lista si svuota. Suite: 89 verdi, 5
+fallimenti attesi. Nessun cambio di codice in snapdraw: versione invariata.
+
 ---
 
 ## Appunti (aperti — non decisioni)
