@@ -14,10 +14,9 @@ from pathlib import Path
 
 import topo
 import snapdraw as sd
-from topo.model.style import EdgeStyle
 
 REGRESSION = Path(__file__).parent / "examples" / "regression"
-HIDDEN = EdgeStyle(linetype="HIDDEN", linetype_pattern=(1.0, 0.5, -0.25))
+HIDDEN = topo.model.EdgeStyle(linetype="HIDDEN", linetype_pattern=(1.0, 0.5, -0.25))
 
 
 def _rect(x, y, w, h):

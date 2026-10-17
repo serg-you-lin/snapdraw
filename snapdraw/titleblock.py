@@ -29,7 +29,7 @@ from shapely.geometry import LineString
 from shapely.strtree import STRtree
 
 import topo
-from topo.core.geometry.axis import CoveredRectangle, axis_lines, items_inside
+from topo.core.geometry.axis import axis_lines, items_inside
 
 from .geometry import TEXT_BORDER_TOL, annotation_density_ratio, find_rectangles, grid_dividers, line_edges
 from .model import Cell, FrameInfo, TitleBlock
@@ -70,8 +70,8 @@ def find_titleblock(doc, frame: Optional[FrameInfo] = None) -> Optional[TitleBlo
     `frame.find_frame`): è quello che racchiude l'intero cartiglio, non una
     sua riga.
     """
-    kept: List[Tuple[CoveredRectangle, List[Cell], float]] = []
-    blank: List[Tuple[CoveredRectangle, List[Cell], float]] = []   # griglie vuote in basso a destra (MAP D32)
+    kept: List[Tuple[topo.geometry.CoveredRectangle, List[Cell], float]] = []
+    blank: List[Tuple[topo.geometry.CoveredRectangle, List[Cell], float]] = []   # griglie vuote in basso a destra (MAP D32)
     border = None if frame is None else (frame.inner_bbox or frame.bbox)
 
     for rect in find_rectangles(doc, min_side_length=TITLEBLOCK_MIN_SIDE):
@@ -188,7 +188,7 @@ def _edges_inside(bbox: Tuple[float, float, float, float], doc) -> list:
     return items_inside(bbox, doc.edges, _CONTAINMENT_TOL)
 
 
-def _is_genuine_grid(row_ys: List[float], col_xs: List[float], rect: CoveredRectangle) -> bool:
+def _is_genuine_grid(row_ys: List[float], col_xs: List[float], rect: topo.geometry.CoveredRectangle) -> bool:
     """
     True se almeno un asse è suddiviso in segmenti **comparabili**, non
     dominati da uno solo. Distingue una vera griglia di celle da un secondo
@@ -208,7 +208,7 @@ def _is_genuine_grid(row_ys: List[float], col_xs: List[float], rect: CoveredRect
     return dominant_ok(row_ys, ymin, ymax) or dominant_ok(col_xs, xmin, xmax)
 
 
-def _confidence(row_ys: List[float], col_xs: List[float], density: float, rect: CoveredRectangle, frame: Optional[FrameInfo]) -> float:
+def _confidence(row_ys: List[float], col_xs: List[float], density: float, rect: topo.geometry.CoveredRectangle, frame: Optional[FrameInfo]) -> float:
     """
     Confidenza grezza, stesso spirito additivo di `frame._confidence` — da
     tarare sulle fixture reali (TODO.md), non ancora disponibili.
@@ -228,7 +228,7 @@ def _confidence(row_ys: List[float], col_xs: List[float], density: float, rect: 
     return max(0.0, min(1.0, score))
 
 
-def _build_cells(rect: CoveredRectangle, row_ys: List[float], col_xs: List[float], doc) -> List[Cell]:
+def _build_cells(rect: topo.geometry.CoveredRectangle, row_ys: List[float], col_xs: List[float], doc) -> List[Cell]:
     """
     I divisori tagliano `rect` in celle; ogni cella raccoglie il testo delle
     annotazioni che contiene, dall'alto in basso. Con `TEXT_BORDER_TOL` sul

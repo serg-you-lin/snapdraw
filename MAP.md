@@ -953,6 +953,18 @@ nome. Aperti in TODO.md.
 
 Versione **0.4.0** (rompe: dipende da `topo`, non più da `forge`).
 
+### D36 — i nomi pubblici di topo, scritti per intero  ✅
+
+topo ha i suoi namespace pubblici (MAP.md di topo, D120): `topo.primitives`,
+`topo.model`, `topo.geometry`, `topo.steps`. snapdraw importa solo
+`import topo` e scrive ogni nome per intero (`topo.primitives.LineSeg`,
+`topo.model.ContourRole`, `topo.geometry.covered_rectangles`, …), anche in
+`lab/`. Restano presi da dentro topo, in attesa di un nome pubblico (seconda
+metà, TODO di topo): `merge_intervals`, `length_inside`, `segment_length`,
+`items_inside`, `axis_lines` e, nel lab, `edge_geometry`, `build_node_graph`,
+`LoopFinder`, `_outer_face_walk`. Nessun cambio di comportamento: suite come
+in D35.
+
 ---
 
 ## Appunti (aperti — non decisioni)

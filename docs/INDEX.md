@@ -8,7 +8,7 @@ python scripts/gen_index.py
 
 What this is: the lookup table of *what already exists* in the package, down to internal helpers. `docs/API.md` documents the public surface (`snapdraw.<name>`) with full cards; this file lists every module-level function and class so nothing gets rewritten because it was not found. Signatures and docstring lines come straight from the source, so they cannot drift.
 
-`13` modules · `78` module-level functions · `13` classes · `2700` lines of code.
+`13` modules · `78` module-level functions · `13` classes · `2697` lines of code.
 
 Sections: [Lookup](#lookup) · [Duplicate names](#duplicate-names) · [Dependency rule](#dependency-rule) · [By module](#by-module) · [Internal dependencies](#internal-dependencies)
 
@@ -22,93 +22,93 @@ Every module-level name in the package, alphabetically. **Search here before wri
 |---|---|---|---|
 | `add_frame` | func | `snapdraw/generate.py:74` | Genera una cornice ISO attorno alla geometria corrente di `doc` e la |
 | `add_title_block` | func | `snapdraw/generate.py:147` | Genera un cartiglio e lo appende a `doc` (mutazione in place, stesso |
-| `_anchor_by_center` | func | `snapdraw/features.py:363` | Le quote di diametro che topo non ha agganciato: i due punti misurati |
+| `_anchor_by_center` | func | `snapdraw/features.py:361` | Le quote di diametro che topo non ha agganciato: i due punti misurati |
 | `annotation_density_ratio` | func | `snapdraw/geometry.py:198` | Quante volte più annotazioni per unità di area cadono dentro `rect` |
-| `_area` | func | `snapdraw/views.py:160` |  |
+| `_area` | func | `snapdraw/views.py:159` |  |
 | `_build_cells` | func | `snapdraw/titleblock.py:231` | I divisori tagliano `rect` in celle; ogni cella raccoglie il testo delle |
 | `Callout` | class | `snapdraw/model.py:165` | La quota di diametro agganciata a una feature, letta. |
 | `Cell` | class | `snapdraw/model.py:44` | Una cella del cartiglio: un rettangolo interno e il testo che racchiude. |
-| `classify_view` | func | `snapdraw/views.py:52` | "orthographic" se almeno metà della lunghezza dei LineSeg (contorno e |
+| `classify_view` | func | `snapdraw/views.py:51` | "orthographic" se almeno metà della lunghezza dei LineSeg (contorno e |
 | `_confidence` | func | `snapdraw/frame.py:142` | Confidenza grezza: parte dal contenimento, bonus se il formato ISO torna, |
 | `_confidence` | func | `snapdraw/titleblock.py:211` | Confidenza grezza, stesso spirito additivo di `frame._confidence` — da |
-| `_conical` | func | `snapdraw/features.py:458` | Nelle compagne, per ognuno dei due lati una linea obliqua che va dal |
+| `_conical` | func | `snapdraw/features.py:456` | Nelle compagne, per ognuno dei due lati una linea obliqua che va dal |
 | `containment` | func | `snapdraw/geometry.py:104` | Frazione degli Edge esterni al rettangolo i cui endpoint stanno dentro la |
-| `_describe` | func | `snapdraw/features.py:596` |  |
-| `describe_features` | func | `snapdraw/features.py:308` | I gruppi come li scriverebbe una persona: "2 fori passanti Ø5,3 +0,05/0, profondità 4". |
+| `_describe` | func | `snapdraw/features.py:594` |  |
+| `describe_features` | func | `snapdraw/features.py:306` | I gruppi come li scriverebbe una persona: "2 fori passanti Ø5,3 +0,05/0, profondità 4". |
 | `detect_frame` | func | `snapdraw/recipe.py:37` | Rileva cornice e cartiglio nella geometria grezza di `doc`. |
-| `diameter_callouts` | func | `snapdraw/features.py:170` | Percorso dell'elemento quotato → la quota di diametro che lo misura (`topo.dimension_references`). |
+| `diameter_callouts` | func | `snapdraw/features.py:168` | Percorso dell'elemento quotato → la quota di diametro che lo misura (`topo.dimension_references`). |
 | `_doc_bbox` | func | `snapdraw/generate.py:264` | bbox corrente di doc.edges, o None se non c'è geometria. |
 | `_edges_inside` | func | `snapdraw/titleblock.py:177` | Tutti gli Edge di `doc.edges` (qualunque tipo di segmento — griglia, |
-| `_end_kind` | func | `snapdraw/features.py:554` | Dove finisce una parete (coordinata `e` lungo la parete, alla quota |
+| `_end_kind` | func | `snapdraw/features.py:552` | Dove finisce una parete (coordinata `e` lungo la parete, alla quota |
 | `_expand` | func | `snapdraw/rules.py:73` | Una voce del JSON → una o più RoleRule (una per elemento di una lista). |
 | `extend_frame` | func | `snapdraw/frame.py:85` | Estende `frame` a quello che sta nella sua fascia, fra bordo esterno e |
 | `extend_titleblock` | func | `snapdraw/titleblock.py:110` | Estende `title_block` alle tabelle attaccate: ogni linea orizzontale o |
-| `_feature` | func | `snapdraw/features.py:337` | Una feature da un contorno: tipo dalla forma, filetto, quota, traccia e profondità (senza sede). |
+| `_feature` | func | `snapdraw/features.py:335` | Una feature da un contorno: tipo dalla forma, filetto, quota, traccia e profondità (senza sede). |
 | `Feature` | class | `snapdraw/model.py:203` | Un contorno interno di una vista ortogonale letto come feature. |
-| `feature_contours` | func | `snapdraw/features.py:116` | (indice, contorno, forma) dei contorni interni della vista con una forma |
-| `feature_metadata` | func | `snapdraw/features.py:298` | Le feature di un cluster come dati, per il JSON di topo: |
-| `feature_trace` | func | `snapdraw/features.py:146` | Le tracce di una forma (riquadro `bounds`) nelle viste compagne di |
+| `feature_contours` | func | `snapdraw/features.py:114` | (indice, contorno, forma) dei contorni interni della vista con una forma |
+| `feature_metadata` | func | `snapdraw/features.py:296` | Le feature di un cluster come dati, per il JSON di topo: |
+| `feature_trace` | func | `snapdraw/features.py:144` | Le tracce di una forma (riquadro `bounds`) nelle viste compagne di |
 | `FeatureGroup` | class | `snapdraw/model.py:305` | Feature uguali: stesso tipo, stessa misura e tolleranza, stesso passante e profondità. |
 | `FeatureLayout` | class | `snapdraw/model.py:321` | Il risultato di `sd.read_features(doc, result, views)`. |
 | `FieldSlot` | class | `snapdraw/model.py:69` | Una cella di un `TitleBlockTemplate`: nome canonico del campo, bbox |
 | `find_frame` | func | `snapdraw/frame.py:42` | Rileva la cornice di formato nella geometria grezza di `doc` |
 | `find_rectangles` | func | `snapdraw/geometry.py:57` | Trova i rettangoli axis-aligned "di bordo": quelli i cui quattro lati sono |
 | `find_titleblock` | func | `snapdraw/titleblock.py:45` | Delimita il cartiglio nella geometria grezza di `doc`. |
-| `_fmt` | func | `snapdraw/features.py:642` |  |
+| `_fmt` | func | `snapdraw/features.py:640` |  |
 | `_frame_entities` | func | `snapdraw/generate.py:220` | Pura: bbox esterna della cornice → entità per `topo.load_geometry` — |
 | `FrameInfo` | class | `snapdraw/model.py:23` | La cornice di formato: il riquadro esterno del foglio. |
 | `FrameLayout` | class | `snapdraw/model.py:101` | Il risultato di `sd.detect_frame(doc)`. |
 | `grid_dividers` | func | `snapdraw/geometry.py:182` | Linee dritte STRETTAMENTE interne a `rect` (bordo escluso) che lo |
-| `group_features` | func | `snapdraw/features.py:215` | Raggruppa per tipo, misura (scritta o disegnata), tolleranza, sede, passante e profondità. |
+| `group_features` | func | `snapdraw/features.py:213` | Raggruppa per tipo, misura (scritta o disegnata), tolleranza, sede, passante e profondità. |
 | `_is_genuine_grid` | func | `snapdraw/titleblock.py:191` | True se almeno un asse è suddiviso in segmenti **comparabili**, non |
-| `_is_hidden` | func | `snapdraw/features.py:506` | Il contorno è tutto tratteggio uniforme: la feature si vede in trasparenza. |
+| `_is_hidden` | func | `snapdraw/features.py:504` | Il contorno è tutto tratteggio uniforme: la feature si vede in trasparenza. |
 | `is_iso_ratio` | func | `snapdraw/geometry.py:99` | True se il rapporto dei lati è ≈ √2 (formati ISO). |
 | `_is_tick` | func | `snapdraw/geometry.py:133` | Una tacca del rettangolo: parte da un lato, va fuori, ed è corta. |
 | `iso_format` | func | `snapdraw/geometry.py:157` | Formato ISO dedotto dalle dimensioni del rettangolo, o None. Assume mm. |
-| `_joins` | func | `snapdraw/features.py:478` | Il segmento va dalla quota `a` alla quota `b` lungo `axis` (in un verso o nell'altro), non parallelo all'asse. |
+| `_joins` | func | `snapdraw/features.py:476` | Il segmento va dalla quota `a` alla quota `b` lungo `axis` (in un verso o nell'altro), non parallelo all'asse. |
 | `line_edges` | func | `snapdraw/geometry.py:48` | Gli Edge di doc.edges il cui segmento è un LineSeg. |
 | `load_rules` | func | `snapdraw/rules.py:50` | Legge `<folder>/<name>.json` (default `rules/` del repo) e ritorna le |
 | `_mark_outside` | func | `snapdraw/geometry.py:146` | Un capo dell'edge sta su un lato di `bounds`, l'altro fuori. |
 | `marked_sides` | func | `snapdraw/geometry.py:120` | I lati di `bounds` da cui parte almeno una tacca (edge corto verso l'esterno). |
-| `_mates` | func | `snapdraw/features.py:358` |  |
-| `_mode` | func | `snapdraw/features.py:589` | Il valore più frequente, contando uguali quelli entro `agreement` relativo. |
-| `_number` | func | `snapdraw/features.py:638` |  |
+| `_mates` | func | `snapdraw/features.py:356` |  |
+| `_mode` | func | `snapdraw/features.py:587` | Il valore più frequente, contando uguali quelli entro `agreement` relativo. |
+| `_number` | func | `snapdraw/features.py:636` |  |
 | `_on_side` | func | `snapdraw/geometry.py:140` |  |
-| `_pair_concentric` | func | `snapdraw/features.py:315` | (percorso, contorno, forma, sede) — nei gruppi di cerchi concentrici |
-| `parse_callout` | func | `snapdraw/features.py:181` | Il testo di una quota di diametro: "Ø"/"M", il valore, la tolleranza |
+| `_pair_concentric` | func | `snapdraw/features.py:313` | (percorso, contorno, forma, sede) — nei gruppi di cerchi concentrici |
+| `parse_callout` | func | `snapdraw/features.py:179` | Il testo di una quota di diametro: "Ø"/"M", il valore, la tolleranza |
 | `_place` | func | `snapdraw/generate.py:274` | Pura: template + anchor + valori → entità per `topo.load_geometry`, |
-| `principal_view` | func | `snapdraw/views.py:82` | La vista con compagni in tutte e due le direzioni (la più grande, se più |
-| `projection_mates` | func | `snapdraw/views.py:65` | Per ogni vista ortogonale: (height_mates, width_mates). Stessa |
-| `_read_callout` | func | `snapdraw/features.py:407` |  |
-| `_read_depth` | func | `snapdraw/features.py:418` | Passante e profondità disegnata: dalla traccia, altrimenti per convenzione. |
-| `read_features` | func | `snapdraw/features.py:230` | Ricetta: la scala di ogni vista; per ogni vista ortogonale i contorni |
-| `_read_seat` | func | `snapdraw/features.py:434` | La sede concentrica (non passante: quella la separa `read_features`), |
+| `principal_view` | func | `snapdraw/views.py:81` | La vista con compagni in tutte e due le direzioni (la più grande, se più |
+| `projection_mates` | func | `snapdraw/views.py:64` | Per ogni vista ortogonale: (height_mates, width_mates). Stessa |
+| `_read_callout` | func | `snapdraw/features.py:405` |  |
+| `_read_depth` | func | `snapdraw/features.py:416` | Passante e profondità disegnata: dalla traccia, altrimenti per convenzione. |
+| `read_features` | func | `snapdraw/features.py:228` | Ricetta: la scala di ogni vista; per ogni vista ortogonale i contorni |
+| `_read_seat` | func | `snapdraw/features.py:432` | La sede concentrica (non passante: quella la separa `read_features`), |
 | `read_titleblock` | func | `snapdraw/titleblock.py:293` | Legge le celle del cartiglio → dict dei campi |
-| `read_views` | func | `snapdraw/views.py:120` | Ricetta: classifica ogni cluster, trova i compagni di proiezione, la |
-| `_reference` | func | `snapdraw/views.py:152` | La vista che fa da metro per i simboli: la principale, o la più grande. |
+| `read_views` | func | `snapdraw/views.py:119` | Ricetta: classifica ogni cluster, trova i compagni di proiezione, la |
+| `_reference` | func | `snapdraw/views.py:151` | La vista che fa da metro per i simboli: la principale, o la più grande. |
 | `register_defaults` | func | `snapdraw/roles.py:64` | Registra colore + nome layer di default per cornice, cartiglio, costruzione e feature — |
 | `rejected_border` | func | `snapdraw/frame.py:116` | Il riquadro di bordo più grande che racchiude `title_block` ma che |
 | `render_view` | func | `snapdraw/render.py:57` | Disegna `edges` in un PNG ritagliato su `bbox`, nero su bianco, con |
 | `render_views` | func | `snapdraw/render.py:97` | Ricetta: un PNG per vista in `folder` (`view_<indice>.png`), ritagliato |
-| `_role` | func | `snapdraw/features.py:486` | Un ruolo per tipo di foro (si vede nell'export, lo usa chi sviluppa il pezzo); asola e apertura il loro. |
-| `_round` | func | `snapdraw/features.py:634` |  |
+| `_role` | func | `snapdraw/features.py:484` | Un ruolo per tipo di foro (si vede nell'export, lo usa chi sviluppa il pezzo); asola e apertura il loro. |
+| `_round` | func | `snapdraw/features.py:632` |  |
 | `rules_from_dict` | func | `snapdraw/rules.py:61` | Come `load_rules`, da un dict già letto. |
-| `_share_callouts` | func | `snapdraw/features.py:389` | Un richiamo che dice quante feature copre ("n°30 fori") vale per i fori |
-| `sheet_islands` | func | `snapdraw/views.py:43` | Le isole di un foglio: `topo.island` con il `max_gap` scelto da |
-| `_signed` | func | `snapdraw/features.py:646` |  |
+| `_share_callouts` | func | `snapdraw/features.py:387` | Un richiamo che dice quante feature copre ("n°30 fori") vale per i fori |
+| `sheet_islands` | func | `snapdraw/views.py:42` | Le isole di un foglio: `topo.island` con il `max_gap` scelto da |
+| `_signed` | func | `snapdraw/features.py:644` |  |
 | `_split_labeled_text` | func | `snapdraw/titleblock.py:327` | Ogni etichetta trovata in `text` → valore = il testo fino alla prossima etichetta (o fine stringa). |
-| `tag_features` | func | `snapdraw/features.py:279` | Attacca le feature ai loro cluster (`cluster.detected["view_features"]`, |
+| `tag_features` | func | `snapdraw/features.py:277` | Attacca le feature ai loro cluster (`cluster.detected["view_features"]`, |
 | `tag_layout` | func | `snapdraw/tag.py:28` | Setta `edge.role` sugli Edge di cornice e cartiglio in `layout`. |
-| `_thread_crest` | func | `snapdraw/features.py:351` | L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`topo.geometry.arcs_around`). |
+| `_thread_crest` | func | `snapdraw/features.py:349` | L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`topo.geometry.arcs_around`). |
 | `TitleBlock` | class | `snapdraw/model.py:51` | Il cartiglio: il riquadro delle informazioni, suddiviso in celle. |
 | `TitleBlockTemplate` | class | `snapdraw/model.py:81` | Il design di un cartiglio da generare: righe strette impilate in |
-| `_to_scale` | func | `snapdraw/features.py:494` | Profondità alla scala della vista; senza scala, flag e profondità disegnata soltanto. |
+| `_to_scale` | func | `snapdraw/features.py:492` | Profondità alla scala della vista; senza scala, flag e profondità disegnata soltanto. |
 | `Trace` | class | `snapdraw/model.py:188` | La traccia di una feature in una vista compagna: le due pareti (linee |
-| `_trace_in` | func | `snapdraw/features.py:512` | Le due pareti dentro `bbox` alle quote `lo_level`/`hi_level` lungo |
+| `_trace_in` | func | `snapdraw/features.py:510` | Le due pareti dentro `bbox` alle quote `lo_level`/`hi_level` lungo |
 | `View` | class | `snapdraw/model.py:120` | Un'isola di `sheet_islands(...)` letta come vista del foglio. |
-| `view_depth` | func | `snapdraw/views.py:101` | La terza dimensione della vista principale: la larghezza dei compagni in |
+| `view_depth` | func | `snapdraw/views.py:100` | La terza dimensione della vista principale: la larghezza dei compagni in |
 | `view_edges` | func | `snapdraw/render.py:40` | Gli edge di `doc` interamente dentro `bbox`: contorni, linee nascoste, |
-| `view_scales` | func | `snapdraw/features.py:79` | La scala di ogni vista: valore scritto / valore misurato, il più |
+| `view_scales` | func | `snapdraw/features.py:77` | La scala di ogni vista: valore scritto / valore misurato, il più |
 | `ViewLayout` | class | `snapdraw/model.py:146` | Il risultato di `sd.read_views(result)`. |
 | `_zone_count` | func | `snapdraw/generate.py:210` | Quante zone su un lato lungo `length` — ISO 5457: lunghezza di zona fra |
 
@@ -138,42 +138,42 @@ _snapdraw_
 
 No module-level function or class.
 
-#### `snapdraw/features.py` — 647 lines
+#### `snapdraw/features.py` — 645 lines
 
 _snapdraw/features.py_
 
-- `view_scales(result, views: ViewLayout, agreement: float=SCALE_AGREEMENT) -> Tuple[Dict[int, Optional[float]], List[str]]` — L79 — La scala di ogni vista: valore scritto / valore misurato, il più
-- `feature_contours(result, view: int, tolerance: float=TOUCH_TOLERANCE) -> List[Tuple[int, object, object]]` — L116 — (indice, contorno, forma) dei contorni interni della vista con una forma
-- `feature_trace(doc, views: ViewLayout, view: int, bounds, tolerance: float=WALL_TOLERANCE) -> List[Trace]` — L146 — Le tracce di una forma (riquadro `bounds`) nelle viste compagne di
-- `diameter_callouts(result) -> Dict[str, object]` — L170 — Percorso dell'elemento quotato → la quota di diametro che lo misura (`topo.dimension_references`).
-- `parse_callout(dimension) -> Optional[Callout]` — L181 — Il testo di una quota di diametro: "Ø"/"M", il valore, la tolleranza
-- `group_features(features: List[Feature]) -> List[FeatureGroup]` — L215 — Raggruppa per tipo, misura (scritta o disegnata), tolleranza, sede, passante e profondità.
-- `read_features(doc, result, views: ViewLayout) -> FeatureLayout` — L230 — Ricetta: la scala di ogni vista; per ogni vista ortogonale i contorni
-- `tag_features(result, layout: FeatureLayout)` — L279 — Attacca le feature ai loro cluster (`cluster.detected["view_features"]`,
-- `feature_metadata(cluster) -> dict` — L298 — Le feature di un cluster come dati, per il JSON di topo:
-- `describe_features(layout: FeatureLayout) -> str` — L308 — I gruppi come li scriverebbe una persona: "2 fori passanti Ø5,3 +0,05/0, profondità 4".
-- `_pair_concentric(found)` — L315 — (percorso, contorno, forma, sede) — nei gruppi di cerchi concentrici
-- `_feature(doc, views, view: int, path: str, contour, shape, callouts, depth, scales, arcs) -> Feature` — L337 — Una feature da un contorno: tipo dalla forma, filetto, quota, traccia e profondità (senza sede).
-- `_thread_crest(shape, arcs) -> Optional[ArcSeg]` — L351 — L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`topo.geometry.arcs_around`).
-- `_mates(views, view: int) -> List[int]` — L358
-- `_anchor_by_center(result, features: List[Feature], tolerance: float=0.5) -> None` — L363 — Le quote di diametro che topo non ha agganciato: i due punti misurati
-- `_share_callouts(features: List[Feature], tolerance: float=WALL_TOLERANCE) -> None` — L389 — Un richiamo che dice quante feature copre ("n°30 fori") vale per i fori
-- `_read_callout(feature: Feature, dimension) -> None` — L407
-- `_read_depth(feature: Feature, traces: List[Trace], view_depth_value: Optional[float]) -> None` — L418 — Passante e profondità disegnata: dalla traccia, altrimenti per convenzione.
-- `_read_seat(feature: Feature, seat, traces: List[Trace], conical: bool, has_mates: bool) -> None` — L434 — La sede concentrica (non passante: quella la separa `read_features`),
-- `_conical(doc, views, view: int, seat_bounds, hole_bounds, tolerance: float=WALL_TOLERANCE) -> bool` — L458 — Nelle compagne, per ognuno dei due lati una linea obliqua che va dal
-- `_joins(seg, axis: int, a: float, b: float, tolerance: float) -> bool` — L478 — Il segmento va dalla quota `a` alla quota `b` lungo `axis` (in un verso o nell'altro), non parallelo all'asse.
-- `_role(feature: Feature) -> str` — L486 — Un ruolo per tipo di foro (si vede nell'export, lo usa chi sviluppa il pezzo); asola e apertura il loro.
-- `_to_scale(feature: Feature) -> None` — L494 — Profondità alla scala della vista; senza scala, flag e profondità disegnata soltanto.
-- `_is_hidden(contour) -> bool` — L506 — Il contorno è tutto tratteggio uniforme: la feature si vede in trasparenza.
-- `_trace_in(doc, bbox, axis: int, lo_level: float, hi_level: float, tolerance: float) -> Optional[Tuple[bool, float]]` — L512 — Le due pareti dentro `bbox` alle quote `lo_level`/`hi_level` lungo
-- `_end_kind(doc, axis: int, along: int, e: float, level: float, outward: int, faces: Tuple[float, float], tolerance: float) -> Optional[str]` — L554 — Dove finisce una parete (coordinata `e` lungo la parete, alla quota
-- `_mode(values: List[float], agreement: float) -> float` — L589 — Il valore più frequente, contando uguali quelli entro `agreement` relativo.
-- `_describe(g: FeatureGroup) -> str` — L596
-- `_round(value)` — L634
-- `_number(text: str) -> float` — L638
-- `_fmt(value: float) -> str` — L642
-- `_signed(value: float) -> str` — L646
+- `view_scales(result, views: ViewLayout, agreement: float=SCALE_AGREEMENT) -> Tuple[Dict[int, Optional[float]], List[str]]` — L77 — La scala di ogni vista: valore scritto / valore misurato, il più
+- `feature_contours(result, view: int, tolerance: float=TOUCH_TOLERANCE) -> List[Tuple[int, object, object]]` — L114 — (indice, contorno, forma) dei contorni interni della vista con una forma
+- `feature_trace(doc, views: ViewLayout, view: int, bounds, tolerance: float=WALL_TOLERANCE) -> List[Trace]` — L144 — Le tracce di una forma (riquadro `bounds`) nelle viste compagne di
+- `diameter_callouts(result) -> Dict[str, object]` — L168 — Percorso dell'elemento quotato → la quota di diametro che lo misura (`topo.dimension_references`).
+- `parse_callout(dimension) -> Optional[Callout]` — L179 — Il testo di una quota di diametro: "Ø"/"M", il valore, la tolleranza
+- `group_features(features: List[Feature]) -> List[FeatureGroup]` — L213 — Raggruppa per tipo, misura (scritta o disegnata), tolleranza, sede, passante e profondità.
+- `read_features(doc, result, views: ViewLayout) -> FeatureLayout` — L228 — Ricetta: la scala di ogni vista; per ogni vista ortogonale i contorni
+- `tag_features(result, layout: FeatureLayout)` — L277 — Attacca le feature ai loro cluster (`cluster.detected["view_features"]`,
+- `feature_metadata(cluster) -> dict` — L296 — Le feature di un cluster come dati, per il JSON di topo:
+- `describe_features(layout: FeatureLayout) -> str` — L306 — I gruppi come li scriverebbe una persona: "2 fori passanti Ø5,3 +0,05/0, profondità 4".
+- `_pair_concentric(found)` — L313 — (percorso, contorno, forma, sede) — nei gruppi di cerchi concentrici
+- `_feature(doc, views, view: int, path: str, contour, shape, callouts, depth, scales, arcs) -> Feature` — L335 — Una feature da un contorno: tipo dalla forma, filetto, quota, traccia e profondità (senza sede).
+- `_thread_crest(shape, arcs) -> Optional[topo.primitives.ArcSeg]` — L349 — L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`topo.geometry.arcs_around`).
+- `_mates(views, view: int) -> List[int]` — L356
+- `_anchor_by_center(result, features: List[Feature], tolerance: float=0.5) -> None` — L361 — Le quote di diametro che topo non ha agganciato: i due punti misurati
+- `_share_callouts(features: List[Feature], tolerance: float=WALL_TOLERANCE) -> None` — L387 — Un richiamo che dice quante feature copre ("n°30 fori") vale per i fori
+- `_read_callout(feature: Feature, dimension) -> None` — L405
+- `_read_depth(feature: Feature, traces: List[Trace], view_depth_value: Optional[float]) -> None` — L416 — Passante e profondità disegnata: dalla traccia, altrimenti per convenzione.
+- `_read_seat(feature: Feature, seat, traces: List[Trace], conical: bool, has_mates: bool) -> None` — L432 — La sede concentrica (non passante: quella la separa `read_features`),
+- `_conical(doc, views, view: int, seat_bounds, hole_bounds, tolerance: float=WALL_TOLERANCE) -> bool` — L456 — Nelle compagne, per ognuno dei due lati una linea obliqua che va dal
+- `_joins(seg, axis: int, a: float, b: float, tolerance: float) -> bool` — L476 — Il segmento va dalla quota `a` alla quota `b` lungo `axis` (in un verso o nell'altro), non parallelo all'asse.
+- `_role(feature: Feature) -> str` — L484 — Un ruolo per tipo di foro (si vede nell'export, lo usa chi sviluppa il pezzo); asola e apertura il loro.
+- `_to_scale(feature: Feature) -> None` — L492 — Profondità alla scala della vista; senza scala, flag e profondità disegnata soltanto.
+- `_is_hidden(contour) -> bool` — L504 — Il contorno è tutto tratteggio uniforme: la feature si vede in trasparenza.
+- `_trace_in(doc, bbox, axis: int, lo_level: float, hi_level: float, tolerance: float) -> Optional[Tuple[bool, float]]` — L510 — Le due pareti dentro `bbox` alle quote `lo_level`/`hi_level` lungo
+- `_end_kind(doc, axis: int, along: int, e: float, level: float, outward: int, faces: Tuple[float, float], tolerance: float) -> Optional[str]` — L552 — Dove finisce una parete (coordinata `e` lungo la parete, alla quota
+- `_mode(values: List[float], agreement: float) -> float` — L587 — Il valore più frequente, contando uguali quelli entro `agreement` relativo.
+- `_describe(g: FeatureGroup) -> str` — L594
+- `_round(value)` — L632
+- `_number(text: str) -> float` — L636
+- `_fmt(value: float) -> str` — L640
+- `_signed(value: float) -> str` — L644
 
 #### `snapdraw/frame.py` — 152 lines
 
@@ -181,8 +181,8 @@ _snapdraw/frame.py_
 
 - `find_frame(doc, containment_threshold: float=CONTAINMENT_THRESHOLD) -> Optional[FrameInfo]` — L42 — Rileva la cornice di formato nella geometria grezza di `doc`
 - `extend_frame(frame: FrameInfo, doc) -> FrameInfo` — L85 — Estende `frame` a quello che sta nella sua fascia, fra bordo esterno e
-- `rejected_border(doc, title_block) -> Optional[CoveredRectangle]` — L116 — Il riquadro di bordo più grande che racchiude `title_block` ma che
-- `_confidence(rect: CoveredRectangle, cont: float, n_borders: int) -> float` — L142 — Confidenza grezza: parte dal contenimento, bonus se il formato ISO torna,
+- `rejected_border(doc, title_block) -> Optional[topo.geometry.CoveredRectangle]` — L116 — Il riquadro di bordo più grande che racchiude `title_block` ma che
+- `_confidence(rect: topo.geometry.CoveredRectangle, cont: float, n_borders: int) -> float` — L142 — Confidenza grezza: parte dal contenimento, bonus se il formato ISO torna,
 
 #### `snapdraw/generate.py` — 320 lines
 
@@ -200,16 +200,16 @@ _snapdraw/generate.py_
 _snapdraw/geometry.py_
 
 - `line_edges(doc) -> list` — L48 — Gli Edge di doc.edges il cui segmento è un LineSeg.
-- `find_rectangles(doc, min_side_fraction: float=BORDER_MIN_SIDE_FRACTION, min_side_length: Optional[float]=None) -> List[CoveredRectangle]` — L57 — Trova i rettangoli axis-aligned "di bordo": quelli i cui quattro lati sono
-- `is_iso_ratio(rect: CoveredRectangle, tolerance: float=RATIO_TOLERANCE) -> bool` — L99 — True se il rapporto dei lati è ≈ √2 (formati ISO).
-- `containment(rect: CoveredRectangle, doc) -> float` — L104 — Frazione degli Edge esterni al rettangolo i cui endpoint stanno dentro la
+- `find_rectangles(doc, min_side_fraction: float=BORDER_MIN_SIDE_FRACTION, min_side_length: Optional[float]=None) -> List[topo.geometry.CoveredRectangle]` — L57 — Trova i rettangoli axis-aligned "di bordo": quelli i cui quattro lati sono
+- `is_iso_ratio(rect: topo.geometry.CoveredRectangle, tolerance: float=RATIO_TOLERANCE) -> bool` — L99 — True se il rapporto dei lati è ≈ √2 (formati ISO).
+- `containment(rect: topo.geometry.CoveredRectangle, doc) -> float` — L104 — Frazione degli Edge esterni al rettangolo i cui endpoint stanno dentro la
 - `marked_sides(bounds, edges, tol: float=MARK_TOUCH_TOL) -> set` — L120 — I lati di `bounds` da cui parte almeno una tacca (edge corto verso l'esterno).
 - `_is_tick(edge, bounds, tol: float=MARK_TOUCH_TOL) -> bool` — L133 — Una tacca del rettangolo: parte da un lato, va fuori, ed è corta.
 - `_on_side(p, bounds, tol: float) -> bool` — L140
 - `_mark_outside(edge, bounds, tol: float=MARK_TOUCH_TOL) -> bool` — L146 — Un capo dell'edge sta su un lato di `bounds`, l'altro fuori.
-- `iso_format(rect: CoveredRectangle, tolerance: float=_ISO_SIZE_TOLERANCE) -> Optional[str]` — L157 — Formato ISO dedotto dalle dimensioni del rettangolo, o None. Assume mm.
-- `grid_dividers(rect: CoveredRectangle, doc, coverage: float=GRID_COVERAGE) -> Tuple[List[float], List[float]]` — L182 — Linee dritte STRETTAMENTE interne a `rect` (bordo escluso) che lo
-- `annotation_density_ratio(rect: CoveredRectangle, doc) -> float` — L198 — Quante volte più annotazioni per unità di area cadono dentro `rect`
+- `iso_format(rect: topo.geometry.CoveredRectangle, tolerance: float=_ISO_SIZE_TOLERANCE) -> Optional[str]` — L157 — Formato ISO dedotto dalle dimensioni del rettangolo, o None. Assume mm.
+- `grid_dividers(rect: topo.geometry.CoveredRectangle, doc, coverage: float=GRID_COVERAGE) -> Tuple[List[float], List[float]]` — L182 — Linee dritte STRETTAMENTE interne a `rect` (bordo escluso) che lo
+- `annotation_density_ratio(rect: topo.geometry.CoveredRectangle, doc) -> float` — L198 — Quante volte più annotazioni per unità di area cadono dentro `rect`
 
 #### `snapdraw/model.py` — 341 lines
 
@@ -275,24 +275,24 @@ _snapdraw/titleblock.py_
 - `find_titleblock(doc, frame: Optional[FrameInfo]=None) -> Optional[TitleBlock]` — L45 — Delimita il cartiglio nella geometria grezza di `doc`.
 - `extend_titleblock(title_block: TitleBlock, doc, frame: Optional[FrameInfo]=None) -> TitleBlock` — L110 — Estende `title_block` alle tabelle attaccate: ogni linea orizzontale o
 - `_edges_inside(bbox: Tuple[float, float, float, float], doc) -> list` — L177 — Tutti gli Edge di `doc.edges` (qualunque tipo di segmento — griglia,
-- `_is_genuine_grid(row_ys: List[float], col_xs: List[float], rect: CoveredRectangle) -> bool` — L191 — True se almeno un asse è suddiviso in segmenti **comparabili**, non
-- `_confidence(row_ys: List[float], col_xs: List[float], density: float, rect: CoveredRectangle, frame: Optional[FrameInfo]) -> float` — L211 — Confidenza grezza, stesso spirito additivo di `frame._confidence` — da
-- `_build_cells(rect: CoveredRectangle, row_ys: List[float], col_xs: List[float], doc) -> List[Cell]` — L231 — I divisori tagliano `rect` in celle; ogni cella raccoglie il testo delle
+- `_is_genuine_grid(row_ys: List[float], col_xs: List[float], rect: topo.geometry.CoveredRectangle) -> bool` — L191 — True se almeno un asse è suddiviso in segmenti **comparabili**, non
+- `_confidence(row_ys: List[float], col_xs: List[float], density: float, rect: topo.geometry.CoveredRectangle, frame: Optional[FrameInfo]) -> float` — L211 — Confidenza grezza, stesso spirito additivo di `frame._confidence` — da
+- `_build_cells(rect: topo.geometry.CoveredRectangle, row_ys: List[float], col_xs: List[float], doc) -> List[Cell]` — L231 — I divisori tagliano `rect` in celle; ogni cella raccoglie il testo delle
 - `read_titleblock(layout) -> dict` — L293 — Legge le celle del cartiglio → dict dei campi
 - `_split_labeled_text(text: str, cell_index: int) -> Dict[str, dict]` — L327 — Ogni etichetta trovata in `text` → valore = il testo fino alla prossima etichetta (o fine stringa).
 
-#### `snapdraw/views.py` — 161 lines
+#### `snapdraw/views.py` — 160 lines
 
 _snapdraw/views.py_
 
-- `sheet_islands(doc: topo.Document) -> topo.Result` — L43 — Le isole di un foglio: `topo.island` con il `max_gap` scelto da
-- `classify_view(cluster, angle_tolerance: float=AXIS_ANGLE_TOLERANCE) -> str` — L52 — "orthographic" se almeno metà della lunghezza dei LineSeg (contorno e
-- `projection_mates(views: List[View], tolerance: float=MATE_TOLERANCE) -> Dict[int, Tuple[List[int], List[int]]]` — L65 — Per ogni vista ortogonale: (height_mates, width_mates). Stessa
-- `principal_view(views: List[View]) -> Tuple[Optional[int], List[str]]` — L82 — La vista con compagni in tutte e due le direzioni (la più grande, se più
-- `view_depth(views: List[View], principal: Optional[int], tolerance: float=MATE_TOLERANCE) -> Tuple[Optional[float], List[str]]` — L101 — La terza dimensione della vista principale: la larghezza dei compagni in
-- `read_views(result, tolerance: float=MATE_TOLERANCE) -> ViewLayout` — L120 — Ricetta: classifica ogni cluster, trova i compagni di proiezione, la
-- `_reference(views: List[View]) -> Optional[View]` — L152 — La vista che fa da metro per i simboli: la principale, o la più grande.
-- `_area(view: View) -> float` — L160
+- `sheet_islands(doc: topo.Document) -> topo.Result` — L42 — Le isole di un foglio: `topo.island` con il `max_gap` scelto da
+- `classify_view(cluster, angle_tolerance: float=AXIS_ANGLE_TOLERANCE) -> str` — L51 — "orthographic" se almeno metà della lunghezza dei LineSeg (contorno e
+- `projection_mates(views: List[View], tolerance: float=MATE_TOLERANCE) -> Dict[int, Tuple[List[int], List[int]]]` — L64 — Per ogni vista ortogonale: (height_mates, width_mates). Stessa
+- `principal_view(views: List[View]) -> Tuple[Optional[int], List[str]]` — L81 — La vista con compagni in tutte e due le direzioni (la più grande, se più
+- `view_depth(views: List[View], principal: Optional[int], tolerance: float=MATE_TOLERANCE) -> Tuple[Optional[float], List[str]]` — L100 — La terza dimensione della vista principale: la larghezza dei compagni in
+- `read_views(result, tolerance: float=MATE_TOLERANCE) -> ViewLayout` — L119 — Ricetta: classifica ogni cluster, trova i compagni di proiezione, la
+- `_reference(views: List[View]) -> Optional[View]` — L151 — La vista che fa da metro per i simboli: la principale, o la più grande.
+- `_area(view: View) -> float` — L159
 
 ## Internal dependencies
 

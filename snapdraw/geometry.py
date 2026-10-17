@@ -15,8 +15,8 @@ from __future__ import annotations
 import math
 from typing import List, Optional, Tuple
 
-from topo.core.geometry.axis import CoveredRectangle, covered_rectangles, items_inside, spanning_lines
-from topo.core.primitives.segments import LineSeg
+import topo
+from topo.core.geometry.axis import items_inside
 
 ISO_RATIO = math.sqrt(2)          # ≈ 1.41421 — rapporto lato lungo / lato corto dei formati ISO
 RATIO_TOLERANCE = 0.05            # ±5% sul rapporto
@@ -47,7 +47,7 @@ _ISO_MARGINS = (0.0, 5.0, 10.0, 20.0, 25.0)   # rientri tipici del riquadro di s
 
 def line_edges(doc) -> list:
     """Gli Edge di doc.edges il cui segmento è un LineSeg."""
-    return [e for e in doc.edges if isinstance(e.segment, LineSeg)]
+    return [e for e in doc.edges if isinstance(e.segment, topo.primitives.LineSeg)]
 
 
 # ---------------------------------------------------------------------------
@@ -58,7 +58,7 @@ def find_rectangles(
     doc,
     min_side_fraction: float = BORDER_MIN_SIDE_FRACTION,
     min_side_length: Optional[float] = None,
-) -> List[CoveredRectangle]:
+) -> List[topo.geometry.CoveredRectangle]:
     """
     Trova i rettangoli axis-aligned "di bordo": quelli i cui quattro lati sono
     coperti da linee lunghe. Prende sia il riquadro esterno sia quello di
@@ -88,7 +88,7 @@ def find_rectangles(
             return []
         min_len = big * min_side_fraction
 
-    return list(covered_rectangles(edges, min_len, eps=AXIS_EPS, cluster_tolerance=COORD_CLUSTER_TOL,
+    return list(topo.geometry.covered_rectangles(edges, min_len, eps=AXIS_EPS, cluster_tolerance=COORD_CLUSTER_TOL,
                                    coverage=SIDE_COVERAGE))
 
 
@@ -96,12 +96,12 @@ def find_rectangles(
 # Misure
 # ---------------------------------------------------------------------------
 
-def is_iso_ratio(rect: CoveredRectangle, tolerance: float = RATIO_TOLERANCE) -> bool:
+def is_iso_ratio(rect: topo.geometry.CoveredRectangle, tolerance: float = RATIO_TOLERANCE) -> bool:
     """True se il rapporto dei lati è ≈ √2 (formati ISO)."""
     return abs(rect.ratio - ISO_RATIO) <= tolerance
 
 
-def containment(rect: CoveredRectangle, doc) -> float:
+def containment(rect: topo.geometry.CoveredRectangle, doc) -> float:
     """
     Frazione degli Edge esterni al rettangolo i cui endpoint stanno dentro la
     sua bbox (con un piccolo margine). 1.0 = il rettangolo racchiude tutto.
@@ -154,7 +154,7 @@ def _mark_outside(edge, bounds, tol: float = MARK_TOUCH_TOL) -> bool:
     return (_on_side(a, bounds, tol) and outside(b)) or (_on_side(b, bounds, tol) and outside(a))
 
 
-def iso_format(rect: CoveredRectangle, tolerance: float = _ISO_SIZE_TOLERANCE) -> Optional[str]:
+def iso_format(rect: topo.geometry.CoveredRectangle, tolerance: float = _ISO_SIZE_TOLERANCE) -> Optional[str]:
     """
     Formato ISO dedotto dalle dimensioni del rettangolo, o None. Assume mm.
 
@@ -179,7 +179,7 @@ def iso_format(rect: CoveredRectangle, tolerance: float = _ISO_SIZE_TOLERANCE) -
 GRID_COVERAGE = 0.85  # frazione minima di lato coperta da un divisore di riga/colonna
 
 
-def grid_dividers(rect: CoveredRectangle, doc, coverage: float = GRID_COVERAGE) -> Tuple[List[float], List[float]]:
+def grid_dividers(rect: topo.geometry.CoveredRectangle, doc, coverage: float = GRID_COVERAGE) -> Tuple[List[float], List[float]]:
     """
     Linee dritte STRETTAMENTE interne a `rect` (bordo escluso) che lo
     attraversano per almeno `coverage` della larghezza/altezza — i divisori
@@ -191,11 +191,11 @@ def grid_dividers(rect: CoveredRectangle, doc, coverage: float = GRID_COVERAGE) 
     Ritorna `(row_ys, col_xs)`, ciascuna ordinata, bordo del rettangolo
     escluso. Il lavoro geometrico è `topo.core.axis.spanning_lines`.
     """
-    return spanning_lines(rect.bbox, line_edges(doc), coverage=coverage, eps=AXIS_EPS,
+    return topo.geometry.spanning_lines(rect.bbox, line_edges(doc), coverage=coverage, eps=AXIS_EPS,
                           cluster_tolerance=COORD_CLUSTER_TOL)
 
 
-def annotation_density_ratio(rect: CoveredRectangle, doc) -> float:
+def annotation_density_ratio(rect: topo.geometry.CoveredRectangle, doc) -> float:
     """
     Quante volte più annotazioni per unità di area cadono dentro `rect`
     rispetto alla densità media dell'intero disegno (annotazioni + geometria,

@@ -25,7 +25,6 @@ from __future__ import annotations
 from typing import Dict, List, Optional, Tuple
 
 import topo
-from topo.core.geometry.axis import axis_aligned_share
 
 from .model import View, ViewLayout
 
@@ -58,7 +57,7 @@ def classify_view(cluster, angle_tolerance: float = AXIS_ANGLE_TOLERANCE) -> str
     (solo archi e cerchi) resta "orthographic".
     """
     segments = list(cluster.outer.segments) + [s for inner in cluster.inners for s in inner.segments]
-    share = axis_aligned_share(segments, angle_tolerance)
+    share = topo.geometry.axis_aligned_share(segments, angle_tolerance)
     return ORTHOGRAPHIC if share is None or share >= ORTHOGRAPHIC_SHARE else PICTORIAL
 
 

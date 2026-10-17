@@ -43,8 +43,6 @@ from typing import Dict, List, Optional, Tuple
 
 import topo
 from topo.core.geometry.axis import merge_intervals
-from topo.core.primitives.segments import ArcSeg, LineSeg
-from topo.model.detected import DetectedFeatures
 
 from .model import Callout, Feature, FeatureGroup, FeatureLayout, Trace, ViewLayout
 from .roles import (CONSTRUCTION, COUNTERBORE, COUNTERSINK, FRAME, HOLE, OPENING, SEATED_HOLE, SLOT, THREADED_HOLE,
@@ -245,7 +243,7 @@ def read_features(doc, result, views: ViewLayout) -> FeatureLayout:
     layout.scales, flags = view_scales(result, views)
     layout.flags += flags
     callouts = diameter_callouts(result)
-    arcs = [e.segment for e in doc.edges if isinstance(e.segment, ArcSeg) and e.role not in _NOT_GEOMETRY]
+    arcs = [e.segment for e in doc.edges if isinstance(e.segment, topo.primitives.ArcSeg) and e.role not in _NOT_GEOMETRY]
 
     for view in ortho:
         found = [(f"clusters[{view.index}].inners[{j}]", inner, shape) for j, inner, shape in feature_contours(result, view.index)]
@@ -289,7 +287,7 @@ def tag_features(result, layout: FeatureLayout):
         mine = [f for f in layout.features if f.view == index]
         if not mine:
             continue
-        cluster.detected = cluster.detected or DetectedFeatures()
+        cluster.detected = cluster.detected or topo.model.DetectedFeatures()
         cluster.detected.attach(COLLECTION, mine)
         cluster.inners = [c for c in cluster.inners if id(c) not in taken]
     return result
@@ -348,7 +346,7 @@ def _feature(doc, views, view: int, path: str, contour, shape, callouts, depth, 
     return feature
 
 
-def _thread_crest(shape, arcs) -> Optional[ArcSeg]:
+def _thread_crest(shape, arcs) -> Optional[topo.primitives.ArcSeg]:
     """L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`topo.geometry.arcs_around`)."""
     found = topo.geometry.arcs_around(tuple(shape.center), shape.diameter / 2, arcs, tolerance=THREAD_CENTER_TOLERANCE)
     return next((a.arc for a in found if abs(a.sweep - THREAD_SWEEP) < THREAD_SWEEP_TOLERANCE
@@ -463,7 +461,7 @@ def _conical(doc, views, view: int, seat_bounds, hole_bounds, tolerance: float =
     """
     by_index = {v.index: v for v in views.views}
     this = by_index[view]
-    lines = [e.segment for e in doc.edges if isinstance(e.segment, LineSeg) and e.role not in _NOT_GEOMETRY]
+    lines = [e.segment for e in doc.edges if isinstance(e.segment, topo.primitives.LineSeg) and e.role not in _NOT_GEOMETRY]
     for axis, mates in ((1, this.height_mates), (0, this.width_mates)):
         for index in mates:
             x0, y0, x1, y1 = by_index[index].bbox
@@ -525,7 +523,7 @@ def _trace_in(doc, bbox, axis: int, lo_level: float, hi_level: float,
         intervals = []
         for edge in doc.edges:
             seg = edge.segment
-            if edge.role in _NOT_GEOMETRY or not isinstance(seg, LineSeg):
+            if edge.role in _NOT_GEOMETRY or not isinstance(seg, topo.primitives.LineSeg):
                 continue
             if abs(seg.start[axis] - level) > tolerance or abs(seg.end[axis] - level) > tolerance:
                 continue
@@ -569,7 +567,7 @@ def _end_kind(doc, axis: int, along: int, e: float, level: float, outward: int,
         start, stop = getattr(seg, "start", None), getattr(seg, "end", None)
         if edge.role in _NOT_GEOMETRY or start is None or stop is None:
             continue
-        if isinstance(seg, LineSeg) and abs(start[along] - e) <= tolerance and abs(stop[along] - e) <= tolerance:
+        if isinstance(seg, topo.primitives.LineSeg) and abs(start[along] - e) <= tolerance and abs(stop[along] - e) <= tolerance:
             lo, hi = sorted((start[axis], stop[axis]))
             if lo - tolerance <= level <= hi + tolerance:
                 beyond = (level - lo) if outward < 0 else (hi - level)

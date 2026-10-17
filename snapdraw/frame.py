@@ -28,7 +28,7 @@ from __future__ import annotations
 from dataclasses import replace
 from typing import Optional
 
-from topo.core.geometry.axis import CoveredRectangle
+import topo
 from topo.core.geometry.measure import length_inside, segment_length
 
 from .geometry import (
@@ -113,7 +113,7 @@ def extend_frame(frame: FrameInfo, doc) -> FrameInfo:
     return replace(frame, edges=frame.edges + extra)
 
 
-def rejected_border(doc, title_block) -> Optional[CoveredRectangle]:
+def rejected_border(doc, title_block) -> Optional[topo.geometry.CoveredRectangle]:
     """
     Il riquadro di bordo più grande che racchiude `title_block` ma che
     `find_frame` non ha accettato (rapporto non ISO, o contenimento sotto
@@ -139,7 +139,7 @@ def rejected_border(doc, title_block) -> Optional[CoveredRectangle]:
     return max(enclosing, key=lambda r: r.area) if enclosing else None
 
 
-def _confidence(rect: CoveredRectangle, cont: float, n_borders: int) -> float:
+def _confidence(rect: topo.geometry.CoveredRectangle, cont: float, n_borders: int) -> float:
     """
     Confidenza grezza: parte dal contenimento, bonus se il formato ISO torna,
     bonus se ci sono due bordi (cornice a doppia squadratura, molto tipica).
