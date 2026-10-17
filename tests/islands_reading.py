@@ -7,14 +7,14 @@ aperte che stanno fuori da ogni isola. La usano `generate_islands.py` (scrive
 il golden) e `test_islands.py` (lo confronta).
 
 Fogli in `examples/islands/`: solo quelli che Federico ha giudicato giusti
-sulla pagina "Scala delle isole" (5 ottobre, forge D99-D100, MAP D30-D31);
+sulla pagina "Scala delle isole" (5 ottobre, topo D99-D100, MAP D30-D31);
 anch_07 e anch_08 entrano dopo D100, con le viste 3D intere. In `examples/anonymus/`
 hanno il golden solo i fogli giudicati giusti.
 """
 
 from pathlib import Path
 
-import forge
+import topo
 import snapdraw as sd
 
 ISLANDS = Path(__file__).parent / "examples" / "islands"
@@ -32,7 +32,7 @@ def sheets() -> list:
 
 def read_islands(path: Path) -> dict:
     """Le isole di un foglio come le legge snapdraw oggi (cornice e cartiglio tolti)."""
-    doc = forge.load_dxf(str(path), role_rules=sd.load_rules(RULES))
+    doc = topo.load_dxf(str(path), role_rules=sd.load_rules(RULES))
     sd.tag_layout(doc, sd.detect_frame(doc))
     result = sd.sheet_islands(doc)
     return {

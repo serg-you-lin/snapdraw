@@ -28,8 +28,8 @@ from typing import Dict, List, Optional, Tuple
 from shapely.geometry import LineString
 from shapely.strtree import STRtree
 
-import forge
-from forge.core.geometry.axis import CoveredRectangle, axis_lines, items_inside
+import topo
+from topo.core.geometry.axis import CoveredRectangle, axis_lines, items_inside
 
 from .geometry import TEXT_BORDER_TOL, annotation_density_ratio, find_rectangles, grid_dividers, line_edges
 from .model import Cell, FrameInfo, TitleBlock
@@ -76,7 +76,7 @@ def find_titleblock(doc, frame: Optional[FrameInfo] = None) -> Optional[TitleBlo
 
     for rect in find_rectangles(doc, min_side_length=TITLEBLOCK_MIN_SIDE):
         # con la cornice, il cartiglio sta sul suo bordo interno (MAP D31)
-        sides = forge.geometry.sides_on_border(rect.bbox, border, FRAME_TOUCH_TOL) if border is not None else None
+        sides = topo.geometry.sides_on_border(rect.bbox, border, FRAME_TOUCH_TOL) if border is not None else None
         if border is not None and not sides:
             continue
         row_ys, col_xs = grid_dividers(rect, doc)
@@ -117,7 +117,7 @@ def extend_titleblock(title_block: TitleBlock, doc, frame: Optional[FrameInfo] =
     Perché: `find_titleblock` sceglie un rettangolo con i quattro lati coperti,
     e una tabella revisioni più stretta del cartiglio, o un blocco di celle a
     fianco più alto, ne resta fuori — la sua riga chiusa diventa un'isola per
-    `forge.island()` (MAP D15, 16 disegni su 19 dei `complete_drawings`).
+    `topo.island()` (MAP D15, 16 disegni su 19 dei `complete_drawings`).
 
     Limite: una linea si prende solo se sta tutta dentro il riquadro del
     cartiglio allargato del suo lato maggiore. Senza, la catena risale i lati

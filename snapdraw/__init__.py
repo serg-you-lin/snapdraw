@@ -3,23 +3,23 @@ snapdraw
 --------
 Rilevamento automatico di cornice e cartiglio nei disegni tecnici impaginati.
 
-snapdraw è un **consumatore di forge**: usa `forge.load_dxf` come motore, fa il
-suo lavoro geometrico sulla geometria grezza, e riporta le decisioni a forge
-settando `edge.role` prima della lettura di forge — `heal` o `island`, scelta
-del chiamante (aggancio "opzione B", forge D30).
-Non modifica forge e non ragiona dentro forge: forge resta neutro e
-deterministico, snapdraw si adatta (vedi SNAPDRAW.md nel repo di forge, DESIGN.md
+snapdraw è un **consumatore di topo**: usa `topo.load_dxf` come motore, fa il
+suo lavoro geometrico sulla geometria grezza, e riporta le decisioni a topo
+settando `edge.role` prima della lettura di topo — `heal` o `island`, scelta
+del chiamante (aggancio "opzione B", topo D30).
+Non modifica topo e non ragiona dentro topo: topo resta neutro e
+deterministico, snapdraw si adatta (vedi SNAPDRAW.md nel repo di topo, DESIGN.md
 qui).
 
 Workflow di rilevamento — `detect_frame` è una ricetta sopra passi pubblici
-(`find_frame`, `find_titleblock`), stesso schema di `forge.heal` (forge D62):
+(`find_frame`, `find_titleblock`), stesso schema di `topo.heal` (topo D62):
 
-    import forge
+    import topo
 
     import snapdraw as sd
 
     # regole di ruolo al caricamento: assi e costruzione (MAP D17)
-    doc = forge.load_dxf("disegno.dxf", role_rules=sd.load_rules("generic"))
+    doc = topo.load_dxf("disegno.dxf", role_rules=sd.load_rules("generic"))
     layout = sd.detect_frame(doc)    # cornice + cartiglio sulla geometria grezza
     fields = sd.read_titleblock(layout)   # campi del cartiglio, per regex su un vocabolario ISO generico
 
@@ -29,11 +29,11 @@ Workflow di rilevamento — `detect_frame` è una ricetta sopra passi pubblici
 
 Workflow di generazione (il verso "aggiungi" — un disegno senza cornice):
 
-    doc = forge.load_dxf("pezzo_nudo.dxf")
+    doc = topo.load_dxf("pezzo_nudo.dxf")
     sd.add_frame(doc)                            # cornice ISO attorno alla geometria esistente
     sd.add_title_block(doc, fields={"material": "S235JR", "quantity": "2"})
-    result = forge.heal(doc)
-    forge.to_dxf(result, doc).saveas("pezzo_framed.dxf")
+    result = topo.heal(doc)
+    topo.to_dxf(result, doc).saveas("pezzo_framed.dxf")
 
 Stato: pre-alpha. `find_frame` e `find_titleblock`/`read_titleblock` sono
 portati e funzionanti (soglie ancora grezze, da tarare su fixture reali); la

@@ -29,10 +29,10 @@ def _make_test(dxf: Path, golden: Path):
     return test
 
 
-# golden fermi apposta: forge 0.14.0 (D101-D103) cambia la lettura per isole di
-# questi fogli e i golden di forge stessi sono fermi finché i dubbi su D103
+# golden fermi apposta: topo 0.14.0 (D101-D103) cambia la lettura per isole di
+# questi fogli e i golden di topo stessi sono fermi finché i dubbi su D103
 # (fantasmi, inner annidati) non sono chiariti — si rigenerano insieme a quelli
-# di forge, guardando prima i DXF; allora questa lista si svuota
+# di topo, guardando prima i DXF; allora questa lista si svuota
 KNOWN_STALE = {"anch_02", "anch_03", "anch_06", "anch_07"}
 
 for _dxf in sheets():

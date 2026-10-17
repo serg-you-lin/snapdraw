@@ -1,9 +1,9 @@
 """
 tests/test_frame.py
 -------------------
-Test del rilevamento cornice e dell'aggancio a forge.
+Test del rilevamento cornice e dell'aggancio a topo.
 
-Le fixture qui sono sintetiche, costruite con `forge.load_geometry`: un
+Le fixture qui sono sintetiche, costruite con `topo.load_geometry`: un
 rettangolo con rapporto ISO √2 che racchiude due "pezzi". Le fixture su DXF
 reali (un A3/A4 con cornice e cartiglio veri) vanno in `tests/examples/` — vedi
 TODO.md.
@@ -11,7 +11,7 @@ TODO.md.
 
 import unittest
 
-import forge
+import topo
 import snapdraw as sd
 from snapdraw.frame import find_frame
 
@@ -25,7 +25,7 @@ def _rect(x0, y0, x1, y1, role="unknown"):
 
 def _framed_doc(frame_role="unknown"):
     # cornice con rapporto A3 (420 x 297, ratio ≈ 1.414) + due pezzi dentro
-    return forge.load_geometry([
+    return topo.load_geometry([
         _rect(0, 0, 420, 297, role=frame_role),
         _rect(30, 30, 130, 130, role="outer"),
         _rect(200, 30, 300, 130, role="outer"),
@@ -34,7 +34,7 @@ def _framed_doc(frame_role="unknown"):
 
 def _unframed_doc():
     # due pezzi, nessun riquadro che li racchiude
-    return forge.load_geometry([
+    return topo.load_geometry([
         _rect(30, 30, 130, 130, role="outer"),
         _rect(200, 30, 300, 130, role="outer"),
     ])
@@ -54,7 +54,7 @@ class TestFindFrame(unittest.TestCase):
 
     def test_conservativo_ratio_non_iso(self):
         # riquadro quadrato che racchiude tutto: rapporto 1.0, non ISO
-        doc = forge.load_geometry([
+        doc = topo.load_geometry([
             _rect(0, 0, 400, 400),
             _rect(30, 30, 130, 130, role="outer"),
         ])
@@ -80,7 +80,7 @@ class TestDetectFrameRecipe(unittest.TestCase):
     def test_riquadro_non_iso_attorno_al_cartiglio_viene_segnalato(self):
         # un modello aziendale non ISO (rapporto 2) che racchiude cartiglio e
         # pezzo: non è una cornice, ma resta nel disegno e va detto (B1250136)
-        doc = forge.load_geometry([
+        doc = topo.load_geometry([
             _rect(0, 0, 300, 600),
             _rect(60, 250, 200, 400, role="outer"),
         ])
@@ -94,7 +94,7 @@ class TestDetectFrameRecipe(unittest.TestCase):
 
     def test_nessun_avviso_senza_cartiglio(self):
         # il rettangolo di un pezzo nudo non è un riquadro di impaginazione
-        layout = sd.detect_frame(forge.load_geometry([_rect(0, 0, 300, 600)]))
+        layout = sd.detect_frame(topo.load_geometry([_rect(0, 0, 300, 600)]))
         self.assertFalse(any("rejected border" in f for f in layout.flags))
 
 
@@ -105,7 +105,7 @@ class TestExtendFrame(unittest.TestCase):
         # viste (una griglia di riquadri, più edge della cornice come su un
         # foglio vero) + cornice generata da snapdraw (doppio bordo, lineette
         # delle zone e di centratura), poi ruoli azzerati: come letto da file
-        doc = forge.load_geometry([_rect(x, y, x + 15, y + 15, role="outer")
+        doc = topo.load_geometry([_rect(x, y, x + 15, y + 15, role="outer")
                                    for x in range(0, 200, 20) for y in range(0, 100, 20)])
         generated = sd.add_frame(doc)
         for e in doc.edges:
@@ -120,7 +120,7 @@ class TestExtendFrame(unittest.TestCase):
     def test_un_tratto_corto_dentro_il_disegno_resta(self):
         doc, generated = self._letto_da_file()
         ix0, iy0, _, _ = generated.inner_bbox
-        corto = forge.load_geometry([{"type": "line", "start": (ix0 + 20, iy0 + 20), "end": (ix0 + 23, iy0 + 20)}]).edges
+        corto = topo.load_geometry([{"type": "line", "start": (ix0 + 20, iy0 + 20), "end": (ix0 + 23, iy0 + 20)}]).edges
         doc.edges.extend(corto)
         frame = sd.detect_frame(doc).frame
         self.assertNotIn(id(corto[0]), {id(e) for e in frame.edges})
@@ -130,7 +130,7 @@ class TestExtendFrame(unittest.TestCase):
         x0, y0, _, _ = generated.bbox
         ix0, _, _, _ = generated.inner_bbox
         band = ix0 - x0
-        segno = forge.load_geometry([{"type": "line", "start": (x0, y0 + 40), "end": (ix0 + band / 2, y0 + 40)}]).edges
+        segno = topo.load_geometry([{"type": "line", "start": (x0, y0 + 40), "end": (ix0 + band / 2, y0 + 40)}]).edges
         doc.edges.extend(segno)
         frame = sd.detect_frame(doc).frame
         self.assertIn(id(segno[0]), {id(e) for e in frame.edges})
@@ -140,7 +140,7 @@ class TestTagLayoutIntegration(unittest.TestCase):
     """L'aggancio: marca gli Edge, heal esclude la cornice dai cluster."""
 
     def test_senza_snapdraw_la_cornice_e_un_cluster(self):
-        result = forge.heal(_framed_doc())
+        result = topo.heal(_framed_doc())
         # la cornice fa da outer e si mangia tutto: un solo cluster
         self.assertEqual(len(result.clusters), 1)
 
@@ -150,7 +150,7 @@ class TestTagLayoutIntegration(unittest.TestCase):
         n = sd.tag_layout(doc, layout)
         self.assertEqual(n, 4)
 
-        result = forge.heal(doc)
+        result = topo.heal(doc)
         self.assertEqual(len(result.clusters), 2)
         # la geometria della cornice non si perde: è in trash col ruolo intatto
         # (role è lo slug di consumatore "frame", non un ContourRole — D31/D47)

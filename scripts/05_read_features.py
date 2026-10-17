@@ -2,7 +2,7 @@ import _paths  # noqa: F401  — chdir alla radice del repo
 
 import os
 
-import forge
+import topo
 import snapdraw as sd
 
 # --- CONFIG ---------------------------------------------------------------
@@ -16,7 +16,7 @@ RULES  = "generic"
 os.makedirs(OUTPUT, exist_ok=True)
 for path in SHEETS:
     name = os.path.splitext(os.path.basename(path))[0]
-    doc = forge.load_dxf(path, role_rules=sd.load_rules(RULES))
+    doc = topo.load_dxf(path, role_rules=sd.load_rules(RULES))
     sd.tag_layout(doc, sd.detect_frame(doc))
     result = sd.sheet_islands(doc)
     views = sd.read_views(result)
@@ -37,9 +37,9 @@ for path in SHEETS:
         what = f.callout.text if f.callout else f"{f.shape.length:.2f}×{f.shape.width:.2f}"
         label = f"{f.role} {what} {kind} ({f.source})" + (f" prof. {depth:.2f}" if depth is not None else "")
         x, y = f.center
-        result.annotations.append(forge.Note(position=(x + f.shape.length / 2, y + f.shape.width / 2),
+        result.annotations.append(topo.Note(position=(x + f.shape.length / 2, y + f.shape.width / 2),
                                              source_kind="TEXT", height=1.5, text=label))
     sd.tag_features(result, features)
     out = os.path.join(OUTPUT, name + "_features.dxf")
-    forge.to_dxf(result, doc).saveas(out)
+    topo.to_dxf(result, doc).saveas(out)
     print(f"  scritto {out}")

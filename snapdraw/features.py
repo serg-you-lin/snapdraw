@@ -2,11 +2,11 @@
 snapdraw/features.py
 --------------------
 Le feature delle viste: su ogni vista ortogonale, ogni contorno interno
-isolato letto con `forge.geometry.contour_shape` — cerchio → foro, stadio → asola,
+isolato letto con `topo.geometry.contour_shape` — cerchio → foro, stadio → asola,
 rettangolo/poligono → apertura — con la traccia nelle viste compagne
 (passante, cieco, profondità), la quota agganciata e la scala della vista.
 
-forge dice "cerchio", mai "foro". Qui lo si legge come foro incrociando le
+topo dice "cerchio", mai "foro". Qui lo si legge come foro incrociando le
 viste e la notazione: convenzione di disegno, come le viste (D18). Trapano,
 laser o fresa non si decide qui: è sapere di processo (snapbend).
 
@@ -41,10 +41,10 @@ import re
 from collections import Counter
 from typing import Dict, List, Optional, Tuple
 
-import forge
-from forge.core.geometry.axis import merge_intervals
-from forge.core.primitives.segments import ArcSeg, LineSeg
-from forge.model.detected import DetectedFeatures
+import topo
+from topo.core.geometry.axis import merge_intervals
+from topo.core.primitives.segments import ArcSeg, LineSeg
+from topo.model.detected import DetectedFeatures
 
 from .model import Callout, Feature, FeatureGroup, FeatureLayout, Trace, ViewLayout
 from .roles import (CONSTRUCTION, COUNTERBORE, COUNTERSINK, FRAME, HOLE, OPENING, SEATED_HOLE, SLOT, THREADED_HOLE,
@@ -56,7 +56,7 @@ SPAN_TOLERANCE = 1.0     # mm — stessa tolleranza dei compagni di proiezione (
 TOUCH_TOLERANCE = 0.05   # mm — due contorni più vicini di così si toccano: non è una feature isolata
 SCALE_AGREEMENT = 0.01   # scarto relativo massimo fra le scale lette da quote diverse
 COLLECTION = "view_features"   # nome sotto cui `tag_features` le attacca a `cluster.detected`
-# Cresta del filetto: un arco attorno al foro (`forge.geometry.arcs_around`), a ~270°,
+# Cresta del filetto: un arco attorno al foro (`topo.geometry.arcs_around`), a ~270°,
 # poco più grande — per le metriche diametro nominale / preforo ~1.1–1.3.
 THREAD_SWEEP, THREAD_SWEEP_TOLERANCE = 270.0, 35.0   # gradi
 THREAD_MAX_RADIUS_RATIO = 1.6
@@ -87,11 +87,11 @@ def view_scales(result, views: ViewLayout, agreement: float = SCALE_AGREEMENT) -
     """
     ratios: Dict[int, List[float]] = {}
     for dimension in result.annotations:
-        if not isinstance(dimension, forge.Dimension) or dimension.dim_type == "angular" \
+        if not isinstance(dimension, topo.Dimension) or dimension.dim_type == "angular" \
                 or not dimension.measured_value:
             continue
         written = _WRITTEN.match(dimension.display_text)
-        refs = dimension.references or forge.dimension_references(result, dimension)
+        refs = dimension.references or topo.dimension_references(result, dimension)
         view = _VIEW.match(refs[0]) if refs else None
         if written is None or view is None or _number(written["value"]) == 0:
             continue
@@ -116,7 +116,7 @@ def view_scales(result, views: ViewLayout, agreement: float = SCALE_AGREEMENT) -
 def feature_contours(result, view: int, tolerance: float = TOUCH_TOLERANCE) -> List[Tuple[int, object, object]]:
     """
     (indice, contorno, forma) dei contorni interni della vista con una forma
-    (`forge.geometry.contour_shape` non None): i cerchi sempre, le altre forme solo se
+    (`topo.geometry.contour_shape` non None): i cerchi sempre, le altre forme solo se
     isolate — non toccano l'esterno né un vicino che non le contiene e non è
     contenuto in loro.
     """
@@ -125,7 +125,7 @@ def feature_contours(result, view: int, tolerance: float = TOUCH_TOLERANCE) -> L
     outer = cluster.outer.polygon.exterior
     candidates = []
     for j, inner in enumerate(inners):
-        shape = forge.geometry.contour_shape(inner)
+        shape = topo.geometry.contour_shape(inner)
         if shape is None or inner.polygon is None:
             continue
         if shape.kind == "circle":
@@ -168,11 +168,11 @@ def feature_trace(doc, views: ViewLayout, view: int, bounds, tolerance: float = 
 
 
 def diameter_callouts(result) -> Dict[str, object]:
-    """Percorso dell'elemento quotato → la quota di diametro che lo misura (`forge.dimension_references`)."""
+    """Percorso dell'elemento quotato → la quota di diametro che lo misura (`topo.dimension_references`)."""
     callouts = {}
     for annotation in result.annotations:
-        if isinstance(annotation, forge.Dimension) and annotation.dim_type == "diameter":
-            refs = annotation.references or forge.dimension_references(result, annotation)
+        if isinstance(annotation, topo.Dimension) and annotation.dim_type == "diameter":
+            refs = annotation.references or topo.dimension_references(result, annotation)
             if len(refs) == 1:
                 callouts.setdefault(refs[0], annotation)
     return callouts
@@ -232,7 +232,7 @@ def read_features(doc, result, views: ViewLayout) -> FeatureLayout:
     Ricetta: la scala di ogni vista; per ogni vista ortogonale i contorni
     isolati, le coppie concentriche (foro + sede) unite, il filetto
     dall'arco di cresta, la quota, la traccia nelle compagne; passante per
-    traccia o per convenzione. Poi le quote di diametro che forge non ha
+    traccia o per convenzione. Poi le quote di diametro che topo non ha
     agganciato (misurate sulla cresta, un arco aperto) si agganciano dal
     centro, e un richiamo "n°N fori" vale per i fori uguali della sua vista.
     Misure alla scala della vista; i gruppi. Non muta `doc` né `result`.
@@ -279,7 +279,7 @@ def read_features(doc, result, views: ViewLayout) -> FeatureLayout:
 def tag_features(result, layout: FeatureLayout):
     """
     Attacca le feature ai loro cluster (`cluster.detected["view_features"]`,
-    lo stesso overlay di forge D44) e toglie i loro contorni da
+    lo stesso overlay di topo D44) e toglie i loro contorni da
     `cluster.inners`, come fa `detect_flat` con i fori: così un exporter li
     scrive una volta sola, sul layer del ruolo. **Muta** `result`; i `path`
     delle feature si riferiscono alla lettura di prima.
@@ -297,8 +297,8 @@ def tag_features(result, layout: FeatureLayout):
 
 def feature_metadata(cluster) -> dict:
     """
-    Le feature di un cluster come dati, per il JSON di forge:
-    `forge.save_json(result, path, extra_metadata=sd.feature_metadata)` dopo
+    Le feature di un cluster come dati, per il JSON di topo:
+    `topo.save_json(result, path, extra_metadata=sd.feature_metadata)` dopo
     `tag_features`. Vuoto se il cluster non ne ha.
     """
     features = cluster.features(COLLECTION)
@@ -315,13 +315,13 @@ def describe_features(layout: FeatureLayout) -> str:
 def _pair_concentric(found):
     """
     (percorso, contorno, forma, sede) — nei gruppi di cerchi concentrici
-    (`forge.geometry.concentric_groups`) ogni cerchio prende come sede il più piccolo
+    (`topo.geometry.concentric_groups`) ogni cerchio prende come sede il più piccolo
     dei cerchi più grandi ancora liberi (lamatura, svasatura); gli altri
     contorni passano da soli con sede None.
     """
     by_id = {id(item[1]): item for item in found}
     seats, used = {}, set()
-    for group in forge.geometry.concentric_groups([inner for _, inner, _ in found], tolerance=WALL_TOLERANCE):
+    for group in topo.geometry.concentric_groups([inner for _, inner, _ in found], tolerance=WALL_TOLERANCE):
         members = [by_id[id(c)] for c in group.items]
         for i, (path, _, shape) in enumerate(members):
             if path in used:
@@ -349,8 +349,8 @@ def _feature(doc, views, view: int, path: str, contour, shape, callouts, depth, 
 
 
 def _thread_crest(shape, arcs) -> Optional[ArcSeg]:
-    """L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`forge.geometry.arcs_around`)."""
-    found = forge.geometry.arcs_around(tuple(shape.center), shape.diameter / 2, arcs, tolerance=THREAD_CENTER_TOLERANCE)
+    """L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`topo.geometry.arcs_around`)."""
+    found = topo.geometry.arcs_around(tuple(shape.center), shape.diameter / 2, arcs, tolerance=THREAD_CENTER_TOLERANCE)
     return next((a.arc for a in found if abs(a.sweep - THREAD_SWEEP) < THREAD_SWEEP_TOLERANCE
                  and a.radius_ratio <= THREAD_MAX_RADIUS_RATIO), None)
 
@@ -362,17 +362,17 @@ def _mates(views, view: int) -> List[int]:
 
 def _anchor_by_center(result, features: List[Feature], tolerance: float = 0.5) -> None:
     """
-    Le quote di diametro che forge non ha agganciato: i due punti misurati
+    Le quote di diametro che topo non ha agganciato: i due punti misurati
     stanno ai capi di un diametro, quindi il loro punto medio è il centro. Si
     agganciano al foro con quel centro e quel raggio (del foro, o della cresta
     del filetto), se non ha già una quota.
     """
     holes = [f for f in features if f.kind == "hole"]
     for dimension in result.annotations:
-        if not isinstance(dimension, forge.Dimension) or dimension.dim_type != "diameter" \
+        if not isinstance(dimension, topo.Dimension) or dimension.dim_type != "diameter" \
                 or len(dimension.measured_points) != 2:
             continue
-        if dimension.references or forge.dimension_references(result, dimension):
+        if dimension.references or topo.dimension_references(result, dimension):
             continue
         (x1, y1), (x2, y2) = dimension.measured_points
         center, radius = ((x1 + x2) / 2, (y1 + y2) / 2), math.dist((x1, y1), (x2, y2)) / 2

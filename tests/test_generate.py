@@ -7,7 +7,7 @@ cartiglio attorno a geometria esistente, invece di riconoscerli.
 
 import unittest
 
-import forge
+import topo
 import snapdraw as sd
 from snapdraw.generate import DEFAULT_TITLE_BLOCK_TEMPLATE
 from snapdraw.roles import FRAME, TITLE_BLOCK
@@ -15,7 +15,7 @@ from snapdraw.roles import FRAME, TITLE_BLOCK
 
 def _part_doc(w, h):
     """Un pezzo rettangolare w x h, angolo in basso a sinistra nell'origine."""
-    return forge.load_geometry([{
+    return topo.load_geometry([{
         "type": "polygon", "role": "outer",
         "points": [(0, 0), (w, 0), (w, h), (0, h)],
     }])
@@ -24,7 +24,7 @@ def _part_doc(w, h):
 class TestAddFrame(unittest.TestCase):
 
     def test_alza_valueerror_su_doc_vuoto(self):
-        doc = forge.load_geometry([])
+        doc = topo.load_geometry([])
         with self.assertRaises(ValueError):
             sd.add_frame(doc)
 
@@ -66,7 +66,7 @@ class TestAddFrame(unittest.TestCase):
     def test_heal_tiene_la_cornice_fuori_dal_cluster(self):
         doc = _part_doc(200.0, 100.0)
         sd.add_frame(doc)
-        result = forge.heal(doc)
+        result = topo.heal(doc)
         self.assertTrue(result.is_valid)
         self.assertEqual(len(result.clusters), 1)  # solo il pezzo, non la cornice
         self.assertTrue(any(getattr(t, "role", "") == FRAME for t in result.trash_entities))
@@ -75,7 +75,7 @@ class TestAddFrame(unittest.TestCase):
 class TestAddTitleBlock(unittest.TestCase):
 
     def test_alza_valueerror_su_doc_vuoto_senza_anchor(self):
-        doc = forge.load_geometry([])
+        doc = topo.load_geometry([])
         with self.assertRaises(ValueError):
             sd.add_title_block(doc)
 
@@ -103,7 +103,7 @@ class TestAddTitleBlock(unittest.TestCase):
         doc = _part_doc(200.0, 100.0)
         sd.add_frame(doc)
         sd.add_title_block(doc)
-        result = forge.heal(doc)
+        result = topo.heal(doc)
         self.assertEqual(len(result.clusters), 1)
         self.assertTrue(any(getattr(t, "role", "") == TITLE_BLOCK for t in result.trash_entities))
 

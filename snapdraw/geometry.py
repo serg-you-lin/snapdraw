@@ -1,10 +1,10 @@
 """
 snapdraw/geometry.py
 --------------------
-Le letture geometriche di snapdraw sugli `Edge` di forge: rettangoli di bordo,
+Le letture geometriche di snapdraw sugli `Edge` di topo: rettangoli di bordo,
 contenimento, formato ISO, griglia di un cartiglio, densità di testo. La
 geometria pura (rettangoli coperti da tratti, linee che attraversano un
-rettangolo) è di forge, `forge.core.geometry.axis` (forge MAP.md D94); qui restano le
+rettangolo) è di topo, `topo.core.geometry.axis` (topo MAP.md D94); qui restano le
 soglie di disegno e il significato.
 
 Nessuna decisione semantica: chi decide "questa è la cornice" è `frame.py`.
@@ -15,8 +15,8 @@ from __future__ import annotations
 import math
 from typing import List, Optional, Tuple
 
-from forge.core.geometry.axis import CoveredRectangle, covered_rectangles, items_inside, spanning_lines
-from forge.core.primitives.segments import LineSeg
+from topo.core.geometry.axis import CoveredRectangle, covered_rectangles, items_inside, spanning_lines
+from topo.core.primitives.segments import LineSeg
 
 ISO_RATIO = math.sqrt(2)          # ≈ 1.41421 — rapporto lato lungo / lato corto dei formati ISO
 RATIO_TOLERANCE = 0.05            # ±5% sul rapporto
@@ -72,7 +72,7 @@ def find_rectangles(
     su un disegno grande. `min_side_length` (mm, assoluto) sostituisce la
     frazione quando è dato — lo usa `titleblock.py`.
 
-    Il lavoro geometrico è `forge.core.axis.covered_rectangles`.
+    Il lavoro geometrico è `topo.core.axis.covered_rectangles`.
     """
     edges = line_edges(doc)
     if len(edges) < 4:
@@ -189,7 +189,7 @@ def grid_dividers(rect: CoveredRectangle, doc, coverage: float = GRID_COVERAGE) 
     produce un cartiglio a righe piene, senza colonne.
 
     Ritorna `(row_ys, col_xs)`, ciascuna ordinata, bordo del rettangolo
-    escluso. Il lavoro geometrico è `forge.core.axis.spanning_lines`.
+    escluso. Il lavoro geometrico è `topo.core.axis.spanning_lines`.
     """
     return spanning_lines(rect.bbox, line_edges(doc), coverage=coverage, eps=AXIS_EPS,
                           cluster_tolerance=COORD_CLUSTER_TOL)

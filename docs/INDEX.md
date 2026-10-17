@@ -22,7 +22,7 @@ Every module-level name in the package, alphabetically. **Search here before wri
 |---|---|---|---|
 | `add_frame` | func | `snapdraw/generate.py:74` | Genera una cornice ISO attorno alla geometria corrente di `doc` e la |
 | `add_title_block` | func | `snapdraw/generate.py:147` | Genera un cartiglio e lo appende a `doc` (mutazione in place, stesso |
-| `_anchor_by_center` | func | `snapdraw/features.py:363` | Le quote di diametro che forge non ha agganciato: i due punti misurati |
+| `_anchor_by_center` | func | `snapdraw/features.py:363` | Le quote di diametro che topo non ha agganciato: i due punti misurati |
 | `annotation_density_ratio` | func | `snapdraw/geometry.py:198` | Quante volte più annotazioni per unità di area cadono dentro `rect` |
 | `_area` | func | `snapdraw/views.py:160` |  |
 | `_build_cells` | func | `snapdraw/titleblock.py:231` | I divisori tagliano `rect` in celle; ogni cella raccoglie il testo delle |
@@ -36,7 +36,7 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `_describe` | func | `snapdraw/features.py:596` |  |
 | `describe_features` | func | `snapdraw/features.py:308` | I gruppi come li scriverebbe una persona: "2 fori passanti Ø5,3 +0,05/0, profondità 4". |
 | `detect_frame` | func | `snapdraw/recipe.py:37` | Rileva cornice e cartiglio nella geometria grezza di `doc`. |
-| `diameter_callouts` | func | `snapdraw/features.py:170` | Percorso dell'elemento quotato → la quota di diametro che lo misura (`forge.dimension_references`). |
+| `diameter_callouts` | func | `snapdraw/features.py:170` | Percorso dell'elemento quotato → la quota di diametro che lo misura (`topo.dimension_references`). |
 | `_doc_bbox` | func | `snapdraw/generate.py:264` | bbox corrente di doc.edges, o None se non c'è geometria. |
 | `_edges_inside` | func | `snapdraw/titleblock.py:177` | Tutti gli Edge di `doc.edges` (qualunque tipo di segmento — griglia, |
 | `_end_kind` | func | `snapdraw/features.py:554` | Dove finisce una parete (coordinata `e` lungo la parete, alla quota |
@@ -46,7 +46,7 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `_feature` | func | `snapdraw/features.py:337` | Una feature da un contorno: tipo dalla forma, filetto, quota, traccia e profondità (senza sede). |
 | `Feature` | class | `snapdraw/model.py:203` | Un contorno interno di una vista ortogonale letto come feature. |
 | `feature_contours` | func | `snapdraw/features.py:116` | (indice, contorno, forma) dei contorni interni della vista con una forma |
-| `feature_metadata` | func | `snapdraw/features.py:298` | Le feature di un cluster come dati, per il JSON di forge: |
+| `feature_metadata` | func | `snapdraw/features.py:298` | Le feature di un cluster come dati, per il JSON di topo: |
 | `feature_trace` | func | `snapdraw/features.py:146` | Le tracce di una forma (riquadro `bounds`) nelle viste compagne di |
 | `FeatureGroup` | class | `snapdraw/model.py:305` | Feature uguali: stesso tipo, stessa misura e tolleranza, stesso passante e profondità. |
 | `FeatureLayout` | class | `snapdraw/model.py:321` | Il risultato di `sd.read_features(doc, result, views)`. |
@@ -55,7 +55,7 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `find_rectangles` | func | `snapdraw/geometry.py:57` | Trova i rettangoli axis-aligned "di bordo": quelli i cui quattro lati sono |
 | `find_titleblock` | func | `snapdraw/titleblock.py:45` | Delimita il cartiglio nella geometria grezza di `doc`. |
 | `_fmt` | func | `snapdraw/features.py:642` |  |
-| `_frame_entities` | func | `snapdraw/generate.py:220` | Pura: bbox esterna della cornice → entità per `forge.load_geometry` — |
+| `_frame_entities` | func | `snapdraw/generate.py:220` | Pura: bbox esterna della cornice → entità per `topo.load_geometry` — |
 | `FrameInfo` | class | `snapdraw/model.py:23` | La cornice di formato: il riquadro esterno del foglio. |
 | `FrameLayout` | class | `snapdraw/model.py:101` | Il risultato di `sd.detect_frame(doc)`. |
 | `grid_dividers` | func | `snapdraw/geometry.py:182` | Linee dritte STRETTAMENTE interne a `rect` (bordo escluso) che lo |
@@ -76,7 +76,7 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `_on_side` | func | `snapdraw/geometry.py:140` |  |
 | `_pair_concentric` | func | `snapdraw/features.py:315` | (percorso, contorno, forma, sede) — nei gruppi di cerchi concentrici |
 | `parse_callout` | func | `snapdraw/features.py:181` | Il testo di una quota di diametro: "Ø"/"M", il valore, la tolleranza |
-| `_place` | func | `snapdraw/generate.py:274` | Pura: template + anchor + valori → entità per `forge.load_geometry`, |
+| `_place` | func | `snapdraw/generate.py:274` | Pura: template + anchor + valori → entità per `topo.load_geometry`, |
 | `principal_view` | func | `snapdraw/views.py:82` | La vista con compagni in tutte e due le direzioni (la più grande, se più |
 | `projection_mates` | func | `snapdraw/views.py:65` | Per ogni vista ortogonale: (height_mates, width_mates). Stessa |
 | `_read_callout` | func | `snapdraw/features.py:407` |  |
@@ -94,12 +94,12 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `_round` | func | `snapdraw/features.py:634` |  |
 | `rules_from_dict` | func | `snapdraw/rules.py:61` | Come `load_rules`, da un dict già letto. |
 | `_share_callouts` | func | `snapdraw/features.py:389` | Un richiamo che dice quante feature copre ("n°30 fori") vale per i fori |
-| `sheet_islands` | func | `snapdraw/views.py:43` | Le isole di un foglio: `forge.island` con il `max_gap` scelto da |
+| `sheet_islands` | func | `snapdraw/views.py:43` | Le isole di un foglio: `topo.island` con il `max_gap` scelto da |
 | `_signed` | func | `snapdraw/features.py:646` |  |
 | `_split_labeled_text` | func | `snapdraw/titleblock.py:327` | Ogni etichetta trovata in `text` → valore = il testo fino alla prossima etichetta (o fine stringa). |
 | `tag_features` | func | `snapdraw/features.py:279` | Attacca le feature ai loro cluster (`cluster.detected["view_features"]`, |
 | `tag_layout` | func | `snapdraw/tag.py:28` | Setta `edge.role` sugli Edge di cornice e cartiglio in `layout`. |
-| `_thread_crest` | func | `snapdraw/features.py:351` | L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`forge.geometry.arcs_around`). |
+| `_thread_crest` | func | `snapdraw/features.py:351` | L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`topo.geometry.arcs_around`). |
 | `TitleBlock` | class | `snapdraw/model.py:51` | Il cartiglio: il riquadro delle informazioni, suddiviso in celle. |
 | `TitleBlockTemplate` | class | `snapdraw/model.py:81` | Il design di un cartiglio da generare: righe strette impilate in |
 | `_to_scale` | func | `snapdraw/features.py:494` | Profondità alla scala della vista; senza scala, flag e profondità disegnata soltanto. |
@@ -145,18 +145,18 @@ _snapdraw/features.py_
 - `view_scales(result, views: ViewLayout, agreement: float=SCALE_AGREEMENT) -> Tuple[Dict[int, Optional[float]], List[str]]` — L79 — La scala di ogni vista: valore scritto / valore misurato, il più
 - `feature_contours(result, view: int, tolerance: float=TOUCH_TOLERANCE) -> List[Tuple[int, object, object]]` — L116 — (indice, contorno, forma) dei contorni interni della vista con una forma
 - `feature_trace(doc, views: ViewLayout, view: int, bounds, tolerance: float=WALL_TOLERANCE) -> List[Trace]` — L146 — Le tracce di una forma (riquadro `bounds`) nelle viste compagne di
-- `diameter_callouts(result) -> Dict[str, object]` — L170 — Percorso dell'elemento quotato → la quota di diametro che lo misura (`forge.dimension_references`).
+- `diameter_callouts(result) -> Dict[str, object]` — L170 — Percorso dell'elemento quotato → la quota di diametro che lo misura (`topo.dimension_references`).
 - `parse_callout(dimension) -> Optional[Callout]` — L181 — Il testo di una quota di diametro: "Ø"/"M", il valore, la tolleranza
 - `group_features(features: List[Feature]) -> List[FeatureGroup]` — L215 — Raggruppa per tipo, misura (scritta o disegnata), tolleranza, sede, passante e profondità.
 - `read_features(doc, result, views: ViewLayout) -> FeatureLayout` — L230 — Ricetta: la scala di ogni vista; per ogni vista ortogonale i contorni
 - `tag_features(result, layout: FeatureLayout)` — L279 — Attacca le feature ai loro cluster (`cluster.detected["view_features"]`,
-- `feature_metadata(cluster) -> dict` — L298 — Le feature di un cluster come dati, per il JSON di forge:
+- `feature_metadata(cluster) -> dict` — L298 — Le feature di un cluster come dati, per il JSON di topo:
 - `describe_features(layout: FeatureLayout) -> str` — L308 — I gruppi come li scriverebbe una persona: "2 fori passanti Ø5,3 +0,05/0, profondità 4".
 - `_pair_concentric(found)` — L315 — (percorso, contorno, forma, sede) — nei gruppi di cerchi concentrici
 - `_feature(doc, views, view: int, path: str, contour, shape, callouts, depth, scales, arcs) -> Feature` — L337 — Una feature da un contorno: tipo dalla forma, filetto, quota, traccia e profondità (senza sede).
-- `_thread_crest(shape, arcs) -> Optional[ArcSeg]` — L351 — L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`forge.geometry.arcs_around`).
+- `_thread_crest(shape, arcs) -> Optional[ArcSeg]` — L351 — L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`topo.geometry.arcs_around`).
 - `_mates(views, view: int) -> List[int]` — L358
-- `_anchor_by_center(result, features: List[Feature], tolerance: float=0.5) -> None` — L363 — Le quote di diametro che forge non ha agganciato: i due punti misurati
+- `_anchor_by_center(result, features: List[Feature], tolerance: float=0.5) -> None` — L363 — Le quote di diametro che topo non ha agganciato: i due punti misurati
 - `_share_callouts(features: List[Feature], tolerance: float=WALL_TOLERANCE) -> None` — L389 — Un richiamo che dice quante feature copre ("n°30 fori") vale per i fori
 - `_read_callout(feature: Feature, dimension) -> None` — L407
 - `_read_depth(feature: Feature, traces: List[Trace], view_depth_value: Optional[float]) -> None` — L418 — Passante e profondità disegnata: dalla traccia, altrimenti per convenzione.
@@ -191,9 +191,9 @@ _snapdraw/generate.py_
 - `add_frame(doc, margin: float=DEFAULT_MARGIN, title_block_template: Optional[TitleBlockTemplate]=None) -> FrameInfo` — L74 — Genera una cornice ISO attorno alla geometria corrente di `doc` e la
 - `add_title_block(doc, fields: Optional[Dict[str, str]]=None, anchor: Optional[Tuple[float, float]]=None, margin: float=_BORDER_GAP, template: Optional[TitleBlockTemplate]=None) -> TitleBlock` — L147 — Genera un cartiglio e lo appende a `doc` (mutazione in place, stesso
 - `_zone_count(length: float) -> int` — L210 — Quante zone su un lato lungo `length` — ISO 5457: lunghezza di zona fra
-- `_frame_entities(xmin: float, ymin: float, xmax: float, ymax: float) -> list` — L220 — Pura: bbox esterna della cornice → entità per `forge.load_geometry` —
+- `_frame_entities(xmin: float, ymin: float, xmax: float, ymax: float) -> list` — L220 — Pura: bbox esterna della cornice → entità per `topo.load_geometry` —
 - `_doc_bbox(doc) -> Optional[BBox]` — L264 — bbox corrente di doc.edges, o None se non c'è geometria.
-- `_place(template: TitleBlockTemplate, anchor: Tuple[float, float], fields: Dict[str, str])` — L274 — Pura: template + anchor + valori → entità per `forge.load_geometry`,
+- `_place(template: TitleBlockTemplate, anchor: Tuple[float, float], fields: Dict[str, str])` — L274 — Pura: template + anchor + valori → entità per `topo.load_geometry`,
 
 #### `snapdraw/geometry.py` — 227 lines
 
@@ -258,9 +258,9 @@ _snapdraw/roles.py_
 
 _snapdraw/rules.py_
 
-- `load_rules(name: str, folder: Optional[Union[str, Path]]=None) -> List[forge.RoleRule]` — L50 — Legge `<folder>/<name>.json` (default `rules/` del repo) e ritorna le
-- `rules_from_dict(data: dict, source: str='<dict>') -> List[forge.RoleRule]` — L61 — Come `load_rules`, da un dict già letto.
-- `_expand(entry: dict) -> List[forge.RoleRule]` — L73 — Una voce del JSON → una o più RoleRule (una per elemento di una lista).
+- `load_rules(name: str, folder: Optional[Union[str, Path]]=None) -> List[topo.RoleRule]` — L50 — Legge `<folder>/<name>.json` (default `rules/` del repo) e ritorna le
+- `rules_from_dict(data: dict, source: str='<dict>') -> List[topo.RoleRule]` — L61 — Come `load_rules`, da un dict già letto.
+- `_expand(entry: dict) -> List[topo.RoleRule]` — L73 — Una voce del JSON → una o più RoleRule (una per elemento di una lista).
 
 #### `snapdraw/tag.py` — 44 lines
 
@@ -285,7 +285,7 @@ _snapdraw/titleblock.py_
 
 _snapdraw/views.py_
 
-- `sheet_islands(doc: forge.ForgeDocument) -> forge.ForgeResult` — L43 — Le isole di un foglio: `forge.island` con il `max_gap` scelto da
+- `sheet_islands(doc: topo.Document) -> topo.Result` — L43 — Le isole di un foglio: `topo.island` con il `max_gap` scelto da
 - `classify_view(cluster, angle_tolerance: float=AXIS_ANGLE_TOLERANCE) -> str` — L52 — "orthographic" se almeno metà della lunghezza dei LineSeg (contorno e
 - `projection_mates(views: List[View], tolerance: float=MATE_TOLERANCE) -> Dict[int, Tuple[List[int], List[int]]]` — L65 — Per ogni vista ortogonale: (height_mates, width_mates). Stessa
 - `principal_view(views: List[View]) -> Tuple[Optional[int], List[str]]` — L82 — La vista con compagni in tutte e due le direzioni (la più grande, se più

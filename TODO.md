@@ -3,11 +3,11 @@
 ## Fatto
 
 - [x] scheletro repo (pyproject, moduli, docs, test, `pip install -e .`)
-- [x] aggancio a forge chiuso (opzione B, forge D30) — `tag_layout`
-- [x] `detect_frame` portato da forge `ccbb34f^` e riscritto sulle primitive
-      di forge — funzionante, test sintetici verdi
+- [x] aggancio a topo chiuso (opzione B, topo D30) — `tag_layout`
+- [x] `detect_frame` portato da topo `ccbb34f^` e riscritto sulle primitive
+      di topo — funzionante, test sintetici verdi
 - [x] `snapdraw/roles.py`: cornice/cartiglio registrano colore+layer con
-      `forge.register_role_style`, allineato a forge D47 (MAP D7)
+      `topo.register_role_style`, allineato a topo D47 (MAP D7)
 - [x] `snapdraw/generate.py`: `add_frame`/`add_title_block`, il verso
       "aggiungi" — vettoriale, un template condiviso per A3/A4 orizzontale/
       verticale, provato su 10 fixture reali in `tests/examples/to_add_frame/`
@@ -36,15 +36,15 @@
 
 ## Dove siamo (fine sessione del 5 ottobre) — si riparte da qui
 
-**16 ottobre:** forge è a 0.14.0. Cinque golden (anch_02/03/06/07, regr_01) sono
-fermi come fallimenti attesi (MAP D34): si rigenerano insieme a quelli di forge
+**16 ottobre:** topo è a 0.14.0. Cinque golden (anch_02/03/06/07, regr_01) sono
+fermi come fallimenti attesi (MAP D34): si rigenerano insieme a quelli di topo
 quando i dubbi su D103 (fantasmi) sono chiariti, guardando prima i DXF.
 
-Fatto oggi: isole senza distanza (forge D99), contorno esterno come unione
-delle facce chiuse su tutto il pezzo (forge D100, viste 3D intere), cartiglio
+Fatto oggi: isole senza distanza (topo D99), contorno esterno come unione
+delle facce chiuse su tutto il pezzo (topo D100, viste 3D intere), cartiglio
 solo sul bordo interno della cornice (D31), griglia in basso a destra anche
 senza testo (D32), cornice riconosciuta dalle tacche (D33). Golden delle isole
-in forge (`tests/real/test_golden_islands.py`) e nel framer
+in topo (`tests/real/test_golden_islands.py`) e nel framer
 (`tests/test_islands.py`), su anch_01-08, regr_01-05, drw_0001, drw_0011.
 Pagine di controllo (lab/, locali): "Scala delle isole" con tutti i disegni e
 i giudizi di Federico (`real_picks`), "Contorni delle isole", "Il contorno a
@@ -63,10 +63,16 @@ Prossimi, in ordine:
 
 ## Prossimi passi
 
+- **regr_03, regr_05 fuori tolleranza** (MAP.md D35): `frame.bbox[2]` 237,6
+  contro 237,576 (e simile su regr_05). Già così con forge 0.16.0, prima del
+  rename a topo: arriva da un cambio di topo fra 0.14 e 0.16. Guardare il DXF
+  della cornice prima di decidere se è il golden o il codice; non rigenerare
+  alla cieca.
+
 - [ ] **test "lettura per un agente AI" sui disegni veri** (deciso con
-      Federico il 3 ottobre; contesto e prima prova in `forge/MAP.md`, nota
-      aperta "forge as the step before an AI reads a drawing"). Si fa
-      **qui**, non in forge, e **dopo** due cose: `detect_feature` sulle
+      Federico il 3 ottobre; contesto e prima prova in `topo/MAP.md`, nota
+      aperta "topo as the step before an AI reads a drawing"). Si fa
+      **qui**, non in topo, e **dopo** due cose: `detect_feature` sulle
       isole e `detect_combined` (feature lette mettendo insieme viste e
       sezioni). Il motivo: su `anch_01` la lettura fatta con il solo
       `island()` ha perso le svasature (cerchi concentrici che diventano
@@ -122,7 +128,7 @@ Prossimi, in ordine:
       grande, distribuzione angoli — utile anche a distinguere viste
       assonometriche, angoli non 0°/90°). Non ancora iniziato: serve prima
       un numero decente di disegni etichettati.
-- [ ] **isole: quello che resta dopo forge D99-D100** (Federico, 5 ottobre,
+- [ ] **isole: quello che resta dopo topo D99-D100** (Federico, 5 ottobre,
       "questo è un buon set di golden"; golden delle isole su anch_01-08):
       - ✅ **anch_07: il cartiglio diventava un'isola** (nessun testo nelle
         celle): MAP D32, griglia in basso a destra anche senza testo.
@@ -157,7 +163,7 @@ Prossimi, in ordine:
         spessore), roba da ottimizzazione per cliente.
 
 - [ ] **isole di un foglio, giudizi del 5 ottobre** (dalla prova sulla
-      scala, forge TODO punto 13, chiuso; pagina "Scala delle isole", `lab/island_scale.py`; giudizi nel
+      scala, topo TODO punto 13, chiuso; pagina "Scala delle isole", `lab/island_scale.py`; giudizi nel
       database della pagina, collezione `picks`). Su 13 disegni: 9 con una
       distanza giusta, tutte fra 17 e 78 mm; la proposta automatica coincide
       con 6 delle 9. Quello che resta per framer:
@@ -178,13 +184,13 @@ Prossimi, in ordine:
         capire cosa sono.
       - ❌ **scartato: scegliere la distanza dalla scala** (delle isole o del
         disegno letta dal cartiglio). Federico, 5 ottobre: la scala non
-        c'entra e non c'entrerà mai con la detection delle isole (forge D98).
+        c'entra e non c'entrerà mai con la detection delle isole (topo D98).
         La distanza resta in `sheet_islands(doc)` (MAP D29).
       Positivo: in `regr_01` l'isola di sotto ora si legge intera (prima a
       metà) — non per la cornice tolta, ha detto Federico.
       **Misura del 5 ottobre (dopo D28)**: per ogni disegno giudicato,
       l'intervallo di distanze che dà esattamente le isole scelte (sulla
-      scala della pagina, cioè vicinanza fra pezzi, non `forge.island`
+      scala della pagina, cioè vicinanza fra pezzi, non `topo.island`
       stesso): anch_01 e regr_03 6,7–26,6; anch_04 9,5–70; anch_05 15–77;
       anch_06 19–45; anch_08 20,5–51,6; regr_02 16,9–61,7; regr_04 15–96,7;
       anch_03 61,7–88,9. **Fra 20,5 e 26,6 vanno bene 8 su 9**; anch_03 da
@@ -193,7 +199,7 @@ Prossimi, in ordine:
       disegno a disegno, e la distanza come criterio potrebbe essere
       sbagliata del tutto. Da provare il **ray casting** per decidere a
       quale isola appartiene un pezzo (proposta sua). Non è il ray casting
-      scartato in forge D59/D65: quello cercava il contorno esterno di una
+      scartato in topo D59/D65: quello cercava il contorno esterno di una
       vista; qui servirebbe a dire chi "vede" chi fra i pezzi del foglio.
       Si giudica sulla pagina "Scala delle isole", non su DXF.
       Federico, su `anch_02`: la regola della pagina ("grande" = diagonale
@@ -203,12 +209,12 @@ Prossimi, in ordine:
       caso speciale, succede spesso. La grandezza non entra nel criterio.
       Nota sulla pagina: "a 132,6 ha senso per la vista da sopra e il 3D,
       ma la vista laterale e la vista ingrandita restano grigie".
-      Il ray casting c'è già in forge e nessuno lo usa:
-      `forge/core/healing/outer_scan.py` (raggi orizzontali e verticali a
+      Il ray casting c'è già in topo e nessuno lo usa:
+      `topo/core/healing/outer_scan.py` (raggi orizzontali e verticali a
       ogni quota-evento; oggi restituisce solo il primo e l'ultimo punto di
       ogni raggio, non tutti i pezzi incontrati in ordine).
       **Prototipo** `lab/island_rays.py` (locale): isole a contatto
-      (`forge.island` a 0,5 mm, i fori stanno dentro per contenimento),
+      (`topo.island` a 0,5 mm, i fori stanno dentro per contenimento),
       raggi solo sui contorni esterni, per ogni coppia di isole che si
       vedono: raggi, larghezza in comune, vuoto minimo. Primo giro: pochi
       contorni esterni (3–11 per disegno) ma **molti edge aperti restano
@@ -235,7 +241,7 @@ Prossimi, in ordine:
       geometria fuori dalla vista vengono staccati (quote e testi no: sono
       annotazioni, non entrano). I mattoni dello scan sono già in
       `outer_scan.py`.
-      **Trovato il 5 ottobre, prima dello scan:** `forge.island` raggruppa
+      **Trovato il 5 ottobre, prima dello scan:** `topo.island` raggruppa
       per distanza e poi in ogni gruppo tiene **un solo** contorno esterno,
       il più grande (`outer_face`); gli altri contorni chiusi del gruppo
       finiscono in `outside_loops` e, se il gruppo non è annidato, nel
@@ -254,21 +260,21 @@ Prossimi, in ordine:
       **Proposta di Federico (5 ottobre): togliere la distanza del tutto.**
       Si trovano i contorni esterni (pezzi a contatto, `max_gap`), poi una
       passata di gerarchia assegna alla stessa vista tutto quello che le
-      sta dentro, chiuso o aperto. Riapre forge D59/D98 (`island_gap`
+      sta dentro, chiuso o aperto. Riapre topo D59/D98 (`island_gap`
       sparisce). Da decidere prima: dove vanno nel modello le linee aperte
       dentro una vista (oggi in `trash_entities` anche se stanno dentro;
-      `ForgeCluster` ha posto solo per i giri chiusi) e dove vanno i pezzi
+      `Cluster` ha posto solo per i giri chiusi) e dove vanno i pezzi
       fuori da ogni contorno (note e segni del foglio, senza distanza non
       si attaccano a niente).
-      **Fatto in forge (D99, non committato), ma prima di chiudere:** su
-      alcune viste il contorno esterno di forge è sbagliato e dentro non si
+      **Fatto in topo (D99, non committato), ma prima di chiudere:** su
+      alcune viste il contorno esterno di topo è sbagliato e dentro non si
       annida niente (c'era già col codice di prima: stesso risultato).
       Verificato su anch_07, vista 104×68: il giro lungo la faccia esterna
       fa tutta la sagoma (206 edge, si chiude), ma passa due volte per due
       nodi dove si incontrano 4 linee; l'anello che ne esce si incrocia,
       le due metà hanno verso opposto e l'area si annulla (347 mm², il 5%
       del rettangolo). Verificato dopo: la direzione di uscita NON è il
-      problema (angoli di forge entro 1° da quelli veri). Nei due nodi si
+      problema (angoli di topo entro 1° da quelli veri). Nei due nodi si
       incrociano un arco e una linea quasi paralleli (2–6°), tratti di
       0,13 mm; il giro va da un capo all'altro della vista lungo due
       percorsi che stanno dallo stesso lato e si incrociano lì: l'area
@@ -291,7 +297,7 @@ Prossimi, in ordine:
       Federico): 49 cerchi dentro, 49 ritrovati come interni — se sulla
       pagina sembravano persi era la pagina. anch_03, isola 0: 10 cerchi,
       8 ritrovati. I due persi (r 4,25 in 171,9/270 e 171,9/363) sono
-      attraversati da linee nascoste: forge li spezza in archi e nessun
+      attraversati da linee nascoste: topo li spezza in archi e nessun
       giro chiuso viene trovato, finiscono fra le linee aperte (con
       `cluster_ref` 0, quindi non persi dall'isola, ma non sono un foro).
       Persi anche col codice di prima. Da capire perché il giro del
@@ -302,11 +308,11 @@ Prossimi, in ordine:
       Aperto: su un foglio generato `find_frame` dà un `inner_bbox` misto
       (lati alto/basso del bordo esterno) e il cartiglio rilevato si
       allarga fino al bordo esterno; sui disegni reali non visto.
-- [x] ✅ **chiuso il 5 ottobre**: dopo forge D99-D100 la vista in pianta si trova anche
+- [x] ✅ **chiuso il 5 ottobre**: dopo topo D99-D100 la vista in pianta si trova anche
       senza regole; il test ora lo dice (`test_senza_regole_la_vista_c_e_lo_stesso`).
       Storia: **`test_rules` falliva dal 4 ottobre** (verificato il 5 ottobre: falliva
       già al commit che l'ha spostato sulla copia anonimizzata
-      `tests/examples/rules/vista_pianta_assi.dxf`, con forge di quel giorno).
+      `tests/examples/rules/vista_pianta_assi.dxf`, con topo di quel giorno).
       Fallisce la prima metà: sulla copia la vista in pianta
       (36, 218, 136, 268) si trova anche **senza** regole, mentre il test
       vuole che manchi (gli assi la legavano alle quote, MAP D17). Con le
@@ -321,14 +327,14 @@ Prossimi, in ordine:
       osservato anche un caso dove il riquadro è a scala reale ma non
       standard (2970×2100mm, ~2.5× A0) pur essendo già in mm: `iso_format`
       giustamente torna `None`, non è un bug di unità.
-- [ ] **bug in forge, non qui, ma blocca "vista utile" su alcuni disegni**:
+- [ ] **bug in topo, non qui, ma blocca "vista utile" su alcuni disegni**:
       un outer che non chiude in `heal` su una vista vera (non decorativa) —
       tre casi reali indipendenti ormai (`42D025Z00I`, `U07010Z21`,
       `TRG19E_A.BLANK050` — quest'ultimo con causa trovata: lato spezzato in
-      segmenti che non si saldano). Vedi `forge/TODO.md`, sezione "Limiti
+      segmenti che non si saldano). Vedi `topo/TODO.md`, sezione "Limiti
       geometrici noti" — decisione se aprire un'indagine dedicata non ancora
       presa.
-- [ ] logo/immagine nel cartiglio generato: forge non ha un concetto di
+- [ ] logo/immagine nel cartiglio generato: topo non ha un concetto di
       immagine nel suo modello neutro — andrebbe inserito in un secondo giro
       direttamente sul `Drawing` ezdxf restituito da `to_dxf()`, fuori da
       `snapdraw/generate.py`. Non ancora progettato.

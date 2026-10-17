@@ -6,20 +6,20 @@ Test del rilevamento cartiglio e della lettura dei campi.
 Bootstrap "round-trip": prima di avere fixture DXF reali con un cartiglio
 vero (TODO.md), il modo più veloce per testare `find_titleblock` è
 rilevare un cartiglio generato da `sd.generate.add_title_block` — le
-`forge.Note` di etichetta/valore che scrive sono lo stesso tipo di
+`topo.Note` di etichetta/valore che scrive sono lo stesso tipo di
 annotazione che un cartiglio vero avrebbe.
 """
 
 import unittest
 
-import forge
+import topo
 import snapdraw as sd
 from snapdraw.model import Cell, TitleBlock
 from snapdraw.titleblock import _FIELD_PATTERNS, extend_titleblock, find_titleblock, read_titleblock
 
 
 def _part_doc(w=200.0, h=100.0):
-    return forge.load_geometry([{
+    return topo.load_geometry([{
         "type": "polygon", "role": "outer",
         "points": [(0, 0), (w, 0), (w, h), (0, h)],
     }])
@@ -71,7 +71,7 @@ class TestDetectTitleblockConservativo(unittest.TestCase):
         self.assertIsNone(find_titleblock(_part_doc()))
 
     def test_un_rettangolo_senza_griglia_non_basta(self):
-        doc = forge.load_geometry([
+        doc = topo.load_geometry([
             {"type": "polygon", "role": "unknown",
              "points": [(0, 0), (90, 0), (90, 50), (0, 50)]},
         ])
@@ -100,7 +100,7 @@ class TestTitleblockAssorbeInteriore(unittest.TestCase):
         }
 
     def test_un_simbolo_isolato_dentro_il_cartiglio_viene_marcato(self):
-        doc = forge.load_geometry([{
+        doc = topo.load_geometry([{
             "type": "polygon", "role": "outer",
             "points": [(0, 0), (200, 0), (200, 100), (0, 100)],
         }])
@@ -111,7 +111,7 @@ class TestTitleblockAssorbeInteriore(unittest.TestCase):
         # non collegato a nient'altro — non lo scrive add_title_block, lo aggiungo
         # a mano come farebbe un simbolo di rugosità/saldatura sul disegno reale.
         n_before = len(doc.edges)
-        symbol = forge.load_geometry([self._symbol(160, -40, 165, -35)])
+        symbol = topo.load_geometry([self._symbol(160, -40, 165, -35)])
         doc.edges.extend(symbol.edges)
 
         tb = find_titleblock(doc, frame=frame)
@@ -122,17 +122,17 @@ class TestTitleblockAssorbeInteriore(unittest.TestCase):
         self.assertTrue(all(id(e) in tb_edge_ids for e in symbol.edges))
 
     def test_dopo_heal_il_simbolo_e_in_trash_col_ruolo_title_block(self):
-        doc = forge.load_geometry([{
+        doc = topo.load_geometry([{
             "type": "polygon", "role": "outer",
             "points": [(0, 0), (200, 0), (200, 100), (0, 100)],
         }])
         sd.add_frame(doc)
         sd.add_title_block(doc)
-        doc.edges.extend(forge.load_geometry([self._symbol(160, -40, 165, -35)]).edges)
+        doc.edges.extend(topo.load_geometry([self._symbol(160, -40, 165, -35)]).edges)
 
         layout = sd.detect_frame(doc)
         sd.tag_layout(doc, layout)
-        result = forge.heal(doc)
+        result = topo.heal(doc)
 
         # il simbolo non è un cluster a sé: è finito in trash col ruolo title_block
         from snapdraw.roles import TITLE_BLOCK
@@ -149,7 +149,7 @@ class TestExtendTitleblock(unittest.TestCase):
     """
     Il cartiglio si prende le tabelle attaccate (MAP D15): una tabella
     revisioni più stretta sopra il cartiglio restava fuori dal rettangolo di
-    `find_titleblock` e diventava un'isola per `forge.island()`.
+    `find_titleblock` e diventava un'isola per `topo.island()`.
     """
 
     def _rect(self, x0, y0, x1, y1):
@@ -162,7 +162,7 @@ class TestExtendTitleblock(unittest.TestCase):
         tb = find_titleblock(doc)
         xmin, ymin, xmax, ymax = tb.bbox
         # striscia più stretta del cartiglio, appoggiata sul suo lato superiore
-        strip = forge.load_geometry([self._rect(xmin + 5, ymax, xmax - 20, ymax + 8)])
+        strip = topo.load_geometry([self._rect(xmin + 5, ymax, xmax - 20, ymax + 8)])
         doc.edges.extend(strip.edges)
         return doc, tb, strip
 
@@ -182,7 +182,7 @@ class TestExtendTitleblock(unittest.TestCase):
         sd.add_title_block(doc, anchor=(200.0, 0.0))
         tb = find_titleblock(doc)
         xmin, ymin, xmax, ymax = tb.bbox
-        side = forge.load_geometry([{"type": "line", "role": "unknown",
+        side = topo.load_geometry([{"type": "line", "role": "unknown",
                                       "start": (xmin, ymin), "end": (xmin, ymin + 20 * (ymax - ymin))}])
         doc.edges.extend(side.edges)
         ext = extend_titleblock(tb, doc)
@@ -206,9 +206,9 @@ class TestTestoSulBordoCella(unittest.TestCase):
         # il pezzo, lontano: senza, la densità di testo del riquadro è la media
         grid.append({"type": "polygon", "role": "outer",
                      "points": [(200, 0), (400, 0), (400, 200), (200, 200)]})
-        doc = forge.load_geometry(grid)
+        doc = topo.load_geometry(grid)
         doc.annotations.extend(
-            forge.Note(position=(0.0 - 1e-9, y), text=t, height=3.0)
+            topo.Note(position=(0.0 - 1e-9, y), text=t, height=3.0)
             for y, t in ((5, "Materiale: S235JR"), (20, "Codice: sviluppo_01"), (35, "Scala 1:1"))
         )
         tb = find_titleblock(doc)

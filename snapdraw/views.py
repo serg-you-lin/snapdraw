@@ -5,17 +5,17 @@ Le viste di un foglio: quali isole di `sheet_islands(doc)` sono viste
 ortogonali, quali assonometrie, quali simboli; come si corrispondono per
 proiezione; qual è la vista principale e che profondità ha il pezzo.
 
-Nessuna immagine: solo conti sulle primitive che forge restituisce —
+Nessuna immagine: solo conti sulle primitive che topo restituisce —
 direzione dei LineSeg, bbox dei contorni esterni. La proiezione ortogonale è
 una convenzione di disegno, come cornice e cartiglio: per questo sta qui e
-non in forge.
+non in topo.
 
 Stesso schema di `detect_frame`: passi pubblici (`classify_view`,
 `projection_mates`, `principal_view`, `view_depth`) e una ricetta,
 `read_views(result)`. `sheet_islands(doc)` è l'unico posto dove snapdraw
 sceglie a che distanza le isole di un foglio si uniscono (MAP D29).
 
-    doc = forge.load_dxf("disegno.dxf", role_rules=sd.load_rules("generic"))
+    doc = topo.load_dxf("disegno.dxf", role_rules=sd.load_rules("generic"))
     sd.tag_layout(doc, sd.detect_frame(doc))
     views = sd.read_views(sd.sheet_islands(doc))
 """
@@ -24,8 +24,8 @@ from __future__ import annotations
 
 from typing import Dict, List, Optional, Tuple
 
-import forge
-from forge.core.geometry.axis import axis_aligned_share
+import topo
+from topo.core.geometry.axis import axis_aligned_share
 
 from .model import View, ViewLayout
 
@@ -40,13 +40,13 @@ SYMBOL_RATIO = 0.1           # un'isola senza compagni sotto 1/10 della dimensio
 SHEET_MAX_GAP = 0.5          # mm — edge di una vista che si toccano, gap chiusi fra estremi liberi
 
 
-def sheet_islands(doc: forge.ForgeDocument) -> forge.ForgeResult:
+def sheet_islands(doc: topo.Document) -> topo.Result:
     """
-    Le isole di un foglio: `forge.island` con il `max_gap` scelto da
-    snapdraw (forge D98). Un'isola per contorno esterno, nessuna distanza
-    fra le viste (forge D99, MAP D30). Tutti gli script e i test passano di qui.
+    Le isole di un foglio: `topo.island` con il `max_gap` scelto da
+    snapdraw (topo D98). Un'isola per contorno esterno, nessuna distanza
+    fra le viste (topo D99, MAP D30). Tutti gli script e i test passano di qui.
     """
-    return forge.island(doc, max_gap=SHEET_MAX_GAP)
+    return topo.island(doc, max_gap=SHEET_MAX_GAP)
 
 
 def classify_view(cluster, angle_tolerance: float = AXIS_ANGLE_TOLERANCE) -> str:

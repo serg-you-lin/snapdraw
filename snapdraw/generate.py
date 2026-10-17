@@ -2,9 +2,9 @@
 snapdraw/generate.py
 --------------------
 Il verso "aggiungi": genera cornice e cartiglio e li appende a un
-`ForgeDocument` esistente — l'opposto di `detect_frame` + `tag_layout` (che li riconoscono su
+`Document` esistente — l'opposto di `detect_frame` + `tag_layout` (che li riconoscono su
 geometria già disegnata). Annotato come
-idea futura in `forge/SNAPDRAW.md` ("Il verso 'aggiungi'") e in `TODO.md`; qui
+idea futura in `topo/SNAPDRAW.md` ("Il verso 'aggiungi'") e in `TODO.md`; qui
 diventa codice.
 
 Cornice e cartiglio sono presi a riferimento da due file in `templates/`
@@ -15,9 +15,9 @@ etichetta piccola sopra, valore più grande sotto, non affiancati. Le celle
 restano dati (`TitleBlockTemplate`/`FieldSlot`), non disegno hard-coded —
 facile ritararle ancora se cambia il riferimento.
 
-Puramente forge-nativo: la geometria passa da `forge.load_geometry` (stesso
+Puramente forge-nativo: la geometria passa da `topo.load_geometry` (stesso
 meccanismo pubblico con cui `bendly` porta uno sviluppo generato a
-`ForgeDocument`, forge MAP D32) e il testo da `forge.Note` — zero accesso a
+`Document`, topo MAP D32) e il testo da `topo.Note` — zero accesso a
 `Edge`/`LineSeg` interni, zero ezdxf. Frame e griglia del cartiglio portano
 `role` (`sd.roles.FRAME`/`TITLE_BLOCK`) fin dalla costruzione: non serve
 chiamare `tag_layout` per questa geometria, e colore/layer arrivano gratis
@@ -30,7 +30,7 @@ contiene la geometria esistente più un margine più lo spazio per il
 cartiglio — nessun formato da passare a mano.
 
 Il logo/immagine (dati del chiamante, mai nel repo — stesso principio di
-`data_injector`/`profiles/`) resta fuori da questo giro: forge non ha un
+`data_injector`/`profiles/`) resta fuori da questo giro: topo non ha un
 concetto di immagine nel suo modello neutro, andrebbe inserito in un secondo
 giro direttamente sul `Drawing` ezdxf restituito da `to_dxf()`.
 """
@@ -39,7 +39,7 @@ from __future__ import annotations
 
 from typing import Dict, Optional, Tuple
 
-import forge
+import topo
 
 from .geometry import _ISO_FORMATS as _ISO_SHEET_SIZES
 from .model import BBox, Cell, FieldSlot, FrameInfo, TitleBlock, TitleBlockTemplate
@@ -130,7 +130,7 @@ def add_frame(
     frame_ymax = frame_ymin + sheet_h
 
     entities = _frame_entities(frame_xmin, frame_ymin, frame_xmax, frame_ymax)
-    generated = forge.load_geometry(entities)
+    generated = topo.load_geometry(entities)
     doc.edges.extend(generated.edges)
 
     return FrameInfo(
@@ -199,7 +199,7 @@ def add_title_block(
 
     entities, cells, notes = _place(template, anchor, fields)
 
-    generated = forge.load_geometry(entities)
+    generated = topo.load_geometry(entities)
     doc.edges.extend(generated.edges)
     doc.annotations.extend(notes)
 
@@ -219,7 +219,7 @@ def _zone_count(length: float) -> int:
 
 def _frame_entities(xmin: float, ymin: float, xmax: float, ymax: float) -> list:
     """
-    Pura: bbox esterna della cornice → entità per `forge.load_geometry` —
+    Pura: bbox esterna della cornice → entità per `topo.load_geometry` —
     bordo esterno, bordo interno inset di `_BORDER_GAP`, la lineetta di
     centratura al centro di ogni lato (presa dal template fatto a mano da
     Federico in `templates/`, MAP D9), e le lineette della griglia di
@@ -273,8 +273,8 @@ def _doc_bbox(doc) -> Optional[BBox]:
 
 def _place(template: TitleBlockTemplate, anchor: Tuple[float, float], fields: Dict[str, str]):
     """
-    Pura: template + anchor + valori → entità per `forge.load_geometry`,
-    `Cell` a bbox assoluta, `forge.Note` per il testo di ogni riga.
+    Pura: template + anchor + valori → entità per `topo.load_geometry`,
+    `Cell` a bbox assoluta, `topo.Note` per il testo di ogni riga.
 
     Etichetta e valore sono due `Note` separate impilate, non affiancate:
     etichetta piccola in alto nella riga, valore più grande sotto — lo stesso
@@ -314,7 +314,7 @@ def _place(template: TitleBlockTemplate, anchor: Tuple[float, float], fields: Di
         value_y = label_y - _CELL_PADDING - _VALUE_HEIGHT
 
         cells.append(Cell(bbox=abs_bbox, text=f"{f.label}: {value}"))
-        notes.append(forge.Note(position=(x, label_y), text=f.label, height=_LABEL_HEIGHT, layer=TITLE_BLOCK))
-        notes.append(forge.Note(position=(x, value_y), text=str(value), height=_VALUE_HEIGHT, layer=TITLE_BLOCK))
+        notes.append(topo.Note(position=(x, label_y), text=f.label, height=_LABEL_HEIGHT, layer=TITLE_BLOCK))
+        notes.append(topo.Note(position=(x, value_y), text=str(value), height=_VALUE_HEIGHT, layer=TITLE_BLOCK))
 
     return entities, cells, notes

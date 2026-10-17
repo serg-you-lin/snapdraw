@@ -5,13 +5,13 @@ Il ritaglio delle viste: un PNG per vista, per far guardare un modello
 (Pippo). snapdraw misura, non guarda (D18): qui non si interpreta niente, si
 disegnano gli edge di una vista così come sono.
 
-Cosa rende un'immagine utile a un modello, dall'esperimento di forge:
+Cosa rende un'immagine utile a un modello, dall'esperimento di topo:
 - una vista per immagine, ritagliata: sul foglio intero le viste si
   confondono;
 - l'indice del cluster stampato sopra, così "la vista 2 è la frontale" si
   ricollega alla geometria;
 - niente quote né testi: il modello leggerebbe i numeri invece della forma,
-  e il numero lo dà già forge, più preciso.
+  e il numero lo dà già topo, più preciso.
 
 Passi pubblici (`view_edges`, `render_view`) e una ricetta, `render_views`.
 

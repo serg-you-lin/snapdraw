@@ -1,14 +1,14 @@
 """
 tests/test_rules.py
 -------------------
-Test delle regole di ruolo (MAP D17): `rules/<nome>.json` → `forge.RoleRule`,
-da passare a `forge.load_dxf(role_rules=...)`.
+Test delle regole di ruolo (MAP D17): `rules/<nome>.json` → `topo.RoleRule`,
+da passare a `topo.load_dxf(role_rules=...)`.
 
 Il caso vero è `vista_pianta_assi` (tests/examples/rules, copia anonimizzata
 di un disegno reale): la vista in pianta mancava perché i suoi assi la
 legavano alle quote. Con le regole
-generiche gli assi sono `construction` al caricamento e `forge.island()` la
-ritrova; dopo forge D99-D100 la trova anche senza regole (MAP D30).
+generiche gli assi sono `construction` al caricamento e `topo.island()` la
+ritrova; dopo topo D99-D100 la trova anche senza regole (MAP D30).
 """
 
 import json
@@ -16,7 +16,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-import forge
+import topo
 import snapdraw as sd
 
 EXAMPLES = Path(__file__).resolve().parent / "examples" / "rules"
@@ -56,7 +56,7 @@ class TestLoadRules(unittest.TestCase):
 class TestRegoleSuDisegnoVero(unittest.TestCase):
 
     def _island_bounds(self, role_rules):
-        doc = forge.load_dxf(str(EXAMPLES / "vista_pianta_assi.dxf"), role_rules=role_rules)
+        doc = topo.load_dxf(str(EXAMPLES / "vista_pianta_assi.dxf"), role_rules=role_rules)
         sd.tag_layout(doc, sd.detect_frame(doc))
         return [tuple(round(v) for v in c.outer.polygon.bounds) for c in sd.sheet_islands(doc).clusters]
 
@@ -65,7 +65,7 @@ class TestRegoleSuDisegnoVero(unittest.TestCase):
         self.assertIn(plan_view, self._island_bounds(sd.load_rules("generic")))
 
     def test_senza_regole_la_vista_c_e_lo_stesso(self):
-        # dopo forge D99-D100 le isole sono i contorni esterni: gli assi non la legano
+        # dopo topo D99-D100 le isole sono i contorni esterni: gli assi non la legano
         # più alle quote, la vista si trova anche senza regole (MAP D30)
         self.assertIn((36, 218, 136, 268), self._island_bounds(()))
 

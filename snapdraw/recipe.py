@@ -3,28 +3,28 @@ snapdraw/recipe.py
 ------------------
 La ricetta di snapdraw: `detect_frame(doc)` → `FrameLayout`.
 
-Stesso schema di forge D62 (`heal()` è una ricetta sopra passi pubblici):
+Stesso schema di topo D62 (`heal()` è una ricetta sopra passi pubblici):
 qui c'è solo la composizione di default, i passi stanno nei loro moduli e
 sono pubblici — `find_frame`, `extend_frame` e `rejected_border` (`frame.py`),
 `find_titleblock` e `extend_titleblock` (`titleblock.py`), `tag_layout`
 (`tag.py`). Chi vuole un'altra lettura li compone a mano (per esempio solo
 la cornice, o il cartiglio con una cornice nota da `add_frame`).
 
-Gira sulla geometria GREZZA di `doc` (`forge.load_dxf(...)`) e **non
+Gira sulla geometria GREZZA di `doc` (`topo.load_dxf(...)`) e **non
 presuppone nessuna lettura a valle**: `heal()`, `island()` o niente del tutto
-sono scelte del chiamante. snapdraw interpreta, forge trasforma la topologia
+sono scelte del chiamante. snapdraw interpreta, topo trasforma la topologia
 (`frame_heal_forge_architecture.md`).
 
 Uso tipico:
 
-    import forge
+    import topo
 
     import snapdraw as sd
 
-    doc = forge.load_dxf("disegno.dxf")
+    doc = topo.load_dxf("disegno.dxf")
     layout = sd.detect_frame(doc)   # cornice + cartiglio, doc non mutato
     sd.tag_layout(doc, layout)      # marca gli Edge → role="frame" / "title_block"
-    result = sd.sheet_islands(doc)  # oppure forge.heal(doc): li lasciano fuori entrambi
+    result = sd.sheet_islands(doc)  # oppure topo.heal(doc): li lasciano fuori entrambi
 """
 
 from __future__ import annotations
@@ -46,7 +46,7 @@ def detect_frame(doc) -> FrameLayout:
     riquadro non accettato racchiude il cartiglio, lo dice nei flag
     (`rejected_border`): quel riquadro resta nel disegno.
 
-    Non muta `doc`: individua soltanto. Per riportare le decisioni a forge
+    Non muta `doc`: individua soltanto. Per riportare le decisioni a topo
     (settare `edge.role`) usa `sd.tag_layout(doc, layout)`.
     """
     layout = FrameLayout()

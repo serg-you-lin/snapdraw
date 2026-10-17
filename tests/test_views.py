@@ -3,13 +3,13 @@ tests/test_views.py
 -------------------
 Test della lettura delle viste: classificazione, compagni di proiezione,
 vista principale, profondità, simboli. Fogli costruiti con
-`forge.load_geometry` e letti con `sd.sheet_islands`.
+`topo.load_geometry` e letti con `sd.sheet_islands`.
 """
 
 import math
 import unittest
 
-import forge
+import topo
 import snapdraw as sd
 
 
@@ -33,7 +33,7 @@ def _iso_box(x, y, a, b, c):
 
 
 def _read(entities):
-    return sd.read_views(sd.sheet_islands(forge.load_geometry(entities)))
+    return sd.read_views(sd.sheet_islands(topo.load_geometry(entities)))
 
 
 class TestReadViews(unittest.TestCase):

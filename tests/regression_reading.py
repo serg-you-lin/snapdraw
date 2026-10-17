@@ -11,7 +11,7 @@ Nessuna confidenza nel golden: è un numero che si ritara, i fatti no.
 
 from pathlib import Path
 
-import forge
+import topo
 import snapdraw as sd
 
 REGRESSION = Path(__file__).parent / "examples" / "regression"
@@ -21,7 +21,7 @@ RULES = "generic"
 
 def read_sheet(path: Path) -> dict:
     """Cornice, cartiglio, viste e feature di un foglio, come li legge snapdraw oggi."""
-    doc = forge.load_dxf(str(path), role_rules=sd.load_rules(RULES))
+    doc = topo.load_dxf(str(path), role_rules=sd.load_rules(RULES))
     layout = sd.detect_frame(doc)
     sd.tag_layout(doc, layout)
     result = sd.sheet_islands(doc)

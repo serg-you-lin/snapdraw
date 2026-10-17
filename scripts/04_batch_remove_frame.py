@@ -5,9 +5,9 @@ Il verso "togli": su ogni DXF di una cartella rileva la cornice e, se la trova,
 la elimina dal disegno. Il risultato finisce nella STESSA cartella come
 `<nome>_noframe.dxf`.
 
-Nota sul come: `sd.tag_layout` + `forge.island` NON basta a rimuovere — quel
-percorso marca gli Edge e li fa finire in `trash_entities`, che `forge.to_dxf`
-riscrive sul layer `Frame` (forge D31): la cornice resta nel file, solo su un
+Nota sul come: `sd.tag_layout` + `topo.island` NON basta a rimuovere — quel
+percorso marca gli Edge e li fa finire in `trash_entities`, che `topo.to_dxf`
+riscrive sul layer `Frame` (topo D31): la cornice resta nel file, solo su un
 altro layer. Per togliere davvero la geometria va staccata da `doc.edges` prima
 di `heal`, per identità di oggetto (gli Edge in `layout.frame.edges` sono gli
 stessi oggetti di `doc.edges`, snapdraw non ne fa copie). La lettura è
@@ -18,11 +18,11 @@ import _paths  # noqa: F401  — chdir alla radice del repo
 
 import os
 
-import forge
+import topo
 import snapdraw as sd
 
 # --- CONFIG ---------------------------------------------------------------
-FOLDER_PATH = r"C:\Users\FEDERICO\Documents\Python_Scripts\Projects\GitHub\forge\tests\examples\islands"
+FOLDER_PATH = r"C:\Users\FEDERICO\Documents\Python_Scripts\Projects\GitHub\topo\tests\examples\islands"
 # suffisso del file prodotto, e insieme marcatore per non rimasticare gli
 # output di un giro precedente
 SUFFIX = "_noframe"
@@ -58,7 +58,7 @@ for name in names:
     stem = os.path.splitext(name)[0]
     path = os.path.join(FOLDER_PATH, name)
     try:
-        doc = forge.load_dxf(path, role_rules=sd.load_rules(RULES))
+        doc = topo.load_dxf(path, role_rules=sd.load_rules(RULES))
         layout = sd.detect_frame(doc)
 
         if layout.frame is None:
@@ -77,7 +77,7 @@ for name in names:
             continue
 
         out_path = os.path.join(FOLDER_PATH, f"{stem}{SUFFIX}.dxf")
-        forge.to_dxf(result, doc).saveas(out_path)
+        topo.to_dxf(result, doc).saveas(out_path)
         print(f"  [OK] {name}: -{removed} edge  (formato={f.iso_format}, "
               f"conf={f.confidence:.2f}, cartiglio={'sì' if layout.title_block else 'no'}) "
               f"-> {os.path.basename(out_path)}")

@@ -4,9 +4,9 @@ snapdraw/model.py
 Il dominio di snapdraw: cosa vuol dire "cornice" e "cartiglio" in un disegno
 impaginato, e cosa snapdraw restituisce a chi lo chiama.
 
-Nessuna dipendenza da forge o da un formato: dataclass pure. Gli `Edge` che
+Nessuna dipendenza da topo o da un formato: dataclass pure. Gli `Edge` che
 questi oggetti trattengono (`FrameInfo.edges`, `TitleBlock.edges`) sono
-riferimenti agli `Edge` di `forge.load_dxf(...).edges` — snapdraw li individua e
+riferimenti agli `Edge` di `topo.load_dxf(...).edges` — snapdraw li individua e
 li marca, non ne fa copie.
 """
 
@@ -206,7 +206,7 @@ class Feature:
 
     kind      : "hole" (cerchio) / "slot" (stadio: asola) / "opening"
                 (ogni altra forma: rettangolo, poligono, forma libera) —
-                dalla forma di `forge.geometry.contour_shape` (`shape.kind`), un
+                dalla forma di `topo.geometry.contour_shape` (`shape.kind`), un
                 fatto geometrico
     hole_type : solo per i fori — "plain", "threaded" (arco di cresta a ~270°
                 o quota M), "counterbore" (lamatura: sede concentrica con
@@ -219,7 +219,7 @@ class Feature:
     view      : indice della vista (cluster) dove sta
     path      : percorso del contorno in `result` al momento della lettura,
                 es. "clusters[0].inners[2]" (`tag_features` lo sposta dopo)
-    shape     : la `forge.geometry.ContourShape` del contorno
+    shape     : la `topo.geometry.ContourShape` del contorno
     contours  : i contorni della feature (il foro, e la sede se c'è) — la
                 geometria che un exporter scrive
     outer_path/outer_shape : la sede concentrica di una lamatura/svasatura
@@ -283,7 +283,7 @@ class Feature:
         return self.shape.diameter * (self.scale or 1.0)
 
     def to_dict(self) -> dict:
-        """La feature come dati: niente geometria, i contorni restano nel risultato di forge."""
+        """La feature come dati: niente geometria, i contorni restano nel risultato di topo."""
         r = lambda v: None if v is None else round(v, 4)
         c = self.callout
         return {

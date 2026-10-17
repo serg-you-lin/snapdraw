@@ -6,8 +6,8 @@ build-backend = "setuptools.build_meta"
 name = "snapdraw"
 # Unica fonte di verità della versione. sd.__version__ la legge da qui via
 # importlib.metadata — non duplicarla nel codice.
-version = "0.3.1"
-description = "Rilevamento automatico di cornice e cartiglio nei disegni tecnici impaginati — consumatore di forge"
+version = "0.4.0"
+description = "Rilevamento automatico di cornice e cartiglio nei disegni tecnici impaginati — consumatore di topo"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -25,9 +25,9 @@ dependencies = [
     "shapely>=2.0",
 ]
 
-# forge NON è qui: è un pacchetto locale, non pubblicato. snapdraw lo usa come
+# topo NON è qui: è un pacchetto locale, non pubblicato. snapdraw lo usa come
 # motore (load_dxf, heal, normalize_role). Installalo a parte:
-#   pip install -e ../forge
+#   pip install -e ../topo
 
 [project.optional-dependencies]
 dev = ["pytest"]
@@ -38,7 +38,7 @@ where = ["."]
 include = ["snapdraw*"]
 
 # Regola di dipendenza controllata da scripts/gen_index.py: snapdraw legge solo
-# attraverso forge (mai ezdxf diretto) e non sa niente di processo (snapbend).
+# attraverso topo (mai ezdxf diretto) e non sa niente di processo (snapbend).
 [tool.gen_index.layers]
 "(root)" = ["snapbend", "ezdxf"]
 

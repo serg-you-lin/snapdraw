@@ -3,14 +3,14 @@ tests/test_render.py
 --------------------
 Test del ritaglio delle viste: quali edge entrano in una vista, un PNG per
 vista con le proporzioni della vista. Fogli costruiti con
-`forge.load_geometry` e letti con `sd.sheet_islands`.
+`topo.load_geometry` e letti con `sd.sheet_islands`.
 """
 
 import os
 import tempfile
 import unittest
 
-import forge
+import topo
 import snapdraw as sd
 
 
@@ -29,7 +29,7 @@ class TestRender(unittest.TestCase):
 
     def setUp(self):
         # frontale 100x50 con un foro, laterale 5x50; un asse che esce dalla frontale
-        self.doc = forge.load_geometry([
+        self.doc = topo.load_geometry([
             _rect(0, 0, 100, 50), {"type": "circle", "center": (30, 25), "radius": 3}, _rect(150, 0, 5, 50),
             {"type": "line", "start": (30, -10), "end": (30, 60)},
         ])

@@ -3,9 +3,9 @@ snapdraw/frame.py
 -----------------
 Rilevamento della cornice di formato.
 
-Porta l'algoritmo del vecchio `core/classification/frame_detector.py` di forge
-(rimosso in forge MAP D24 perché girava *prima* di heal — cioè è roba del
-consumatore, vedi SNAPDRAW.md) e lo riscrive sugli `Edge` / `LineSeg` di forge.
+Porta l'algoritmo del vecchio `core/classification/frame_detector.py` di topo
+(rimosso in topo MAP D24 perché girava *prima* di heal — cioè è roba del
+consumatore, vedi SNAPDRAW.md) e lo riscrive sugli `Edge` / `LineSeg` di topo.
 
 Algoritmo:
     1. tra i rettangoli di bordo (`geometry.find_rectangles`), tieni quelli con
@@ -28,8 +28,8 @@ from __future__ import annotations
 from dataclasses import replace
 from typing import Optional
 
-from forge.core.geometry.axis import CoveredRectangle
-from forge.core.geometry.measure import length_inside, segment_length
+from topo.core.geometry.axis import CoveredRectangle
+from topo.core.geometry.measure import length_inside, segment_length
 
 from .geometry import (
     AXIS_EPS, containment, find_rectangles, is_iso_ratio, iso_format, marked_sides,
@@ -42,7 +42,7 @@ CONTAINMENT_THRESHOLD = 0.80
 def find_frame(doc, containment_threshold: float = CONTAINMENT_THRESHOLD) -> Optional[FrameInfo]:
     """
     Rileva la cornice di formato nella geometria grezza di `doc`
-    (`forge.load_dxf(...)`, prima di `heal`).
+    (`topo.load_dxf(...)`, prima di `heal`).
 
     Ritorna un `FrameInfo` con gli `Edge` di tutti i riquadri di bordo che
     racchiudono il disegno, oppure `None` se non c'è un candidato convincente
@@ -120,7 +120,7 @@ def rejected_border(doc, title_block) -> Optional[CoveredRectangle]:
     soglia) — o None. Da chiamare quando `find_frame` ha dato None.
 
     Non è una cornice e non si marca: serve solo a dirlo. Un riquadro così
-    resta nel disegno e `forge.island()` lo prende come contorno esterno di
+    resta nel disegno e `topo.island()` lo prende come contorno esterno di
     tutte le viste, a meno che qualcosa non lo apra per caso (su `B1250136`
     lo apriva la marcatura del cartiglio, che ne condivide il lato
     inferiore — MAP D15). Senza cartiglio dentro non si segnala niente: il

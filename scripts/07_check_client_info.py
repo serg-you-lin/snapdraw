@@ -4,19 +4,19 @@ import glob
 import os
 from collections import Counter
 
-import forge
+import topo
 
 # --- CONFIG ---------------------------------------------------------------
 FOLDER = r"tests/examples/regression"
 # -----------------------------------------------------------------------------
 
 # Quello che resta di testuale in un disegno ripulito, così come lo legge
-# forge: testi e quote, layer delle annotazioni, provenienza, tipi di linea.
-# forge non conserva i layer degli edge, i nomi dei blocchi né l'header oltre
+# topo: testi e quote, layer delle annotazioni, provenienza, tipi di linea.
+# topo non conserva i layer degli edge, i nomi dei blocchi né l'header oltre
 # alle unità: quelli si puliscono nel CAD (purge, rinomina layer).
 
 for path in sorted(glob.glob(os.path.join(FOLDER, "*.dxf"))):
-    doc = forge.load_dxf(path)
+    doc = topo.load_dxf(path)
     print(f"\n=== {os.path.basename(path)}")
     texts = Counter(a.display_text.strip() for a in doc.annotations if a.display_text.strip())
     print(f"  testi ({len(texts)} diversi):")

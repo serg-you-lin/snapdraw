@@ -5,16 +5,16 @@ Test della lettura delle feature sulle viste: fori, asole, aperture su ogni
 vista ortogonale; traccia nelle viste compagne (passante, cieco, ala di
 lamiera); sede concentrica (lamatura, svasatura); quota di diametro; scala
 per vista; le facce di una vista non sono aperture; `tag_features`. Fogli
-costruiti con `forge.load_geometry` e letti con `sd.sheet_islands`; il caso vero
+costruiti con `topo.load_geometry` e letti con `sd.sheet_islands`; il caso vero
 è `regr_05` (leva_01, tests/examples/regression).
 """
 
 import unittest
 from pathlib import Path
 
-import forge
+import topo
 import snapdraw as sd
-from forge.model.style import EdgeStyle
+from topo.model.style import EdgeStyle
 
 REGRESSION = Path(__file__).parent / "examples" / "regression"
 HIDDEN = EdgeStyle(linetype="HIDDEN", linetype_pattern=(1.0, 0.5, -0.25))
@@ -42,7 +42,7 @@ def _stadium(cx, cy, length, width):
 
 
 def _load(entities, hidden=0, dimensions=()):
-    doc = forge.load_geometry(entities)
+    doc = topo.load_geometry(entities)
     if hidden:
         for edge in doc.edges[-hidden:]:
             edge.style = HIDDEN
@@ -57,7 +57,7 @@ def _read(entities, hidden=0, dimensions=()):
 
 
 def _diameter(text, center, r):
-    return forge.Dimension(position=(center[0] + 10, center[1] + 10), source_kind="DIMENSION",
+    return topo.Dimension(position=(center[0] + 10, center[1] + 10), source_kind="DIMENSION",
                            dim_type="diameter", text_override=text, measured_value=2 * r,
                            measured_points=[(center[0] - r, center[1]), (center[0] + r, center[1])])
 
@@ -146,7 +146,7 @@ class TestHoles(unittest.TestCase):
         self.assertEqual(sd.describe_features(layout), "1 foro filettato passante M≈7,2, profondità 5 (disegnata)")
 
     def test_quota_sulla_cresta_si_aggancia_dal_centro(self):
-        # la quota M6 misura la cresta (un arco aperto): forge non la aggancia, snapdraw sì dal centro
+        # la quota M6 misura la cresta (un arco aperto): topo non la aggancia, snapdraw sì dal centro
         crest = {"type": "arc", "center": (30, 25), "radius": 3.6, "start_angle": 0, "end_angle": 270}
         hole, = _read([*FRONT, crest, SIDE], dimensions=[_diameter("M6", (30, 25), 3.6)]).features
         self.assertEqual((hole.callout.designation, hole.callout.nominal), ("M", 6.0))
@@ -225,13 +225,13 @@ class TestScaleAndTag(unittest.TestCase):
         self.assertEqual(front.features("view_features"), layout.features)
         self.assertEqual(front.inners, [])
 
-    def test_json_di_forge_porta_le_feature(self):
-        # il gancio di forge: to_json(result, extra_metadata=sd.feature_metadata), dopo tag_features
+    def test_json_di_topo_porta_le_feature(self):
+        # il gancio di topo: to_json(result, extra_metadata=sd.feature_metadata), dopo tag_features
         import json
         doc, result, views = _load([*FRONT, SIDE], dimensions=[_diameter("Ø6", (30, 25), 3)])
         layout = sd.read_features(doc, result, views)
         sd.tag_features(result, layout)
-        parts = json.loads(forge.to_json(result, extra_metadata=sd.feature_metadata))
+        parts = json.loads(topo.to_json(result, extra_metadata=sd.feature_metadata))
         text = json.dumps(parts)
         self.assertIn('"view_features"', text)
         self.assertIn('"hole_type": "plain"', text)
@@ -247,7 +247,7 @@ class TestScaleAndTag(unittest.TestCase):
 class TestLevaInox(unittest.TestCase):
 
     def test_due_da_5_3_e_uno_da_4_3_passanti_profondita_4(self):
-        doc = forge.load_dxf(str(REGRESSION / "regr_05.dxf"), role_rules=sd.load_rules("generic"))
+        doc = topo.load_dxf(str(REGRESSION / "regr_05.dxf"), role_rules=sd.load_rules("generic"))
         sd.tag_layout(doc, sd.detect_frame(doc))
         result = sd.sheet_islands(doc)
         layout = sd.read_features(doc, result, sd.read_views(result))

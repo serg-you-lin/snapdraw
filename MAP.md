@@ -935,6 +935,24 @@ dubbi su D103 non sono chiariti, e questi si rigenerano insieme a quelli,
 guardando prima i DXF. Quando succede, la lista si svuota. Suite: 89 verdi, 5
 fallimenti attesi. Nessun cambio di codice in snapdraw: versione invariata.
 
+### D35 — forge diventa `topo` (`g-topo`)  ✅
+
+forge si è rinominato (MAP.md di topo, D108/D117 applicati in D119):
+`import topo`, distribuzione `g-topo`, tipi senza marchio (`topo.Result`,
+`topo.Cluster`, `topo.Contour`, `topo.Document`), i passi di `heal()` e
+della lettura per isole in `topo.steps`. snapdraw segue in un colpo, senza
+alias: import, regola di `gen_index`, docs, test, `lab/` (anche
+`forge_island_fixtures.py` → `topo_island_fixtures.py`). Le decisioni sopra
+dicono ancora "forge": storia com'è stata scritta.
+
+Suite: 87 verdi, 5 fallimenti attesi, **2 fallimenti già presenti prima del
+rename** (`test_regression` regr_03, regr_05: `frame.bbox` 237,6 contro
+237,576, oltre la tolleranza di 0,01) — verificati identici con forge 0.16.0 e
+snapdraw di prima; vengono dalle versioni di forge fra 0.14 e 0.16, non dal
+nome. Aperti in TODO.md.
+
+Versione **0.4.0** (rompe: dipende da `topo`, non più da `forge`).
+
 ---
 
 ## Appunti (aperti — non decisioni)

@@ -1,13 +1,13 @@
 # snapdraw — design
 
-Origine: `SNAPDRAW.md` nel repo di forge (la specifica dalla quale nasce questo
+Origine: `SNAPDRAW.md` nel repo di topo (la specifica dalla quale nasce questo
 modulo). Qui la versione operativa, allineata al codice.
 
 ## Dove gira nella pipeline
 
-snapdraw lavora sulla geometria **grezza** di `doc` — le primitive che forge ha
-già parsato e normalizzato (`forge.load_dxf`), ma **prima** di qualunque
-lettura di forge (`heal` o `island`). snapdraw interpreta, forge trasforma la
+snapdraw lavora sulla geometria **grezza** di `doc` — le primitive che topo ha
+già parsato e normalizzato (`topo.load_dxf`), ma **prima** di qualunque
+lettura di topo (`heal` o `island`). snapdraw interpreta, topo trasforma la
 topologia: la lettura a valle è una scelta del chiamante, non un passo di
 snapdraw (MAP D13).
 
@@ -15,8 +15,8 @@ snapdraw (MAP D13).
 file CAD
    │
    ▼
-forge.load_dxf(path, role_rules=sd.load_rules("generic"))
-                            → ForgeDocument; le regole di rules/ assegnano già
+topo.load_dxf(path, role_rules=sd.load_rules("generic"))
+                            → Document; le regole di rules/ assegnano già
                               i ruoli al caricamento (assi = construction, MAP D17)
    │
    ▼
@@ -28,22 +28,22 @@ sd.detect_frame(doc)    → FrameLayout: cornice + cartiglio (la ricetta)
 sd.tag_layout(doc, l)   → setta edge.role su doc.edges (frame / title_block)
    │
    ▼
-forge.heal(doc) | sd.sheet_islands(doc)   (forge.island con la distanza di snapdraw, D29)
+topo.heal(doc) | sd.sheet_islands(doc)   (topo.island con la distanza di snapdraw, D29)
                             → cluster puliti: frame e title_block fuori dal grafo,
                               in trash_entities col loro ruolo, non cluster
 ```
 
 `detect_frame` è una **ricetta** sopra passi pubblici, stesso schema di
-`forge.heal` (forge D62): `find_frame(doc)` → `find_titleblock(doc,
+`topo.heal` (topo D62): `find_frame(doc)` → `find_titleblock(doc,
 frame=...)` → flag di incertezza. Chi vuole un'altra composizione (solo la
 cornice, il cartiglio con una cornice già nota) chiama i passi a mano.
 
 ## I due ruoli
 
-| ruolo | cos'è | forge lo conosce? |
+| ruolo | cos'è | topo lo conosce? |
 |---|---|---|
-| `frame` | il riquadro di formato ISO | no — slug di consumatore (forge D31 ha rimosso `ContourRole.FRAME`) |
-| `title_block` | il cartiglio | no — slug di consumatore, forge lo conserva (D27) |
+| `frame` | il riquadro di formato ISO | no — slug di consumatore (topo D31 ha rimosso `ContourRole.FRAME`) |
+| `title_block` | il cartiglio | no — slug di consumatore, topo lo conserva (D27) |
 
 Nessuno dei due è strutturale: geometria non di taglio. `heal` li tiene fuori
 dal grafo, finiscono in `trash_entities` col ruolo intatto, e l'output DXF li
@@ -120,11 +120,11 @@ Conservativo: nel dubbio non marca, `title_block: uncertain` nei flag. Soglie
 (`CONFIDENCE_THRESHOLD`, `MIN_FILLED_CELL_FRACTION`, ...) grezze — non ancora
 tarate su un disegno reale, vedi TODO.md.
 
-## L'aggancio a forge (opzione B, chiusa in forge D30 + D31)
+## L'aggancio a topo (opzione B, chiusa in topo D30 + D31)
 
-snapdraw setta `edge.role` sugli `Edge` di `doc.edges` prima di `heal`. forge non
+snapdraw setta `edge.role` sugli `Edge` di `doc.edges` prima di `heal`. topo non
 ha preso API nuove: ha consolidato il concetto "ruolo strutturale" in
-`forge.is_structural_role` e reso l'aggancio un contratto.
+`topo.is_structural_role` e reso l'aggancio un contratto.
 
 - `heal._split_labeled` estrae dal grafo **ogni** edge con ruolo deciso e non
   strutturale (quindi `frame`, `title_block`, slug custom): non ci passano né
@@ -132,15 +132,15 @@ ha preso API nuove: ha consolidato il concetto "ruolo strutturale" in
 - `detect()` non trasforma un ruolo che non conosce in una feature: lo lascia
   in `trash_entities`;
 - l'output DXF scrive quella geometria nativa sul layer/colore che `snapdraw`
-  stesso registra in `roles.py` via `forge.register_role_style` — non su
+  stesso registra in `roles.py` via `topo.register_role_style` — non su
   `Trash` insieme alla spazzatura vera (D31: `ContourRole.FRAME` rimosso da
-  forge, i ruoli di consumatore vanno su un layer loro) e non lasciato al
-  grigio generico di default (D47 di forge, "roles out of core": lo stesso
-  meccanismo pubblico con cui forge registra il proprio vocabolario di
+  topo, i ruoli di consumatore vanno su un layer loro) e non lasciato al
+  grigio generico di default (D47 di topo, "roles out of core": lo stesso
+  meccanismo pubblico con cui topo registra il proprio vocabolario di
   `detect()` — vedi MAP D7).
 
-Invariante: **snapdraw non ragiona dentro forge.** Chiama `forge.load_dxf`, fa il
-suo lavoro geometrico, restituisce dei ruoli. Se serve un cambiamento in forge è
+Invariante: **snapdraw non ragiona dentro topo.** Chiama `topo.load_dxf`, fa il
+suo lavoro geometrico, restituisce dei ruoli. Se serve un cambiamento in topo è
 solo per **accettare** i ruoli, mai per **decidere** cosa sia un cartiglio.
 
 ## Il verso "aggiungi" (`snapdraw/generate.py`, MAP D8/D9)
@@ -149,11 +149,11 @@ Oltre a *rilevare* cornice e cartiglio, snapdraw può *generarli* e aggiungerli 
 un disegno che non li ha:
 
 ```python
-doc = forge.load_dxf("pezzo_nudo.dxf")
+doc = topo.load_dxf("pezzo_nudo.dxf")
 sd.add_frame(doc)                                   # cornice ISO attorno alla geometria esistente
 sd.add_title_block(doc, fields={"material": "S235JR"})  # cartiglio nel suo angolo
-result = forge.heal(doc)
-forge.to_dxf(result, doc).saveas("pezzo_framed.dxf")
+result = topo.heal(doc)
+topo.to_dxf(result, doc).saveas("pezzo_framed.dxf")
 ```
 
 `add_frame(doc)` non prende un formato in ingresso: calcola da solo il
@@ -168,7 +168,7 @@ suo angolo senza altro codice di raccordo.
 `fields` sono dati del chiamante (numero disegno, materiale, spessore, ...) —
 **mai** salvati nel repo, stesso principio di `data_injector`/`profiles/`
 sotto "Cosa NON ci va". Entrambe le funzioni sono puramente forge-native
-(`forge.load_geometry` + `forge.Note`, zero ezdxf): `heal`/`detect`/`to_dxf`
+(`topo.load_geometry` + `topo.Note`, zero ezdxf): `heal`/`detect`/`to_dxf`
 trattano questa geometria esattamente come quella rilevata da
 `find_frame`/`find_titleblock`.
 
@@ -188,19 +188,19 @@ committati — MAP D9), non inventato a occhio come nel primo taglio:
   righe alte 10 mm — non più due righe di testo grosso affiancate dentro una
   cella larga, che sbordava e si accavallava.
 
-Il logo/immagine resta fuori: forge non ha un concetto di immagine nel suo
+Il logo/immagine resta fuori: topo non ha un concetto di immagine nel suo
 modello neutro (niente entità `IMAGE`), andrebbe inserito in un secondo giro
 direttamente sul `Drawing` ezdxf restituito da `to_dxf()` — domanda aperta,
 non implementato.
 
 ## Cosa NON ci va
 
-- decisioni dentro forge — forge non sa cosa sia un cartiglio, e resta così;
+- decisioni dentro topo — topo non sa cosa sia un cartiglio, e resta così;
 - nomenclatura di reparto o logica di un singolo cliente — sta nei `profiles/`
   dell'interprete, mai qui e mai su GitHub;
 - guessing non etichettato: ogni campo letto dal cartiglio porta `source` +
   `confidence`, "non lo so" è `None` + `unresolved`, mai una supposizione;
-- discretizzazione: la geometria di cornice è marcata, non ridisegnata — forge
+- discretizzazione: la geometria di cornice è marcata, non ridisegnata — topo
   la riscrive con le primitive native.
 
 ## Decisioni (erano domande aperte, chiuse in MAP D4)
