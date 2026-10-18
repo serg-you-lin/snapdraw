@@ -34,10 +34,10 @@ cartiglio non è un cluster; i suoi testi restano senza `cluster_ref`.
 ## Uso
 
 ```python
-import topo
+import topo, topo_dxf
 import snapdraw as sd
 
-doc = topo.load_dxf("disegno.dxf", role_rules=sd.load_rules("generic"))
+doc = topo_dxf.load_dxf("disegno.dxf", role_rules=sd.load_rules("generic"))
 
 layout = sd.detect_frame(doc)    # cornice + cartiglio sulla geometria grezza
 fields = sd.read_titleblock(layout)
@@ -78,13 +78,13 @@ un cartiglio compilato con i dati del chiamante — mai salvati in questo
 repo, stesso principio del `data_injector` di topo.
 
 ```python
-doc = topo.load_dxf("pezzo_nudo.dxf")
+doc = topo_dxf.load_dxf("pezzo_nudo.dxf")
 
 sd.add_frame(doc)                                          # cornice ISO attorno alla geometria esistente
 sd.add_title_block(doc, fields={"material": "S235JR", "quantity": "2"})
 
 result = topo.heal(doc)
-topo.to_dxf(result, doc).saveas("pezzo_framed.dxf")
+topo_dxf.to_dxf(result, doc).saveas("pezzo_framed.dxf")
 ```
 
 `add_frame` sceglie da solo il formato e l'orientamento ISO più piccoli

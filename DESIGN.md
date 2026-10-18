@@ -6,7 +6,7 @@ modulo). Qui la versione operativa, allineata al codice.
 ## Dove gira nella pipeline
 
 snapdraw lavora sulla geometria **grezza** di `doc` — le primitive che topo ha
-già parsato e normalizzato (`topo.load_dxf`), ma **prima** di qualunque
+già parsato e normalizzato (`topo_dxf.load_dxf`), ma **prima** di qualunque
 lettura di topo (`heal` o `island`). snapdraw interpreta, topo trasforma la
 topologia: la lettura a valle è una scelta del chiamante, non un passo di
 snapdraw (MAP D13).
@@ -15,7 +15,7 @@ snapdraw (MAP D13).
 file CAD
    │
    ▼
-topo.load_dxf(path, role_rules=sd.load_rules("generic"))
+topo_dxf.load_dxf(path, role_rules=sd.load_rules("generic"))
                             → Document; le regole di rules/ assegnano già
                               i ruoli al caricamento (assi = construction, MAP D17)
    │
@@ -133,13 +133,13 @@ ha preso API nuove: ha consolidato il concetto "ruolo strutturale" in
   in `trash_entities`;
 - l'output DXF scrive quella geometria nativa sul layer/colore delle mappe
   di `snapdraw` in `roles.py` (`ROLE_STYLES`, `LAYERS`), che chi esporta
-  passa a `topo.to_dxf` — non su `Trash` insieme alla spazzatura vera (D31:
+  passa a `topo_dxf.to_dxf` — non su `Trash` insieme alla spazzatura vera (D31:
   `ContourRole.FRAME` rimosso da topo, i ruoli di consumatore vanno su un
   layer loro) e non lasciato al grigio generico di default (D47 di topo,
   "roles out of core"; topo D128: le mappe sono del consumer, topo non
   tiene un registro — vedi MAP D7).
 
-Invariante: **snapdraw non ragiona dentro topo.** Chiama `topo.load_dxf`, fa il
+Invariante: **snapdraw non ragiona dentro topo.** Chiama `topo_dxf.load_dxf`, fa il
 suo lavoro geometrico, restituisce dei ruoli. Se serve un cambiamento in topo è
 solo per **accettare** i ruoli, mai per **decidere** cosa sia un cartiglio.
 
@@ -149,11 +149,11 @@ Oltre a *rilevare* cornice e cartiglio, snapdraw può *generarli* e aggiungerli 
 un disegno che non li ha:
 
 ```python
-doc = topo.load_dxf("pezzo_nudo.dxf")
+doc = topo_dxf.load_dxf("pezzo_nudo.dxf")
 sd.add_frame(doc)                                   # cornice ISO attorno alla geometria esistente
 sd.add_title_block(doc, fields={"material": "S235JR"})  # cartiglio nel suo angolo
 result = topo.heal(doc)
-topo.to_dxf(result, doc).saveas("pezzo_framed.dxf")
+topo_dxf.to_dxf(result, doc).saveas("pezzo_framed.dxf")
 ```
 
 `add_frame(doc)` non prende un formato in ingresso: calcola da solo il

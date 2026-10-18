@@ -35,7 +35,7 @@ riferimento nella skill `code-guardrails`).
 - Le viste di un disegno si leggono per isole con `sd.sheet_islands(doc)` — `topo.island()` con la distanza scelta da snapdraw, l'unico posto dove la si sceglie (MAP D29) — non con `heal()`.
 - **Mai `snapbend.flat.detect_flat` sulle viste**: presuppone un pezzo piano visto
   dalla faccia. Su una vista i suoi numeri non hanno senso.
-- Test e prove si costruiscono con le API di topo (`topo.load_dxf`,
+- Test e prove si costruiscono con le API di topo (`topo_dxf.load_dxf`,
   `topo.load_geometry`, `Edge`, `LineSeg`), mai con ezdxf direttamente. Si
   ragiona in termini di topo (edge, ruolo, segmento), non di entità o layer
   DXF.

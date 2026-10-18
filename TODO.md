@@ -7,7 +7,7 @@
 - [x] `detect_frame` portato da topo `ccbb34f^` e riscritto sulle primitive
       di topo — funzionante, test sintetici verdi
 - [x] `snapdraw/roles.py`: cornice/cartiglio hanno colore+layer nelle mappe
-      `ROLE_STYLES`/`LAYERS`, passate a `topo.to_dxf` (MAP D7, topo D128)
+      `ROLE_STYLES`/`LAYERS`, passate a `topo_dxf.to_dxf` (MAP D7, topo D128)
 - [x] `snapdraw/generate.py`: `add_frame`/`add_title_block`, il verso
       "aggiungi" — vettoriale, un template condiviso per A3/A4 orizzontale/
       verticale, provato su 10 fixture reali in `tests/examples/to_add_frame/`

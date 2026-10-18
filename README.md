@@ -34,10 +34,10 @@ emerge; the title block is not a cluster; its texts stay without a `cluster_ref`
 ## Usage
 
 ```python
-import topo
+import topo, topo_dxf
 import snapdraw as sd
 
-doc = topo.load_dxf("drawing.dxf", role_rules=sd.load_rules("generic"))
+doc = topo_dxf.load_dxf("drawing.dxf", role_rules=sd.load_rules("generic"))
 
 layout = sd.detect_frame(doc)    # frame + title block on the raw geometry
 fields = sd.read_titleblock(layout)
@@ -78,13 +78,13 @@ adds a title block filled with the caller's own data — never stored in this
 repo, same principle as topo's `data_injector`.
 
 ```python
-doc = topo.load_dxf("bare_part.dxf")
+doc = topo_dxf.load_dxf("bare_part.dxf")
 
 sd.add_frame(doc)                                        # ISO frame around the existing geometry
 sd.add_title_block(doc, fields={"material": "S235JR", "quantity": "2"})
 
 result = topo.heal(doc)
-topo.to_dxf(result, doc).saveas("bare_part_framed.dxf")
+topo_dxf.to_dxf(result, doc).saveas("bare_part_framed.dxf")
 ```
 
 `add_frame` picks the smallest ISO format and orientation (A4..A0, landscape
