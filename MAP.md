@@ -1122,3 +1122,12 @@ snapdraw, qui c'è *cosa* sono.
   (DISEGN./CONTR./DATA/PEZZA/FOGLIO sono termini standard, non privati) o
   aspettare un disegno di **pezzo singolo** (non un complessivo) più
   rappresentativo del caso d'uso preventivo.
+
+### D38 — seguire topo D129: l'adapter DXF è `topo_dxf`  ✅
+
+topo non legge e non scrive più DXF: lo fa il pacchetto fratello `topo_dxf`
+(`g-topo[dxf]`). Nel pacchetto cambiano solo i docstring (gli esempi dicono
+`topo_dxf.load_dxf` / `topo_dxf.to_dxf`); test, script e lab leggono e
+scrivono attraverso `topo_dxf`. La regola: `"*"` tiene `topo.core`
+(`topo.adapters` non esiste più). `scripts/gen_index.py` è la nuova copia di
+topo. Suite come in D35 (solo `regr_03`/`regr_05`).

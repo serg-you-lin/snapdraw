@@ -1,6 +1,7 @@
 import _paths  # noqa: F401  — chdir alla radice del repo
 
 import topo
+import topo_dxf
 import snapdraw as sd
 
 # --- CONFIG ---------------------------------------------------------------
@@ -9,7 +10,7 @@ OUTPUT = r"pipeline_output/tavola_08_framed.dxf"
 RULES  = "generic"   # rules/<nome>.json — uno studio: load_rules("studio_x") + load_rules("generic")
 # -----------------------------------------------------------------------------
 
-doc = topo.load_dxf(INPUT, role_rules=sd.load_rules(RULES))
+doc = topo_dxf.load_dxf(INPUT, role_rules=sd.load_rules(RULES))
 print(f"edge: {len(doc.edges)}  annotazioni: {len(doc.annotations)}")
 
 layout = sd.detect_frame(doc)
@@ -31,7 +32,7 @@ print(f"island: valid={result.is_valid}  isole={len(result.clusters)}  "
       f"trash={len(result.trash_entities)}")
 
 # colore/layer di "frame" arrivano dalla registrazione di sd.roles
-out = topo.to_dxf(result, doc)
+out = topo_dxf.to_dxf(result, doc)
 
 import os
 os.makedirs(os.path.dirname(OUTPUT), exist_ok=True)

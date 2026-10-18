@@ -41,8 +41,9 @@ include = ["snapdraw*"]
 # attraverso topo (mai ezdxf diretto) e non sa niente di processo (snapbend).
 [tool.gen_index.layers]
 "(root)" = ["snapbend", "ezdxf"]
-# Dentro topo è interno: solo i nomi pubblici (topo MAP.md D120, D122)
-"*"      = ["topo.core", "topo.adapters"]
+# Dentro topo è interno: solo i nomi pubblici (topo MAP.md D120, D122);
+# l'adapter DXF è un pacchetto fratello, topo_dxf (topo D129)
+"*"      = ["topo.core"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

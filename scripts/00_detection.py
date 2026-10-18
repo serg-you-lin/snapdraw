@@ -1,6 +1,7 @@
 import _paths  # noqa: F401  — chdir alla radice del repo
 
 import topo
+import topo_dxf
 import snapdraw as sd
 
 # --- CONFIG ---------------------------------------------------------------
@@ -8,7 +9,7 @@ INPUT = r"42D025Z00I.DXF"   # relativo -> dalla radice del repo
 # INPUT = r"C:\job\disegno_cliente.dxf"        # assoluto -> usato com'è
 # -----------------------------------------------------------------------------
 
-doc = topo.load_dxf(INPUT)
+doc = topo_dxf.load_dxf(INPUT)
 print(f"edge: {len(doc.edges)}  annotazioni: {len(doc.annotations)}")
 
 layout = sd.detect_frame(doc)

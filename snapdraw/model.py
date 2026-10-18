@@ -6,7 +6,7 @@ impaginato, e cosa snapdraw restituisce a chi lo chiama.
 
 Nessuna dipendenza da topo o da un formato: dataclass pure. Gli `Edge` che
 questi oggetti trattengono (`FrameInfo.edges`, `TitleBlock.edges`) sono
-riferimenti agli `Edge` di `topo.load_dxf(...).edges` — snapdraw li individua e
+riferimenti agli `Edge` di `topo_dxf.load_dxf(...).edges` — snapdraw li individua e
 li marca, non ne fa copie.
 """
 

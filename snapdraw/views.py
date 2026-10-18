@@ -15,7 +15,7 @@ Stesso schema di `detect_frame`: passi pubblici (`classify_view`,
 `read_views(result)`. `sheet_islands(doc)` è l'unico posto dove snapdraw
 sceglie a che distanza le isole di un foglio si uniscono (MAP D29).
 
-    doc = topo.load_dxf("disegno.dxf", role_rules=sd.load_rules("generic"))
+    doc = topo_dxf.load_dxf("disegno.dxf", role_rules=sd.load_rules("generic"))
     sd.tag_layout(doc, sd.detect_frame(doc))
     views = sd.read_views(sd.sheet_islands(doc))
 """

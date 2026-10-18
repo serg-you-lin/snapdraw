@@ -10,7 +10,7 @@ sono pubblici — `find_frame`, `extend_frame` e `rejected_border` (`frame.py`),
 (`tag.py`). Chi vuole un'altra lettura li compone a mano (per esempio solo
 la cornice, o il cartiglio con una cornice nota da `add_frame`).
 
-Gira sulla geometria GREZZA di `doc` (`topo.load_dxf(...)`) e **non
+Gira sulla geometria GREZZA di `doc` (`topo_dxf.load_dxf(...)`) e **non
 presuppone nessuna lettura a valle**: `heal()`, `island()` o niente del tutto
 sono scelte del chiamante. snapdraw interpreta, topo trasforma la topologia
 (`frame_heal_forge_architecture.md`).
@@ -21,7 +21,7 @@ Uso tipico:
 
     import snapdraw as sd
 
-    doc = topo.load_dxf("disegno.dxf")
+    doc = topo_dxf.load_dxf("disegno.dxf")
     layout = sd.detect_frame(doc)   # cornice + cartiglio, doc non mutato
     sd.tag_layout(doc, layout)      # marca gli Edge → role="frame" / "title_block"
     result = sd.sheet_islands(doc)  # oppure topo.heal(doc): li lasciano fuori entrambi

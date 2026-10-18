@@ -2,7 +2,7 @@
 tests/test_rules.py
 -------------------
 Test delle regole di ruolo (MAP D17): `rules/<nome>.json` → `topo.RoleRule`,
-da passare a `topo.load_dxf(role_rules=...)`.
+da passare a `topo_dxf.load_dxf(role_rules=...)`.
 
 Il caso vero è `vista_pianta_assi` (tests/examples/rules, copia anonimizzata
 di un disegno reale): la vista in pianta mancava perché i suoi assi la
@@ -17,6 +17,7 @@ import unittest
 from pathlib import Path
 
 import topo
+import topo_dxf
 import snapdraw as sd
 
 EXAMPLES = Path(__file__).resolve().parent / "examples" / "rules"
@@ -56,7 +57,7 @@ class TestLoadRules(unittest.TestCase):
 class TestRegoleSuDisegnoVero(unittest.TestCase):
 
     def _island_bounds(self, role_rules):
-        doc = topo.load_dxf(str(EXAMPLES / "vista_pianta_assi.dxf"), role_rules=role_rules)
+        doc = topo_dxf.load_dxf(str(EXAMPLES / "vista_pianta_assi.dxf"), role_rules=role_rules)
         sd.tag_layout(doc, sd.detect_frame(doc))
         return [tuple(round(v) for v in c.outer.polygon.bounds) for c in sd.sheet_islands(doc).clusters]
 

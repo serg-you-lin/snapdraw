@@ -3,6 +3,7 @@ import _paths  # noqa: F401  — chdir alla radice del repo
 import os
 
 import topo
+import topo_dxf
 import snapdraw as sd
 
 # --- CONFIG ---------------------------------------------------------------
@@ -16,7 +17,7 @@ RULES  = "generic"
 os.makedirs(OUTPUT, exist_ok=True)
 for path in SHEETS:
     name = os.path.splitext(os.path.basename(path))[0]
-    doc = topo.load_dxf(path, role_rules=sd.load_rules(RULES))
+    doc = topo_dxf.load_dxf(path, role_rules=sd.load_rules(RULES))
     sd.tag_layout(doc, sd.detect_frame(doc))
     result = sd.sheet_islands(doc)
     views = sd.read_views(result)
@@ -41,5 +42,5 @@ for path in SHEETS:
                                              source_kind="TEXT", height=1.5, text=label))
     sd.tag_features(result, features)
     out = os.path.join(OUTPUT, name + "_features.dxf")
-    topo.to_dxf(result, doc).saveas(out)
+    topo_dxf.to_dxf(result, doc).saveas(out)
     print(f"  scritto {out}")

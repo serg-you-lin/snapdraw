@@ -13,6 +13,7 @@ import unittest
 from pathlib import Path
 
 import topo
+import topo_dxf
 import snapdraw as sd
 
 REGRESSION = Path(__file__).parent / "examples" / "regression"
@@ -246,7 +247,7 @@ class TestScaleAndTag(unittest.TestCase):
 class TestLevaInox(unittest.TestCase):
 
     def test_due_da_5_3_e_uno_da_4_3_passanti_profondita_4(self):
-        doc = topo.load_dxf(str(REGRESSION / "regr_05.dxf"), role_rules=sd.load_rules("generic"))
+        doc = topo_dxf.load_dxf(str(REGRESSION / "regr_05.dxf"), role_rules=sd.load_rules("generic"))
         sd.tag_layout(doc, sd.detect_frame(doc))
         result = sd.sheet_islands(doc)
         layout = sd.read_features(doc, result, sd.read_views(result))

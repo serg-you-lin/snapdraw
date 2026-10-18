@@ -5,7 +5,7 @@ Vocabolario di ruolo di snapdraw — cornice e cartiglio. Prima viveva inline in
 `tag.py`; ora sta a sé: un consumatore costruisce i propri ruoli e la
 propria palette **fuori** da topo (topo D47, "roles out of core"). Colori e
 layer di output sono due mappe di snapdraw, `ROLE_STYLES` e `LAYERS`, che chi
-esporta passa a topo (`topo.to_dxf(result, doc, role_styles=ROLE_STYLES,
+esporta passa a topo (`topo_dxf.to_dxf(result, doc, role_styles=ROLE_STYLES,
 layers=LAYERS)`): topo non tiene un registro (topo D128).
 
 `CONSTRUCTION` (assi, linee di costruzione — assegnato al caricamento dalle

@@ -3,6 +3,7 @@ import _paths  # noqa: F401  — chdir alla radice del repo
 import re
 
 import topo
+import topo_dxf
 import snapdraw as sd
 
 # --- CONFIG ---------------------------------------------------------------
@@ -43,7 +44,7 @@ for name in paths:
 
     path = os.path.join(INPUT_DIR, name)
     try:
-        doc = topo.load_dxf(path)
+        doc = topo_dxf.load_dxf(path)
         sd.add_frame(doc)
         sd.add_title_block(doc, fields=fields)
         result = topo.heal(doc)
@@ -51,7 +52,7 @@ for name in paths:
             print(f"  [SALTATO] {name}: heal non valido — {result.errors}")
             skipped += 1
             continue
-        out = topo.to_dxf(result, doc)
+        out = topo_dxf.to_dxf(result, doc)
         out_path = os.path.join(OUTPUT_DIR, f"{stem}_framed.dxf")
         out.saveas(out_path)
         print(f"  [OK] {name} -> {out_path}  ({fields['material']}, SP {parsed['thickness']}, Q{parsed['quantity']})")

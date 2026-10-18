@@ -15,6 +15,7 @@ hanno il golden solo i fogli giudicati giusti.
 from pathlib import Path
 
 import topo
+import topo_dxf
 import snapdraw as sd
 
 ISLANDS = Path(__file__).parent / "examples" / "islands"
@@ -32,7 +33,7 @@ def sheets() -> list:
 
 def read_islands(path: Path) -> dict:
     """Le isole di un foglio come le legge snapdraw oggi (cornice e cartiglio tolti)."""
-    doc = topo.load_dxf(str(path), role_rules=sd.load_rules(RULES))
+    doc = topo_dxf.load_dxf(str(path), role_rules=sd.load_rules(RULES))
     sd.tag_layout(doc, sd.detect_frame(doc))
     result = sd.sheet_islands(doc)
     return {

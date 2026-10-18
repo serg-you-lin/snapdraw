@@ -122,7 +122,7 @@ Same name defined at module level in different modules. Not automatically a bug 
 ## Dependency rule
 
 - `(root)` never imports `snapbend`, `ezdxf`
-- every module never imports `topo.core`, `topo.adapters`
+- every module never imports `topo.core`
 
 `TYPE_CHECKING`-only imports count as violations here and must be verified by hand.
 

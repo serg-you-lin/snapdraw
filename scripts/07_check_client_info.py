@@ -5,6 +5,7 @@ import os
 from collections import Counter
 
 import topo
+import topo_dxf
 
 # --- CONFIG ---------------------------------------------------------------
 FOLDER = r"tests/examples/regression"
@@ -16,7 +17,7 @@ FOLDER = r"tests/examples/regression"
 # alle unità: quelli si puliscono nel CAD (purge, rinomina layer).
 
 for path in sorted(glob.glob(os.path.join(FOLDER, "*.dxf"))):
-    doc = topo.load_dxf(path)
+    doc = topo_dxf.load_dxf(path)
     print(f"\n=== {os.path.basename(path)}")
     texts = Counter(a.display_text.strip() for a in doc.annotations if a.display_text.strip())
     print(f"  testi ({len(texts)} diversi):")

@@ -6,7 +6,7 @@ la elimina dal disegno. Il risultato finisce nella STESSA cartella come
 `<nome>_noframe.dxf`.
 
 Nota sul come: `sd.tag_layout` + `topo.island` NON basta a rimuovere — quel
-percorso marca gli Edge e li fa finire in `trash_entities`, che `topo.to_dxf`
+percorso marca gli Edge e li fa finire in `trash_entities`, che `topo_dxf.to_dxf`
 riscrive sul layer `Frame` (topo D31): la cornice resta nel file, solo su un
 altro layer. Per togliere davvero la geometria va staccata da `doc.edges` prima
 di `heal`, per identità di oggetto (gli Edge in `layout.frame.edges` sono gli
@@ -19,6 +19,7 @@ import _paths  # noqa: F401  — chdir alla radice del repo
 import os
 
 import topo
+import topo_dxf
 import snapdraw as sd
 
 # --- CONFIG ---------------------------------------------------------------
@@ -58,7 +59,7 @@ for name in names:
     stem = os.path.splitext(name)[0]
     path = os.path.join(FOLDER_PATH, name)
     try:
-        doc = topo.load_dxf(path, role_rules=sd.load_rules(RULES))
+        doc = topo_dxf.load_dxf(path, role_rules=sd.load_rules(RULES))
         layout = sd.detect_frame(doc)
 
         if layout.frame is None:
@@ -77,7 +78,7 @@ for name in names:
             continue
 
         out_path = os.path.join(FOLDER_PATH, f"{stem}{SUFFIX}.dxf")
-        topo.to_dxf(result, doc).saveas(out_path)
+        topo_dxf.to_dxf(result, doc).saveas(out_path)
         print(f"  [OK] {name}: -{removed} edge  (formato={f.iso_format}, "
               f"conf={f.confidence:.2f}, cartiglio={'sì' if layout.title_block else 'no'}) "
               f"-> {os.path.basename(out_path)}")

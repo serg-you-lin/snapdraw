@@ -2,7 +2,7 @@
 snapdraw/rules.py
 -----------------
 Le regole di ruolo di snapdraw: file JSON in `rules/` → `topo.RoleRule`, da
-passare a `topo.load_dxf(role_rules=...)` (topo D63/D64: topo dà il
+passare a `topo_dxf.load_dxf(role_rules=...)` (topo D63/D64: topo dà il
 meccanismo, il vocabolario è del chiamante).
 
 Stesso schema delle calibrazioni di bendly: un file per insieme di regole,
@@ -13,7 +13,7 @@ le sue regole con quelle generiche nello script, in chiaro, e le sue vanno
 prima perché vince la prima che corrisponde (MAP D17):
 
     role_rules = sd.load_rules("studio_x") + sd.load_rules("generic")
-    doc = topo.load_dxf("disegno.dxf", role_rules=role_rules)
+    doc = topo_dxf.load_dxf("disegno.dxf", role_rules=role_rules)
 
 Formato:
 

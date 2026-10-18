@@ -41,7 +41,7 @@ CONTAINMENT_THRESHOLD = 0.80
 def find_frame(doc, containment_threshold: float = CONTAINMENT_THRESHOLD) -> Optional[FrameInfo]:
     """
     Rileva la cornice di formato nella geometria grezza di `doc`
-    (`topo.load_dxf(...)`, prima di `heal`).
+    (`topo_dxf.load_dxf(...)`, prima di `heal`).
 
     Ritorna un `FrameInfo` con gli `Edge` di tutti i riquadri di bordo che
     racchiudono il disegno, oppure `None` se non c'è un candidato convincente

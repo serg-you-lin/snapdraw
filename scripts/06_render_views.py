@@ -3,6 +3,7 @@ import _paths  # noqa: F401  — chdir alla radice del repo
 import os
 
 import topo
+import topo_dxf
 import snapdraw as sd
 
 # --- CONFIG ---------------------------------------------------------------
@@ -13,7 +14,7 @@ RULES  = "generic"
 # -----------------------------------------------------------------------------
 
 for name in NAMES:
-    doc = topo.load_dxf(os.path.join(FOLDER, name + ".dxf"), role_rules=sd.load_rules(RULES))
+    doc = topo_dxf.load_dxf(os.path.join(FOLDER, name + ".dxf"), role_rules=sd.load_rules(RULES))
     sd.tag_layout(doc, sd.detect_frame(doc))
     views = sd.read_views(sd.sheet_islands(doc))
     paths = sd.render_views(doc, views, os.path.join(OUTPUT, name))
