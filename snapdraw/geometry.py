@@ -16,7 +16,6 @@ import math
 from typing import List, Optional, Tuple
 
 import topo
-from topo.core.geometry.axis import items_inside
 
 ISO_RATIO = math.sqrt(2)          # ≈ 1.41421 — rapporto lato lungo / lato corto dei formati ISO
 RATIO_TOLERANCE = 0.05            # ±5% sul rapporto
@@ -114,7 +113,7 @@ def containment(rect: topo.geometry.CoveredRectangle, doc) -> float:
     if not others:
         return 0.0
     margin = rect.short_side * CONTAINMENT_MARGIN_FACTOR
-    return len(items_inside(rect.bbox, others, margin)) / len(others)
+    return len(topo.geometry.items_inside(rect.bbox, others, margin)) / len(others)
 
 
 def marked_sides(bounds, edges, tol: float = MARK_TOUCH_TOL) -> set:

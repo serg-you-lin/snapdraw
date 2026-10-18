@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "snapdraw"
 # Unica fonte di verità della versione. sd.__version__ la legge da qui via
 # importlib.metadata — non duplicarla nel codice.
-version = "0.4.0"
+version = "0.4.1"
 description = "Rilevamento automatico di cornice e cartiglio nei disegni tecnici impaginati — consumatore di topo"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -41,6 +41,8 @@ include = ["snapdraw*"]
 # attraverso topo (mai ezdxf diretto) e non sa niente di processo (snapbend).
 [tool.gen_index.layers]
 "(root)" = ["snapbend", "ezdxf"]
+# Dentro topo è interno: solo i nomi pubblici (topo MAP.md D120, D122)
+"*"      = ["topo.core", "topo.adapters"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

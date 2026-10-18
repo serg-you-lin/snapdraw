@@ -29,7 +29,6 @@ from shapely.geometry import LineString
 from shapely.strtree import STRtree
 
 import topo
-from topo.core.geometry.axis import axis_lines, items_inside
 
 from .geometry import TEXT_BORDER_TOL, annotation_density_ratio, find_rectangles, grid_dividers, line_edges
 from .model import Cell, FrameInfo, TitleBlock
@@ -141,7 +140,7 @@ def extend_titleblock(title_block: TitleBlock, doc, frame: Optional[FrameInfo] =
     def in_env(e) -> bool:
         return all(env[0] <= p[0] <= env[2] and env[1] <= p[1] <= env[3] for p in (e.start, e.end))
 
-    horiz, vert = axis_lines([e for e in line_edges(doc) if e.role == "unknown"])
+    horiz, vert = topo.geometry.axis_lines([e for e in line_edges(doc) if e.role == "unknown"])
     candidates = [t.item for t in horiz + vert if id(t.item) not in taken and in_env(t.item)]
     if not candidates:
         return title_block
@@ -185,7 +184,7 @@ def _edges_inside(bbox: Tuple[float, float, float, float], doc) -> list:
     layer `title_block` con lui, non finire in `trash_entities` (o peggio,
     in un cluster spurio) solo perché nessuno l'ha marcato.
     """
-    return items_inside(bbox, doc.edges, _CONTAINMENT_TOL)
+    return topo.geometry.items_inside(bbox, doc.edges, _CONTAINMENT_TOL)
 
 
 def _is_genuine_grid(row_ys: List[float], col_xs: List[float], rect: topo.geometry.CoveredRectangle) -> bool:

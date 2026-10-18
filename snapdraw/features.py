@@ -42,7 +42,6 @@ from collections import Counter
 from typing import Dict, List, Optional, Tuple
 
 import topo
-from topo.core.geometry.axis import merge_intervals
 
 from .model import Callout, Feature, FeatureGroup, FeatureLayout, Trace, ViewLayout
 from .roles import (CONSTRUCTION, COUNTERBORE, COUNTERSINK, FRAME, HOLE, OPENING, SEATED_HOLE, SLOT, THREADED_HOLE,
@@ -531,7 +530,7 @@ def _trace_in(doc, bbox, axis: int, lo_level: float, hi_level: float,
             a, b = max(a, start), min(b, end)
             if b - a > tolerance:
                 intervals.append((a, b))
-        walls.append(merge_intervals(intervals, tolerance))
+        walls.append(topo.geometry.merge_intervals(intervals, tolerance))
     if not all(len(w) == 1 for w in walls):
         return None
     (a1, b1), (a2, b2) = walls[0][0], walls[1][0]

@@ -29,7 +29,6 @@ from dataclasses import replace
 from typing import Optional
 
 import topo
-from topo.core.geometry.measure import length_inside, segment_length
 
 from .geometry import (
     AXIS_EPS, containment, find_rectangles, is_iso_ratio, iso_format, marked_sides,
@@ -104,8 +103,8 @@ def extend_frame(frame: FrameInfo, doc) -> FrameInfo:
     for e in doc.edges:
         if e.role != "unknown" or id(e) in taken:
             continue
-        total, inner = segment_length(e.segment), length_inside(e.segment, frame.inner_bbox)
-        in_sheet = total - length_inside(e.segment, outer) <= AXIS_EPS
+        total, inner = topo.geometry.segment_length(e.segment), topo.geometry.length_inside(e.segment, frame.inner_bbox)
+        in_sheet = total - topo.geometry.length_inside(e.segment, outer) <= AXIS_EPS
         if in_sheet and total - inner > AXIS_EPS and inner <= band:
             extra.append(e)
     if not extra:
