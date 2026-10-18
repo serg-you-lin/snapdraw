@@ -131,13 +131,13 @@ ha preso API nuove: ha consolidato il concetto "ruolo strutturale" in
   per gap solving né per la ricerca loop;
 - `detect()` non trasforma un ruolo che non conosce in una feature: lo lascia
   in `trash_entities`;
-- l'output DXF scrive quella geometria nativa sul layer/colore che `snapdraw`
-  stesso registra in `roles.py` via `topo.register_role_style` — non su
-  `Trash` insieme alla spazzatura vera (D31: `ContourRole.FRAME` rimosso da
-  topo, i ruoli di consumatore vanno su un layer loro) e non lasciato al
-  grigio generico di default (D47 di topo, "roles out of core": lo stesso
-  meccanismo pubblico con cui topo registra il proprio vocabolario di
-  `detect()` — vedi MAP D7).
+- l'output DXF scrive quella geometria nativa sul layer/colore delle mappe
+  di `snapdraw` in `roles.py` (`ROLE_STYLES`, `LAYERS`), che chi esporta
+  passa a `topo.to_dxf` — non su `Trash` insieme alla spazzatura vera (D31:
+  `ContourRole.FRAME` rimosso da topo, i ruoli di consumatore vanno su un
+  layer loro) e non lasciato al grigio generico di default (D47 di topo,
+  "roles out of core"; topo D128: le mappe sono del consumer, topo non
+  tiene un registro — vedi MAP D7).
 
 Invariante: **snapdraw non ragiona dentro topo.** Chiama `topo.load_dxf`, fa il
 suo lavoro geometrico, restituisce dei ruoli. Se serve un cambiamento in topo è

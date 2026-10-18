@@ -2,12 +2,11 @@
 snapdraw/roles.py
 -----------------
 Vocabolario di ruolo di snapdraw — cornice e cartiglio. Prima viveva inline in
-`tag.py`; ora sta a sé, sullo stesso schema con cui topo stesso registra il
-vocabolario manifatturiero di `detect()` (`topo/tools/manufacturing_role.py`,
-topo D47 "roles out of core"): un consumatore costruisce i propri ruoli e la
-propria palette **fuori** da topo, con gli stessi meccanismi pubblici
-(`topo.register_role_style`) che topo userebbe per sé — nessun trattamento
-privilegiato.
+`tag.py`; ora sta a sé: un consumatore costruisce i propri ruoli e la
+propria palette **fuori** da topo (topo D47, "roles out of core"). Colori e
+layer di output sono due mappe di snapdraw, `ROLE_STYLES` e `LAYERS`, che chi
+esporta passa a topo (`topo.to_dxf(result, doc, role_styles=ROLE_STYLES,
+layers=LAYERS)`): topo non tiene un registro (topo D128).
 
 `CONSTRUCTION` (assi, linee di costruzione — assegnato al caricamento dalle
 regole di `rules/`, MAP D16/D17) idem: non è contorno di pezzo,
@@ -25,8 +24,9 @@ determinato) — più `SLOT` e `OPENING`. `hole`, `threaded_hole`,
 lette, dopo `island()`: non sono ruoli di `Edge` e non toccano la lettura
 delle isole. Il ruolo dice che cosa è la feature: chi sviluppa il pezzo da
 tagliare (snapbend) sa dove metterla. I colori sono un default per guardare
-(il foro viola, sovrascrive il magenta di topo per chi importa snapdraw);
-chi esporta passa i suoi con `role_styles`.
+(il foro viola); chi esporta compone le mappe come vuole
+(`{**ROLE_STYLES, ...}`). Prima, con il registro globale di topo, importare
+snapdraw cambiava il colore del foro a chiunque nello stesso processo.
 """
 
 from __future__ import annotations
@@ -61,18 +61,18 @@ FEATURE_STYLES = [
 ]
 
 
-def register_defaults() -> None:
-    """
-    Registra colore + nome layer di default per cornice, cartiglio, costruzione e feature —
-    gira all'import di questo modulo (quindi automaticamente quando `snapdraw`
-    viene importato, dato che `snapdraw/__init__.py` importa `tag`, che importa
-    questo modulo). Zero stato da settare a mano in ogni script chiamante.
-    """
-    topo.register_role_style(FRAME, topo.RoleStyle(color=(20, 20, 20), layer_name=LAYER_FRAME))
-    topo.register_role_style(TITLE_BLOCK, topo.RoleStyle(color=(20, 20, 20), layer_name=LAYER_TITLE_BLOCK))
-    topo.register_role_style(CONSTRUCTION, topo.RoleStyle(color=(200, 60, 30), layer_name=LAYER_CONSTRUCTION))
-    for role, color, layer in FEATURE_STYLES:
-        topo.register_role_style(role, topo.RoleStyle(color=color, layer_name=layer))
+# Colore di ogni ruolo di snapdraw in uscita (topo D128).
+ROLE_STYLES = {
+    FRAME:        topo.RoleStyle(color=(20, 20, 20)),
+    TITLE_BLOCK:  topo.RoleStyle(color=(20, 20, 20)),
+    CONSTRUCTION: topo.RoleStyle(color=(200, 60, 30)),
+    **{role: topo.RoleStyle(color=color) for role, color, _layer in FEATURE_STYLES},
+}
 
-
-register_defaults()
+# Layer DXF di ogni ruolo di snapdraw in uscita.
+LAYERS = {
+    FRAME:        LAYER_FRAME,
+    TITLE_BLOCK:  LAYER_TITLE_BLOCK,
+    CONSTRUCTION: LAYER_CONSTRUCTION,
+    **{role: layer for role, _color, layer in FEATURE_STYLES},
+}

@@ -8,7 +8,7 @@ python scripts/gen_index.py
 
 What this is: the lookup table of *what already exists* in the package, down to internal helpers. `docs/API.md` documents the public surface (`snapdraw.<name>`) with full cards; this file lists every module-level function and class so nothing gets rewritten because it was not found. Signatures and docstring lines come straight from the source, so they cannot drift.
 
-`13` modules · `78` module-level functions · `13` classes · `2693` lines of code.
+`13` modules · `77` module-level functions · `13` classes · `2695` lines of code.
 
 Sections: [Lookup](#lookup) · [Duplicate names](#duplicate-names) · [Dependency rule](#dependency-rule) · [By module](#by-module) · [Internal dependencies](#internal-dependencies)
 
@@ -86,7 +86,6 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `read_titleblock` | func | `snapdraw/titleblock.py:292` | Legge le celle del cartiglio → dict dei campi |
 | `read_views` | func | `snapdraw/views.py:119` | Ricetta: classifica ogni cluster, trova i compagni di proiezione, la |
 | `_reference` | func | `snapdraw/views.py:151` | La vista che fa da metro per i simboli: la principale, o la più grande. |
-| `register_defaults` | func | `snapdraw/roles.py:64` | Registra colore + nome layer di default per cornice, cartiglio, costruzione e feature — |
 | `rejected_border` | func | `snapdraw/frame.py:115` | Il riquadro di bordo più grande che racchiude `title_block` ma che |
 | `render_view` | func | `snapdraw/render.py:57` | Disegna `edges` in un PNG ritagliato su `bbox`, nero su bianco, con |
 | `render_views` | func | `snapdraw/render.py:97` | Ricetta: un PNG per vista in `folder` (`view_<indice>.png`), ritagliato |
@@ -133,7 +132,7 @@ Same name defined at module level in different modules. Not automatically a bug 
 
 ### `snapdraw/` (root)
 
-#### `snapdraw/__init__.py` — 127 lines
+#### `snapdraw/__init__.py` — 129 lines
 
 _snapdraw_
 
@@ -253,7 +252,7 @@ _snapdraw/render.py_
 
 _snapdraw/roles.py_
 
-- `register_defaults() -> None` — L64 — Registra colore + nome layer di default per cornice, cartiglio, costruzione e feature —
+No module-level function or class.
 
 #### `snapdraw/rules.py` — 79 lines
 

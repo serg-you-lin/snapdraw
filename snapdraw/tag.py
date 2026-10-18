@@ -8,8 +8,8 @@ Riporta il layout rilevato a topo: setta `edge.role` sugli `Edge` di
 **prima** di `topo.heal`, e heal tiene quegli edge fuori dal grafo
 (`_split_labeled` estrae ogni ruolo deciso e non strutturale). La geometria non
 si perde — finisce in `trash_entities` col ruolo intatto e l'output DXF la
-scrive sul layer registrato in `roles.py` (`Frame`, `TitleBlock`), non su
-`Trash` (topo D31).
+scrive sul layer che le dà `roles.LAYERS` (`Frame`, `TitleBlock`), passato a
+`to_dxf`, non su `Trash` (topo D31, D128).
 
 `"frame"` e `"title_block"` sono **entrambi** slug di consumatore: topo non li
 conosce (`ContourRole.FRAME` è stato rimosso in D31), li conserva e basta. Gli

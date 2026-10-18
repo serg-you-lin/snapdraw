@@ -33,7 +33,7 @@ Workflow di generazione (il verso "aggiungi" — un disegno senza cornice):
     sd.add_frame(doc)                            # cornice ISO attorno alla geometria esistente
     sd.add_title_block(doc, fields={"material": "S235JR", "quantity": "2"})
     result = topo.heal(doc)
-    topo.to_dxf(result, doc).saveas("pezzo_framed.dxf")
+    topo.to_dxf(result, doc, role_styles=sd.ROLE_STYLES, layers=sd.LAYERS).saveas("pezzo_framed.dxf")
 
 Stato: pre-alpha. `find_frame` e `find_titleblock`/`read_titleblock` sono
 portati e funzionanti (soglie ancora grezze, da tarare su fixture reali); la
@@ -49,8 +49,8 @@ from .features import (describe_features, diameter_callouts, feature_contours, f
                        group_features, parse_callout, read_features, tag_features, view_scales)
 from .model import (BBox, Callout, Cell, Feature, FeatureGroup, FeatureLayout, FieldSlot, FrameInfo, FrameLayout,
                     TitleBlock, TitleBlockTemplate, Trace, View, ViewLayout)
-from .roles import (CONSTRUCTION, COUNTERBORE, COUNTERSINK, FRAME, HOLE, OPENING, SEATED_HOLE, SLOT, THREADED_HOLE,
-                    TITLE_BLOCK)
+from .roles import (CONSTRUCTION, COUNTERBORE, COUNTERSINK, FRAME, HOLE, LAYERS, OPENING, ROLE_STYLES, SEATED_HOLE,
+                    SLOT, THREADED_HOLE, TITLE_BLOCK)
 from .rules import load_rules, rules_from_dict
 from .recipe import detect_frame
 from .render import render_view, render_views, view_edges
@@ -115,6 +115,8 @@ __all__ = [
     "TitleBlockTemplate",
     "DEFAULT_TITLE_BLOCK_TEMPLATE",
     "FRAME",
+    "ROLE_STYLES",
+    "LAYERS",
     "TITLE_BLOCK",
     "CONSTRUCTION",
     "HOLE",

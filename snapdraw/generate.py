@@ -20,8 +20,8 @@ meccanismo pubblico con cui `bendly` porta uno sviluppo generato a
 `Document`, topo MAP D32) e il testo da `topo.Note` — zero accesso a
 `Edge`/`LineSeg` interni, zero ezdxf. Frame e griglia del cartiglio portano
 `role` (`sd.roles.FRAME`/`TITLE_BLOCK`) fin dalla costruzione: non serve
-chiamare `tag_layout` per questa geometria, e colore/layer arrivano gratis
-dalla registrazione di `roles.py` (MAP D7).
+chiamare `tag_layout` per questa geometria, e colore/layer arrivano dalle
+mappe di `roles.py` passate a `to_dxf` (MAP D7, topo D128).
 
 Un solo template di cartiglio condiviso per tutti i formati/orientamenti:
 A3/A4, orizzontale/verticale non cambiano la sua geometria, solo dove lo si

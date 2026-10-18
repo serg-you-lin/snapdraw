@@ -965,6 +965,18 @@ metà, TODO di topo): `merge_intervals`, `length_inside`, `segment_length`,
 `LoopFinder`, `_outer_face_walk`. Nessun cambio di comportamento: suite come
 in D35.
 
+### D37 — colori e layer di snapdraw sono due mappe, non un registro  ✅
+
+topo toglie il registro globale `register_role_style` (MAP.md di topo, D128,
+riapre D47): con il registro, importare snapdraw cambiava il colore del foro
+(viola) a chiunque nello stesso processo, sopra il magenta di snapbend.
+`roles.py` pubblica `ROLE_STYLES` (ruolo → `topo.RoleStyle`) e `LAYERS`
+(ruolo → layer DXF), esportati da `snapdraw`; chi esporta li passa
+(`topo.to_dxf(result, doc, role_styles=sd.ROLE_STYLES, layers=sd.LAYERS)`) o
+li compone. Senza, la cornice esce sul layer `frame`, grigia: il default
+dell'adapter DXF di topo. Le note con `role=TITLE_BLOCK` vanno sul layer del
+ruolo, non più su `Annotation`. Suite come in D35 (solo `regr_03`/`regr_05`).
+
 ---
 
 ## Appunti (aperti — non decisioni)
