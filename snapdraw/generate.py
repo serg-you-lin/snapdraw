@@ -314,7 +314,7 @@ def _place(template: TitleBlockTemplate, anchor: Tuple[float, float], fields: Di
         value_y = label_y - _CELL_PADDING - _VALUE_HEIGHT
 
         cells.append(Cell(bbox=abs_bbox, text=f"{f.label}: {value}"))
-        notes.append(topo.Note(position=(x, label_y), text=f.label, height=_LABEL_HEIGHT, group=TITLE_BLOCK))
-        notes.append(topo.Note(position=(x, value_y), text=str(value), height=_VALUE_HEIGHT, group=TITLE_BLOCK))
+        notes.append(topo.Note(position=(x, label_y), text=f.label, height=_LABEL_HEIGHT, role=TITLE_BLOCK))
+        notes.append(topo.Note(position=(x, value_y), text=str(value), height=_VALUE_HEIGHT, role=TITLE_BLOCK))
 
     return entities, cells, notes
