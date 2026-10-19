@@ -11,7 +11,7 @@ RULES  = "generic"   # rules/<nome>.json — uno studio: load_rules("studio_x") 
 # -----------------------------------------------------------------------------
 
 doc = topo_dxf.load_dxf(INPUT, role_rules=sd.load_rules(RULES))
-print(f"edge: {len(doc.edges)}  annotazioni: {len(doc.annotations)}")
+print(f"edge: {len(doc.edges)}  annotazioni: {len(doc.texts)}")
 
 layout = sd.detect_frame(doc)
 if layout.frame:

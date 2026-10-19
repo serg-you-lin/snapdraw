@@ -90,7 +90,7 @@ topo_dxf.to_dxf(result, doc).saveas("bare_part_framed.dxf")
 `add_frame` picks the smallest ISO format and orientation (A4..A0, landscape
 or portrait) that fits the existing geometry plus a margin plus room for the
 title block — there is no `fmt`/`orientation` parameter to pass. Both
-functions are purely forge-native (`topo.load_geometry` + `topo.Note`, no
+functions are purely forge-native (`topo.load_geometry` + `topo.Text`, no
 ezdxf) and tag their own geometry with `role="frame"`/`"title_block"`, so
 `heal`/`detect`/`to_dxf` treat it exactly like a detected one. A logo/image
 is out of scope for now — topo's neutral model has no concept of an image.

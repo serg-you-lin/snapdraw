@@ -10,7 +10,7 @@ INPUT = r"42D025Z00I.DXF"   # relativo -> dalla radice del repo
 # -----------------------------------------------------------------------------
 
 doc = topo_dxf.load_dxf(INPUT)
-print(f"edge: {len(doc.edges)}  annotazioni: {len(doc.annotations)}")
+print(f"edge: {len(doc.edges)}  annotazioni: {len(doc.texts)}")
 
 layout = sd.detect_frame(doc)
 

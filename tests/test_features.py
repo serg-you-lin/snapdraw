@@ -46,7 +46,7 @@ def _load(entities, hidden=0, dimensions=()):
     if hidden:
         for edge in doc.edges[-hidden:]:
             edge.style = HIDDEN
-    doc.annotations.extend(dimensions)
+    doc.texts.extend(dimensions)
     result = sd.sheet_islands(doc)
     return doc, result, sd.read_views(result)
 
@@ -57,8 +57,8 @@ def _read(entities, hidden=0, dimensions=()):
 
 
 def _diameter(text, center, r):
-    return topo.Dimension(position=(center[0] + 10, center[1] + 10), source_kind="DIMENSION",
-                           dim_type="diameter", text_override=text, measured_value=2 * r,
+    return topo.Text(position=(center[0] + 10, center[1] + 10), source_kind="DIMENSION",
+                     text=text, measure=2 * r,
                            measured_points=[(center[0] - r, center[1]), (center[0] + r, center[1])])
 
 
@@ -133,7 +133,7 @@ class TestHoles(unittest.TestCase):
         self.assertEqual((hole.hole_type, hole.role), ("countersink", sd.COUNTERSINK))
 
     def test_quota_m_e_un_filetto(self):
-        hole, = _read([*FRONT, SIDE], dimensions=[_diameter("M<>", (30, 25), 3)]).features
+        hole, = _read([*FRONT, SIDE], dimensions=[_diameter("M6", (30, 25), 3)]).features
         self.assertEqual((hole.hole_type, hole.role), ("threaded", sd.THREADED_HOLE))
 
     def test_arco_di_cresta_a_270_gradi_e_un_filetto(self):

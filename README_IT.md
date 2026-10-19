@@ -91,7 +91,7 @@ topo_dxf.to_dxf(result, doc).saveas("pezzo_framed.dxf")
 (A4..A0, orizzontale o verticale) che contengono la geometria esistente più
 un margine più lo spazio per il cartiglio — non c'è un parametro
 `fmt`/`orientation` da passare. Entrambe le funzioni sono puramente
-forge-native (`topo.load_geometry` + `topo.Note`, niente ezdxf) e taggano
+forge-native (`topo.load_geometry` + `topo.Text`, niente ezdxf) e taggano
 la propria geometria con `role="frame"`/`"title_block"`, quindi
 `heal`/`detect`/`to_dxf` la trattano esattamente come una rilevata. Il
 logo/immagine resta fuori per ora — il modello neutro di topo non ha un

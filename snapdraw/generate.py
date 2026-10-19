@@ -17,7 +17,7 @@ facile ritararle ancora se cambia il riferimento.
 
 Puramente forge-nativo: la geometria passa da `topo.load_geometry` (stesso
 meccanismo pubblico con cui `bendly` porta uno sviluppo generato a
-`Document`, topo MAP D32) e il testo da `topo.Note` — zero accesso a
+`Document`, topo MAP D32) e il testo da `topo.Text` — zero accesso a
 `Edge`/`LineSeg` interni, zero ezdxf. Frame e griglia del cartiglio portano
 `role` (`sd.roles.FRAME`/`TITLE_BLOCK`) fin dalla costruzione: non serve
 chiamare `tag_layout` per questa geometria, e colore/layer arrivano dalle
@@ -201,7 +201,7 @@ def add_title_block(
 
     generated = topo.load_geometry(entities)
     doc.edges.extend(generated.edges)
-    doc.annotations.extend(notes)
+    doc.texts.extend(notes)
 
     bbox = (anchor[0] - template.width, anchor[1], anchor[0], anchor[1] + template.height)
     return TitleBlock(edges=list(generated.edges), bbox=bbox, cells=cells, confidence=1.0)
@@ -274,9 +274,9 @@ def _doc_bbox(doc) -> Optional[BBox]:
 def _place(template: TitleBlockTemplate, anchor: Tuple[float, float], fields: Dict[str, str]):
     """
     Pura: template + anchor + valori → entità per `topo.load_geometry`,
-    `Cell` a bbox assoluta, `topo.Note` per il testo di ogni riga.
+    `Cell` a bbox assoluta, `topo.Text` per il testo di ogni riga.
 
-    Etichetta e valore sono due `Note` separate impilate, non affiancate:
+    Etichetta e valore sono due `Text` separati impilati, non affiancate:
     etichetta piccola in alto nella riga, valore più grande sotto — lo stesso
     schema del template ISO scaricato in `templates/` (MAP D9), non una
     stringa unica "etichetta: valore".
@@ -314,7 +314,7 @@ def _place(template: TitleBlockTemplate, anchor: Tuple[float, float], fields: Di
         value_y = label_y - _CELL_PADDING - _VALUE_HEIGHT
 
         cells.append(Cell(bbox=abs_bbox, text=f"{f.label}: {value}"))
-        notes.append(topo.Note(position=(x, label_y), text=f.label, height=_LABEL_HEIGHT, role=TITLE_BLOCK))
-        notes.append(topo.Note(position=(x, value_y), text=str(value), height=_VALUE_HEIGHT, role=TITLE_BLOCK))
+        notes.append(topo.Text(position=(x, label_y), text=f.label, height=_LABEL_HEIGHT, role=TITLE_BLOCK))
+        notes.append(topo.Text(position=(x, value_y), text=str(value), height=_VALUE_HEIGHT, role=TITLE_BLOCK))
 
     return entities, cells, notes

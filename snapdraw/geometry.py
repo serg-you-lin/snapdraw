@@ -203,24 +203,24 @@ def annotation_density_ratio(rect: topo.geometry.CoveredRectangle, doc) -> float
     testo in poco spazio. 0 se il disegno non ha annotazioni o `rect` non ne
     contiene nessuna.
     """
-    if not doc.annotations or rect.area <= 0:
+    if not doc.texts or rect.area <= 0:
         return 0.0
 
     # tolleranza sul bordo: un MTEXT agganciato a sinistra ha il punto
     # d'inserimento esattamente sul bordo (vedi titleblock._build_cells)
     minx, miny, maxx, maxy = rect.bbox
     t = TEXT_BORDER_TOL
-    inside = sum(1 for a in doc.annotations
+    inside = sum(1 for a in doc.texts
                  if minx - t <= a.position[0] <= maxx + t and miny - t <= a.position[1] <= maxy + t)
     if inside == 0:
         return 0.0
 
-    xs = [a.position[0] for a in doc.annotations] + [p[0] for e in doc.edges for p in (e.start, e.end)]
-    ys = [a.position[1] for a in doc.annotations] + [p[1] for e in doc.edges for p in (e.start, e.end)]
+    xs = [a.position[0] for a in doc.texts] + [p[0] for e in doc.edges for p in (e.start, e.end)]
+    ys = [a.position[1] for a in doc.texts] + [p[1] for e in doc.edges for p in (e.start, e.end)]
     total_area = (max(xs) - min(xs)) * (max(ys) - min(ys))
     if total_area <= 0:
         return 0.0
 
-    global_density = len(doc.annotations) / total_area
+    global_density = len(doc.texts) / total_area
     local_density = inside / rect.area
     return local_density / global_density

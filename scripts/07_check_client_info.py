@@ -19,11 +19,11 @@ FOLDER = r"tests/examples/regression"
 for path in sorted(glob.glob(os.path.join(FOLDER, "*.dxf"))):
     doc = topo_dxf.load_dxf(path)
     print(f"\n=== {os.path.basename(path)}")
-    texts = Counter(a.display_text.strip() for a in doc.annotations if a.display_text.strip())
+    texts = Counter(a.text.strip() for a in doc.texts if a.text.strip())
     print(f"  testi ({len(texts)} diversi):")
     for text, n in sorted(texts.items()):
         print(f"    {n:3d} × {text}")
-    print("  layer delle annotazioni:", sorted({a.layer for a in doc.annotations}))
-    print("  provenienza:", sorted({str(a.origin) for a in doc.annotations if a.origin})[:20])
+    print("  ruoli dei testi:", sorted({a.role for a in doc.texts}))
+    print("  provenienza:", sorted({str(a.origin) for a in doc.texts if a.origin})[:20])
     print("  tipi di linea:", sorted({(e.style.linetype, e.style.linetype_desc) for e in doc.edges if e.style}))
     print("  header:", doc.source_meta)

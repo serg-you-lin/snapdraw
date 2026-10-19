@@ -166,10 +166,10 @@ class Callout:
     """
     La quota di diametro agganciata a una feature, letta.
 
-    text        : il testo come sul disegno (`display_text`), es. "∅5,3+0,05^-0"
+    text        : il testo come sul disegno (`Text.text`), es. "∅5,3+0,05^-0"
     designation : "Ø" o "M" (filetto)
     nominal     : il valore scritto, es. 5.3
-    measured    : la misura della geometria (`measured_value`), in unità del disegno
+    measured    : la misura della geometria (`Text.measure`), in unità del disegno
     upper/lower : scostamenti di tolleranza scritti, o None
     count       : quante feature uguali copre ("n°30 fori", "4xØ5"), o None
     rest        : testo dopo valore e tolleranza non letto ("" se tutto letto)

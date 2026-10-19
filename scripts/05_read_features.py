@@ -38,7 +38,7 @@ for path in SHEETS:
         what = f.callout.text if f.callout else f"{f.shape.length:.2f}×{f.shape.width:.2f}"
         label = f"{f.role} {what} {kind} ({f.source})" + (f" prof. {depth:.2f}" if depth is not None else "")
         x, y = f.center
-        result.annotations.append(topo.Note(position=(x + f.shape.length / 2, y + f.shape.width / 2),
+        result.texts.append(topo.Text(position=(x + f.shape.length / 2, y + f.shape.width / 2),
                                              source_kind="TEXT", height=1.5, text=label))
     sd.tag_features(result, features)
     out = os.path.join(OUTPUT, name + "_features.dxf")

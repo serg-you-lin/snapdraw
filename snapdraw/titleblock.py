@@ -248,12 +248,12 @@ def _build_cells(rect: topo.geometry.CoveredRectangle, row_ys: List[float], col_
         for j in range(len(xs) - 1):
             x_lo, x_hi = xs[j], xs[j + 1]
             inside = sorted(
-                (a for a in doc.annotations
+                (a for a in doc.texts
                  if x_lo - tol <= a.position[0] <= x_hi + tol
-                 and y_lo - tol <= a.position[1] <= y_hi + tol and a.display_text),
+                 and y_lo - tol <= a.position[1] <= y_hi + tol and a.text),
                 key=lambda a: -a.position[1],
             )
-            text = " ".join(a.display_text for a in inside)
+            text = " ".join(a.text for a in inside)
             cells.append(Cell(bbox=(x_lo, y_lo, x_hi, y_hi), text=text))
     return cells
 

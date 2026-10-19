@@ -6,8 +6,8 @@ Test del rilevamento cartiglio e della lettura dei campi.
 Bootstrap "round-trip": prima di avere fixture DXF reali con un cartiglio
 vero (TODO.md), il modo più veloce per testare `find_titleblock` è
 rilevare un cartiglio generato da `sd.generate.add_title_block` — le
-`topo.Note` di etichetta/valore che scrive sono lo stesso tipo di
-annotazione che un cartiglio vero avrebbe.
+`topo.Text` di etichetta/valore che scrive sono lo stesso tipo di
+testo che un cartiglio vero avrebbe.
 """
 
 import unittest
@@ -207,8 +207,8 @@ class TestTestoSulBordoCella(unittest.TestCase):
         grid.append({"type": "polygon", "role": "outer",
                      "points": [(200, 0), (400, 0), (400, 200), (200, 200)]})
         doc = topo.load_geometry(grid)
-        doc.annotations.extend(
-            topo.Note(position=(0.0 - 1e-9, y), text=t, height=3.0)
+        doc.texts.extend(
+            topo.Text(position=(0.0 - 1e-9, y), text=t, height=3.0)
             for y, t in ((5, "Materiale: S235JR"), (20, "Codice: sviluppo_01"), (35, "Scala 1:1"))
         )
         tb = find_titleblock(doc)

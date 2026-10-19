@@ -83,16 +83,15 @@ def view_scales(result, views: ViewLayout, agreement: float = SCALE_AGREEMENT) -
     concordano ("scale: view <i> from sheet"), altrimenti None.
     """
     ratios: Dict[int, List[float]] = {}
-    for dimension in result.annotations:
-        if not isinstance(dimension, topo.Dimension) or dimension.dim_type == "angular" \
-                or not dimension.measured_value:
+    for dimension in result.texts:
+        if dimension.measure_is_angle or not dimension.measure:
             continue
-        written = _WRITTEN.match(dimension.display_text)
-        refs = dimension.references or topo.dimension_references(result, dimension)
+        written = _WRITTEN.match(dimension.text)
+        refs = dimension.references or topo.measured_references(result, dimension)
         view = _VIEW.match(refs[0]) if refs else None
         if written is None or view is None or _number(written["value"]) == 0:
             continue
-        ratios.setdefault(int(view.group(1)), []).append(_number(written["value"]) / dimension.measured_value)
+        ratios.setdefault(int(view.group(1)), []).append(_number(written["value"]) / dimension.measure)
 
     scales, flags = {}, []
     for index, values in ratios.items():
@@ -164,28 +163,45 @@ def feature_trace(doc, views: ViewLayout, view: int, bounds, tolerance: float = 
     return traces
 
 
-def diameter_callouts(result) -> Dict[str, object]:
-    """Percorso dell'elemento quotato → la quota di diametro che lo misura (`topo.dimension_references`)."""
+def diameter_callouts(result, tolerance: float = 0.5) -> Dict[str, object]:
+    """
+    Percorso dell'elemento quotato → la quota di diametro che lo misura. Una
+    quota è di diametro per la geometria (topo D138): due punti misurati,
+    un solo elemento agganciato (`topo.measured_references`), un cerchio, e
+    il punto medio dei due punti sul suo centro entro `tolerance` — i due
+    capi di un diametro, del foro o della cresta del suo filetto.
+    """
     callouts = {}
-    for annotation in result.annotations:
-        if isinstance(annotation, topo.Dimension) and annotation.dim_type == "diameter":
-            refs = annotation.references or topo.dimension_references(result, annotation)
-            if len(refs) == 1:
-                callouts.setdefault(refs[0], annotation)
+    for text in result.texts:
+        if len(text.measured_points) != 2:
+            continue
+        refs = text.references or topo.measured_references(result, text)
+        if len(refs) == 1 and _across_circle(text, topo.resolve_target(result, refs[0]), tolerance):
+            callouts.setdefault(refs[0], text)
     return callouts
 
 
-def parse_callout(dimension) -> Optional[Callout]:
+def _across_circle(text, element, tolerance: float) -> bool:
+    """I due punti misurati di `text` stanno ai capi di un diametro di `element`, un cerchio."""
+    shape = topo.geometry.contour_shape(element) if element is not None else None
+    if shape is None or shape.kind != "circle":
+        return False
+    (x1, y1), (x2, y2) = text.measured_points
+    return math.dist(((x1 + x2) / 2, (y1 + y2) / 2), shape.center) <= tolerance
+
+
+def parse_callout(dimension, diameter: bool = False) -> Optional[Callout]:
     """
     Il testo di una quota di diametro: "Ø"/"M", il valore, la tolleranza
     ("+0,05^-0" impilata, "±0,1") e quante feature copre ("n°30 fori",
     "16 fori", "4xØ5"). Quello che segue e non si legge resta in `rest`.
-    Una quota di diametro senza simbolo ("15") vale Ø. None se il testo non
-    comincia con Ø o M (dopo un eventuale "4x").
+    Con `diameter` (la quota misura un diametro: `diameter_callouts`) un testo
+    senza simbolo ("15") vale Ø. None se il testo non comincia con Ø o M
+    (dopo un eventuale "4x").
     """
-    text = dimension.display_text
+    text = dimension.text
     m = _CALLOUT.match(text)
-    if m is None and dimension.dim_type == "diameter":
+    if m is None and diameter:
         # una quota di diametro senza simbolo scritto ("15") è un Ø lo stesso
         m = _CALLOUT.match("Ø" + text.strip())
     if m is None:
@@ -206,7 +222,7 @@ def parse_callout(dimension) -> Optional[Callout]:
         count = int(many["n"] or many["m"])
         rest = (rest[:many.start()] + rest[many.end():]).strip()
     return Callout(text=text, designation=designation, nominal=_number(m["value"]),
-                   measured=dimension.measured_value, upper=upper, lower=lower, count=count, rest=rest)
+                   measured=dimension.measure, upper=upper, lower=lower, count=count, rest=rest)
 
 
 def group_features(features: List[Feature]) -> List[FeatureGroup]:
@@ -359,17 +375,16 @@ def _mates(views, view: int) -> List[int]:
 
 def _anchor_by_center(result, features: List[Feature], tolerance: float = 0.5) -> None:
     """
-    Le quote di diametro che topo non ha agganciato: i due punti misurati
-    stanno ai capi di un diametro, quindi il loro punto medio è il centro. Si
-    agganciano al foro con quel centro e quel raggio (del foro, o della cresta
-    del filetto), se non ha già una quota.
+    Le quote che topo non ha agganciato a nessun elemento: se i due punti
+    misurati stanno ai capi di un diametro di un foro — il punto medio sul suo
+    centro, metà distanza sul suo raggio (del foro, o della cresta del
+    filetto) — la quota è il suo diametro, se non ne ha già una (topo D138).
     """
     holes = [f for f in features if f.kind == "hole"]
-    for dimension in result.annotations:
-        if not isinstance(dimension, topo.Dimension) or dimension.dim_type != "diameter" \
-                or len(dimension.measured_points) != 2:
+    for dimension in result.texts:
+        if len(dimension.measured_points) != 2:
             continue
-        if dimension.references or topo.dimension_references(result, dimension):
+        if dimension.references or topo.measured_references(result, dimension):
             continue
         (x1, y1), (x2, y2) = dimension.measured_points
         center, radius = ((x1 + x2) / 2, (y1 + y2) / 2), math.dist((x1, y1), (x2, y2)) / 2
@@ -405,9 +420,9 @@ def _read_callout(feature: Feature, dimension) -> None:
     if dimension is None:
         feature.flags.append("callout: missing")
         return
-    feature.callout = parse_callout(dimension)
+    feature.callout = parse_callout(dimension, diameter=True)
     if feature.callout is None:
-        feature.flags.append(f"callout: unread '{dimension.display_text}'")
+        feature.flags.append(f"callout: unread '{dimension.text}'")
     elif feature.callout.rest:
         feature.flags.append(f"callout: unread '{feature.callout.rest}'")
 

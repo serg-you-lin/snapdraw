@@ -109,7 +109,7 @@ Se la cornice non è accettata ma un riquadro di bordo racchiude il cartiglio
 dice nei flag: quel riquadro resta nel disegno e `island()` lo prenderebbe
 come contorno esterno di tutte le viste.
 
-Le celle risultanti raccolgono il testo delle annotazioni (`doc.annotations`)
+Le celle risultanti raccolgono il testo delle annotazioni (`doc.texts`)
 che contengono, dall'alto in basso. `read_titleblock` cerca in ognuna un
 piccolo vocabolario ISO 7200 generico per regex (`N. DISEGNO`/`DWG NO`,
 `MATERIALE`/`MATERIAL`, `SCALA`/`SCALE`, ...) — mai nomenclatura di cliente,
@@ -168,7 +168,7 @@ suo angolo senza altro codice di raccordo.
 `fields` sono dati del chiamante (numero disegno, materiale, spessore, ...) —
 **mai** salvati nel repo, stesso principio di `data_injector`/`profiles/`
 sotto "Cosa NON ci va". Entrambe le funzioni sono puramente forge-native
-(`topo.load_geometry` + `topo.Note`, zero ezdxf): `heal`/`detect`/`to_dxf`
+(`topo.load_geometry` + `topo.Text`, zero ezdxf): `heal`/`detect`/`to_dxf`
 trattano questa geometria esattamente come quella rilevata da
 `find_frame`/`find_titleblock`.
 
