@@ -101,7 +101,7 @@ snapdraw hooks in with **option B** (topo D30): it sets `edge.role` on the `Edge
 objects of `doc.edges` before `heal`. topo took no new API —
 `topo.heal._split_labeled` pulls every decided, non-structural role out of the
 graph, and `topo.detect` leaves roles it does not know alone. The frame and
-title-block geometry is not lost: it ends up in `trash_entities` with its role
+title-block geometry is not lost: it ends up in `loose` with its role
 intact and the output DXF re-emits it natively.
 
 Requires topo installed separately:

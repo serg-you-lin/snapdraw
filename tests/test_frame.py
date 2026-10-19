@@ -155,7 +155,7 @@ class TestTagLayoutIntegration(unittest.TestCase):
         # la geometria della cornice non si perde: è in trash col ruolo intatto
         # (role è lo slug di consumatore "frame", non un ContourRole — D31/D47)
         self.assertTrue(
-            any(getattr(t, "role", "") == "frame" for t in result.trash_entities)
+            any(getattr(t, "role", "") == "frame" for t in result.loose)
         )
 
 

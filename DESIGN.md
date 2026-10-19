@@ -30,7 +30,7 @@ sd.tag_layout(doc, l)   → setta edge.role su doc.edges (frame / title_block)
    ▼
 topo.heal(doc) | sd.sheet_islands(doc)   (topo.island con la distanza di snapdraw, D29)
                             → cluster puliti: frame e title_block fuori dal grafo,
-                              in trash_entities col loro ruolo, non cluster
+                              in loose col loro ruolo, non cluster
 ```
 
 `detect_frame` è una **ricetta** sopra passi pubblici, stesso schema di
@@ -46,7 +46,7 @@ cornice, il cartiglio con una cornice già nota) chiama i passi a mano.
 | `title_block` | il cartiglio | no — slug di consumatore, topo lo conserva (D27) |
 
 Nessuno dei due è strutturale: geometria non di taglio. `heal` li tiene fuori
-dal grafo, finiscono in `trash_entities` col ruolo intatto, e l'output DXF li
+dal grafo, finiscono in `loose` col ruolo intatto, e l'output DXF li
 scrive sul layer/colore registrati in `snapdraw/roles.py` (`Frame`, `TitleBlock`,
 nero) — non su un layer grigio generico (MAP D7).
 
@@ -130,7 +130,7 @@ ha preso API nuove: ha consolidato il concetto "ruolo strutturale" in
   strutturale (quindi `frame`, `title_block`, slug custom): non ci passano né
   per gap solving né per la ricerca loop;
 - `detect()` non trasforma un ruolo che non conosce in una feature: lo lascia
-  in `trash_entities`;
+  in `loose`;
 - l'output DXF scrive quella geometria nativa sul layer/colore delle mappe
   di `snapdraw` in `roles.py` (`ROLE_STYLES`, `LAYERS`), che chi esporta
   passa a `topo_dxf.to_dxf` — non su `Trash` insieme alla spazzatura vera (D31:

@@ -29,7 +29,7 @@ print(f"{n} edge di cornice/cartiglio marcati, {m} linee di costruzione (regole 
 # messa in tavola = viste su un foglio: si legge per isole, non con heal
 result = sd.sheet_islands(doc)
 print(f"island: valid={result.is_valid}  isole={len(result.clusters)}  "
-      f"trash={len(result.trash_entities)}")
+      f"trash={len(result.loose)}")
 
 # colore/layer di "frame" arrivano dalla registrazione di sd.roles
 out = topo_dxf.to_dxf(result, doc)

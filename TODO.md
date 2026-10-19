@@ -32,7 +32,7 @@
       corso di costruzione per un futuro classificatore (albero), vedi sotto.
 - [x] **il cartiglio assorbe tutto quello che ha dentro** (griglia, simboli,
       loghi), non solo il proprio bordo — altrimenti finiva in
-      `trash_entities` senza ruolo o in un cluster spurio (MAP D12)
+      `loose` senza ruolo o in un cluster spurio (MAP D12)
 
 ## Dove siamo (fine sessione del 5 ottobre) — si riparte da qui
 
@@ -262,7 +262,7 @@ Prossimi, in ordine:
       passata di gerarchia assegna alla stessa vista tutto quello che le
       sta dentro, chiuso o aperto. Riapre topo D59/D98 (`island_gap`
       sparisce). Da decidere prima: dove vanno nel modello le linee aperte
-      dentro una vista (oggi in `trash_entities` anche se stanno dentro;
+      dentro una vista (oggi in `loose` anche se stanno dentro;
       `Cluster` ha posto solo per i giri chiusi) e dove vanno i pezzi
       fuori da ogni contorno (note e segni del foglio, senza distanza non
       si attaccano a niente).

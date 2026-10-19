@@ -89,7 +89,7 @@ class TestTitleblockAssorbeInteriore(unittest.TestCase):
     """
     Il cartiglio deve "mangiarsi" tutto quello che gli sta geometricamente
     dentro (griglia, simboli, loghi), non solo il proprio bordo — altrimenti
-    quella geometria non taggata finisce spersa in trash_entities invece che
+    quella geometria non taggata finisce spersa in loose invece che
     sul layer title_block (Federico, MAP D12).
     """
 
@@ -137,7 +137,7 @@ class TestTitleblockAssorbeInteriore(unittest.TestCase):
         # il simbolo non è un cluster a sé: è finito in trash col ruolo title_block
         from snapdraw.roles import TITLE_BLOCK
         symbol_in_trash = [
-            t for t in result.trash_entities
+            t for t in result.loose
             if getattr(t, "role", "") == TITLE_BLOCK
             and any(160 <= p[0] <= 165 for seg in t.segments for p in (seg.start, seg.end))
         ]

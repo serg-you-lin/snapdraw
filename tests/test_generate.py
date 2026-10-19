@@ -69,7 +69,7 @@ class TestAddFrame(unittest.TestCase):
         result = topo.heal(doc)
         self.assertTrue(result.is_valid)
         self.assertEqual(len(result.clusters), 1)  # solo il pezzo, non la cornice
-        self.assertTrue(any(getattr(t, "role", "") == FRAME for t in result.trash_entities))
+        self.assertTrue(any(getattr(t, "role", "") == FRAME for t in result.loose))
 
 
 class TestAddTitleBlock(unittest.TestCase):
@@ -105,7 +105,7 @@ class TestAddTitleBlock(unittest.TestCase):
         sd.add_title_block(doc)
         result = topo.heal(doc)
         self.assertEqual(len(result.clusters), 1)
-        self.assertTrue(any(getattr(t, "role", "") == TITLE_BLOCK for t in result.trash_entities))
+        self.assertTrue(any(getattr(t, "role", "") == TITLE_BLOCK for t in result.loose))
 
     def test_fields_personalizzati_sovrascrivono_la_cella(self):
         doc = _part_doc(200.0, 100.0)

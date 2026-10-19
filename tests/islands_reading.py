@@ -39,6 +39,6 @@ def read_islands(path: Path) -> dict:
     return {
         "islands": [{"bbox": [round(float(v), 3) for v in c.outer.polygon.bounds], "inners": len(c.inners)}
                     for c in result.clusters],
-        "open_outside": sum(1 for t in result.trash_entities
+        "open_outside": sum(1 for t in result.loose
                             if t.role == "unknown" and getattr(t, "cluster_ref", None) is None),
     }

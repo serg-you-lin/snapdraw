@@ -103,7 +103,7 @@ snapdraw si aggancia con l'**opzione B** (topo D30): setta `edge.role` sugli
 `Edge` di `doc.edges` prima di `heal`. topo non ha preso nessuna API nuova —
 `topo.heal._split_labeled` estrae dal grafo ogni ruolo deciso e non
 strutturale, e `topo.detect` non tocca i ruoli che non conosce. La geometria di
-cornice e cartiglio non si perde: finisce in `trash_entities` col ruolo intatto
+cornice e cartiglio non si perde: finisce in `loose` col ruolo intatto
 e l'output DXF la riscrive nativa.
 
 Serve topo installato a parte:

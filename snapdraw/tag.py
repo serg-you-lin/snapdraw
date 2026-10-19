@@ -7,7 +7,7 @@ Riporta il layout rilevato a topo: setta `edge.role` sugli `Edge` di
 È l'aggancio "opzione B" chiuso in topo D30: un consumatore marca la geometria
 **prima** di `topo.heal`, e heal tiene quegli edge fuori dal grafo
 (`_split_labeled` estrae ogni ruolo deciso e non strutturale). La geometria non
-si perde — finisce in `trash_entities` col ruolo intatto e l'output DXF la
+si perde — finisce in `loose` col ruolo intatto e l'output DXF la
 scrive sul layer che le dà `roles.LAYERS` (`Frame`, `TitleBlock`), passato a
 `to_dxf`, non su `Trash` (topo D31, D128).
 

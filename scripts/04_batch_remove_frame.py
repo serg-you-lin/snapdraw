@@ -6,7 +6,7 @@ la elimina dal disegno. Il risultato finisce nella STESSA cartella come
 `<nome>_noframe.dxf`.
 
 Nota sul come: `sd.tag_layout` + `topo.island` NON basta a rimuovere — quel
-percorso marca gli Edge e li fa finire in `trash_entities`, che `topo_dxf.to_dxf`
+percorso marca gli Edge e li fa finire in `loose`, che `topo_dxf.to_dxf`
 riscrive sul layer `Frame` (topo D31): la cornice resta nel file, solo su un
 altro layer. Per togliere davvero la geometria va staccata da `doc.edges` prima
 di `heal`, per identità di oggetto (gli Edge in `layout.frame.edges` sono gli

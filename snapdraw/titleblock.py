@@ -181,7 +181,7 @@ def _edges_inside(bbox: Tuple[float, float, float, float], doc) -> list:
 
     Chiamato solo sul cartiglio già scelto: tutto ciò che ci sta
     geometricamente dentro è cartiglio, non un pezzo a sé — deve andare sul
-    layer `title_block` con lui, non finire in `trash_entities` (o peggio,
+    layer `title_block` con lui, non finire in `loose` (o peggio,
     in un cluster spurio) solo perché nessuno l'ha marcato.
     """
     return topo.geometry.items_inside(bbox, doc.edges, _CONTAINMENT_TOL)
