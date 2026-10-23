@@ -63,6 +63,20 @@ Prossimi, in ordine:
 
 ## Prossimi passi
 
+- **Golden di `test_islands` dopo topo D161** (MAP D39): `islands[0].inners`
+  ora è 0 per costruzione (anch_01/04/05/08, drw_0001, drw_0011). Prima di
+  rigenerare: verificare che il resto del golden (isole, bbox) non cambi.
+  `regr_02.views[7].bbox[0]` 788,1 contro 785,737: nuovo, da guardare.
+- **Fori: giudicare la prova di D39 nel CAD**
+  (`_debug/2026-10-23_snapdraw_fori_loose`): drw_0022 svasature passanti
+  "per convenzione"; asole senza vista compagna (drw_0005, drw_0027).
+- **Bug: drw_0010, la sagoma del pezzo letta come cartiglio** (visto da
+  Federico nel CAD): la vista finisce su `title_block` e non ha feature.
+- **drw_0031: i fori di una vista restano in `loose` (Trash)**, quelli
+  delle altre viste sono letti giusti. Capire perché quella vista no.
+- Test con una vera vista a "T" e a ">-" da `anonymus` (oggi solo regr_02 e
+  regr_03 coprono lamatura e svasatura sul vero).
+
 - **regr_03, regr_05 fuori tolleranza** (MAP.md D35): `frame.bbox[2]` 237,6
   contro 237,576 (e simile su regr_05). Già così con forge 0.16.0, prima del
   rename a topo: arriva da un cambio di topo fra 0.14 e 0.16. Guardare il DXF
@@ -343,6 +357,11 @@ Prossimi, in ordine:
       se Federico ha/trova la tabella vera (conteggio zone per A0..A4),
       ritararla su quella invece che sulla formula.
 
+
+## Richieste a topo
+
+- `promote` di più curve come un solo item (es. foro + sede di una
+  lamatura): oggi `tag_features` toglie le curve da `loose` a mano (MAP D39).
 
 ## Domande aperte
 

@@ -71,6 +71,7 @@ _STACKED = re.compile(rf"^(?P<upper>{_NUMBER})\s*\^\s*(?P<lower>{_NUMBER})")
 _SYMMETRIC = re.compile(rf"^±\s*(?P<value>{_NUMBER})")
 _WRITTEN = re.compile(rf"^\s*(?:[Ø∅R]\s*)?(?P<value>\d+(?:[.,]\d+)?)")
 _VIEW = re.compile(r"^clusters\[(\d+)\]")
+_LOOSE = re.compile(r"^loose\[(\d+)\]")
 
 
 def view_scales(result, views: ViewLayout, agreement: float = SCALE_AGREEMENT) -> Tuple[Dict[int, Optional[float]], List[str]]:
@@ -88,10 +89,10 @@ def view_scales(result, views: ViewLayout, agreement: float = SCALE_AGREEMENT) -
             continue
         written = _WRITTEN.match(dimension.text)
         refs = dimension.references or topo.measured_references(result, dimension)
-        view = _VIEW.match(refs[0]) if refs else None
+        view = _view_of(result, refs[0]) if refs else None
         if written is None or view is None or _number(written["value"]) == 0:
             continue
-        ratios.setdefault(int(view.group(1)), []).append(_number(written["value"]) / dimension.measure)
+        ratios.setdefault(view, []).append(_number(written["value"]) / dimension.measure)
 
     scales, flags = {}, []
     for index, values in ratios.items():
@@ -109,18 +110,34 @@ def view_scales(result, views: ViewLayout, agreement: float = SCALE_AGREEMENT) -
     return scales, flags
 
 
+def _view_of(result, path: str) -> Optional[int]:
+    """La vista di un percorso di topo: `clusters[i]…` → i, `loose[k]` → il `cluster_ref` della curva."""
+    found = _VIEW.match(path)
+    if found:
+        return int(found.group(1))
+    found = _LOOSE.match(path)
+    if found and int(found.group(1)) < len(result.loose):
+        return result.loose[int(found.group(1))].cluster_ref
+    return None
+
+
 def feature_contours(result, view: int, tolerance: float = TOUCH_TOLERANCE) -> List[Tuple[int, object, object]]:
     """
-    (indice, contorno, forma) dei contorni interni della vista con una forma
-    (`topo.geometry.contour_shape` non None): i cerchi sempre, le altre forme solo se
-    isolate — non toccano l'esterno né un vicino che non le contiene e non è
-    contenuto in loro.
+    (indice in `result.loose`, curva, forma) delle curve chiuse dentro il
+    contorno della vista (`cluster_ref == view`, topo D161–D162) con una forma
+    (`topo.geometry.contour_shape` non None): i cerchi sempre, le altre forme
+    solo se isolate — non toccano l'esterno né un vicino che non le contiene e
+    non è contenuto in loro.
     """
     cluster = result.clusters[view]
-    inners = cluster.inners
+    # cluster_ref di island() vale anche per una curva che tocca la vista entro max_gap: si vuole dentro
+    area = cluster.outer.polygon.buffer(tolerance)
+    inners = [(k, c) for k, c in enumerate(result.loose)
+              if isinstance(c, topo.model.ClosedCurve) and c.cluster_ref == view and c.role not in _NOT_GEOMETRY
+              and c.polygon is not None and area.contains(c.polygon)]
     outer = cluster.outer.polygon.exterior
     candidates = []
-    for j, inner in enumerate(inners):
+    for j, inner in inners:
         shape = topo.geometry.contour_shape(inner)
         if shape is None or inner.polygon is None:
             continue
@@ -133,7 +150,7 @@ def feature_contours(result, view: int, tolerance: float = TOUCH_TOLERANCE) -> L
         touching = any(k != j and other.polygon is not None
                        and ring.distance(other.polygon.exterior) <= tolerance
                        and not other.polygon.contains(inner.polygon) and not inner.polygon.contains(other.polygon)
-                       for k, other in enumerate(inners))
+                       for k, other in inners)
         if not touching:
             candidates.append((j, inner, shape))
     return candidates
@@ -261,7 +278,7 @@ def read_features(doc, result, views: ViewLayout) -> FeatureLayout:
     arcs = [e.segment for e in doc.edges if isinstance(e.segment, topo.primitives.ArcSeg) and e.role not in _NOT_GEOMETRY]
 
     for view in ortho:
-        found = [(f"clusters[{view.index}].inners[{j}]", inner, shape) for j, inner, shape in feature_contours(result, view.index)]
+        found = [(f"loose[{j}]", inner, shape) for j, inner, shape in feature_contours(result, view.index)]
         depth, _ = view_depth(views.views, view.index)
         for path, inner, shape, seat in _pair_concentric(found):
             feature = _feature(doc, views, view.index, path, inner, shape, callouts, depth, layout.scales, arcs)
@@ -293,9 +310,10 @@ def tag_features(result, layout: FeatureLayout):
     """
     Attacca le feature ai loro cluster (`cluster.detected["view_features"]`,
     lo stesso overlay di topo D44) e toglie i loro contorni da
-    `cluster.inners`, come fa `detect_flat` con i fori: così un exporter li
-    scrive una volta sola, sul layer del ruolo. **Muta** `result`; i `path`
-    delle feature si riferiscono alla lettura di prima.
+    `result.loose`, come farebbe `topo.promote` (topo D137) — che però
+    promuove una curva per volta, e una feature con sede ne ha due: così un
+    exporter le scrive una volta sola, sul layer del ruolo. **Muta**
+    `result`; i `path` delle feature si riferiscono alla lettura di prima.
     """
     taken = {id(c) for f in layout.features for c in f.contours}
     for index, cluster in enumerate(result.clusters):
@@ -304,7 +322,7 @@ def tag_features(result, layout: FeatureLayout):
             continue
         cluster.detected = cluster.detected or topo.model.DetectedFeatures()
         cluster.detected.attach(COLLECTION, mine)
-        cluster.inners = [c for c in cluster.inners if id(c) not in taken]
+    result.loose = [c for c in result.loose if id(c) not in taken]
     return result
 
 

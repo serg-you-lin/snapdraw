@@ -216,14 +216,15 @@ class TestScaleAndTag(unittest.TestCase):
         layout = _read([*FRONT, SIDE])
         self.assertEqual(sd.describe_features(layout), "1 foro passante Ø≈6, profondità 5 (disegnata)")
 
-    def test_tag_attacca_le_feature_e_toglie_i_contorni_dagli_inners(self):
+    def test_tag_attacca_le_feature_e_toglie_i_contorni_da_loose(self):
         doc, result, views = _load([*FRONT, SIDE])
         layout = sd.read_features(doc, result, views)
         front = result.clusters[layout.features[0].view]
-        self.assertEqual(len(front.inners), 1)
+        circle = layout.features[0].contours[0]
+        self.assertTrue(any(c is circle for c in result.loose))
         sd.tag_features(result, layout)
         self.assertEqual(front.features("view_features"), layout.features)
-        self.assertEqual(front.inners, [])
+        self.assertFalse(any(c is circle for c in result.loose))
 
     def test_json_di_topo_porta_le_feature(self):
         # il gancio di topo: to_json(result, extra_metadata=sd.feature_metadata), dopo tag_features

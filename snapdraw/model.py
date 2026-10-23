@@ -218,7 +218,7 @@ class Feature:
                 `countersink`, `counterbore`, `seated_hole`)
     view      : indice della vista (cluster) dove sta
     path      : percorso del contorno in `result` al momento della lettura,
-                es. "clusters[0].inners[2]" (`tag_features` lo sposta dopo)
+                es. "loose[12]" (`tag_features` lo sposta dopo)
     shape     : la `topo.geometry.ContourShape` del contorno
     contours  : i contorni della feature (il foro, e la sede se c'è) — la
                 geometria che un exporter scrive

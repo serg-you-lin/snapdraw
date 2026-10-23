@@ -1131,3 +1131,27 @@ topo non legge e non scrive più DXF: lo fa il pacchetto fratello `topo_dxf`
 scrivono attraverso `topo_dxf`. La regola: `"*"` tiene `topo.core`
 (`topo.adapters` non esiste più). `scripts/gen_index.py` è la nuova copia di
 topo. Suite come in D35 (solo `regr_03`/`regr_05`).
+
+### D39 — seguire topo D161–D162: le feature si leggono dalle curve chiuse in `loose`  ✅
+
+`island()` non dà più `inners`: tutto ciò che sta dentro un contorno esterno
+va in `result.loose`, e un pezzo che si chiude da solo (un cerchio, un'asola,
+un rettangolo) esce come una `ClosedCurve`. topo dà le forme
+(`contour_shape`, `concentric_groups`, `arcs_around`); le combinazioni sono
+di snapdraw, come prima: cerchi concentrici + traccia nelle compagne
+(sede a "T" → lamatura, linee oblique ">-" → svasatura), arco di cresta →
+filetto.
+
+- `feature_contours` prende le `ClosedCurve` di `loose` con
+  `cluster_ref == vista` **e contenute nel contorno della vista** (entro
+  `TOUCH_TOLERANCE`): per `island()` `cluster_ref` vale anche per una curva
+  che tocca l'isola entro `max_gap`, e su regr_05 due cerchi accanto alla
+  laterale diventavano "fori".
+- Il percorso di una feature è `loose[k]`; la vista di una quota agganciata
+  a `loose[k]` è il `cluster_ref` della curva (`_view_of`).
+- `tag_features` toglie le curve da `loose` a mano invece di
+  `topo.promote`: `promote` mette un item per curva, e una feature con sede
+  ha due curve per un solo item.
+
+Prova del 23 ottobre su anonymus + regression (38 fogli): 12 svasature,
+4 lamature, 29 filettati, 128 fori, 52 asole, 34 aperture.
