@@ -19,6 +19,7 @@ for path in SHEETS:
     name = os.path.splitext(os.path.basename(path))[0]
     doc = topo_dxf.load_dxf(path, role_rules=sd.load_rules(RULES))
     sd.tag_layout(doc, sd.detect_frame(doc))
+    sd.tag_center_marks(doc)   # MAP D40: la croce continua non deve spezzare il foro
     result = sd.sheet_islands(doc)
     views = sd.read_views(result)
     features = sd.read_features(doc, result, views)

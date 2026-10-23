@@ -8,7 +8,7 @@ python scripts/gen_index.py
 
 What this is: the lookup table of *what already exists* in the package, down to internal helpers. `docs/API.md` documents the public surface (`snapdraw.<name>`) with full cards; this file lists every module-level function and class so nothing gets rewritten because it was not found. Signatures and docstring lines come straight from the source, so they cannot drift.
 
-`13` modules · `79` module-level functions · `13` classes · `2728` lines of code.
+`13` modules · `84` module-level functions · `13` classes · `2800` lines of code.
 
 Sections: [Lookup](#lookup) · [Duplicate names](#duplicate-names) · [Dependency rule](#dependency-rule) · [By module](#by-module) · [Internal dependencies](#internal-dependencies)
 
@@ -44,6 +44,7 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `_expand` | func | `snapdraw/rules.py:73` | Una voce del JSON → una o più RoleRule (una per elemento di una lista). |
 | `extend_frame` | func | `snapdraw/frame.py:84` | Estende `frame` a quello che sta nella sua fascia, fra bordo esterno e |
 | `extend_titleblock` | func | `snapdraw/titleblock.py:109` | Estende `title_block` alle tabelle attaccate: ogni linea orizzontale o |
+| `_extends` | func | `snapdraw/tag.py:82` | Il prolungamento di un braccio (il simbolo di SolidWorks ne ha uno per |
 | `_feature` | func | `snapdraw/features.py:368` | Una feature da un contorno: tipo dalla forma, filetto, quota, traccia e profondità (senza sede). |
 | `Feature` | class | `snapdraw/model.py:203` | Un contorno interno di una vista ortogonale letto come feature. |
 | `feature_contours` | func | `snapdraw/features.py:124` | (indice in `result.loose`, curva, forma) delle curve chiuse dentro il |
@@ -59,6 +60,7 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `_frame_entities` | func | `snapdraw/generate.py:220` | Pura: bbox esterna della cornice → entità per `topo.load_geometry` — |
 | `FrameInfo` | class | `snapdraw/model.py:23` | La cornice di formato: il riquadro esterno del foglio. |
 | `FrameLayout` | class | `snapdraw/model.py:101` | Il risultato di `sd.detect_frame(doc)`. |
+| `_from_center` | func | `snapdraw/tag.py:104` | La linea parte dal centro del cerchio (o ci passa nel mezzo) e resta entro `CENTER_MARK_REACH` raggi. |
 | `grid_dividers` | func | `snapdraw/geometry.py:181` | Linee dritte STRETTAMENTE interne a `rect` (bordo escluso) che lo |
 | `group_features` | func | `snapdraw/features.py:245` | Raggruppa per tipo, misura (scritta o disegnata), tolleranza, sede, passante e profondità. |
 | `_is_genuine_grid` | func | `snapdraw/titleblock.py:190` | True se almeno un asse è suddiviso in segmenti **comparabili**, non |
@@ -77,6 +79,7 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `_on_side` | func | `snapdraw/geometry.py:139` |  |
 | `_pair_concentric` | func | `snapdraw/features.py:346` | (percorso, contorno, forma, sede) — nei gruppi di cerchi concentrici |
 | `parse_callout` | func | `snapdraw/features.py:210` | Il testo di una quota di diametro: "Ø"/"M", il valore, la tolleranza |
+| `_perpendicular` | func | `snapdraw/tag.py:112` |  |
 | `_place` | func | `snapdraw/generate.py:274` | Pura: template + anchor + valori → entità per `topo.load_geometry`, |
 | `principal_view` | func | `snapdraw/views.py:81` | La vista con compagni in tutte e due le direzioni (la più grande, se più |
 | `projection_mates` | func | `snapdraw/views.py:64` | Per ogni vista ortogonale: (height_mates, width_mates). Stessa |
@@ -97,14 +100,16 @@ Every module-level name in the package, alphabetically. **Search here before wri
 | `sheet_islands` | func | `snapdraw/views.py:42` | Le isole di un foglio: `topo.island` con il `max_gap` scelto da |
 | `_signed` | func | `snapdraw/features.py:676` |  |
 | `_split_labeled_text` | func | `snapdraw/titleblock.py:326` | Ogni etichetta trovata in `text` → valore = il testo fino alla prossima etichetta (o fine stringa). |
+| `tag_center_marks` | func | `snapdraw/tag.py:57` | I segni di centro disegnati a tratto continuo diventano `construction` |
 | `tag_features` | func | `snapdraw/features.py:309` | Attacca le feature ai loro cluster (`cluster.detected["view_features"]`, |
-| `tag_layout` | func | `snapdraw/tag.py:28` | Setta `edge.role` sugli Edge di cornice e cartiglio in `layout`. |
+| `tag_layout` | func | `snapdraw/tag.py:38` | Setta `edge.role` sugli Edge di cornice e cartiglio in `layout`. |
 | `_thread_crest` | func | `snapdraw/features.py:382` | L'arco di cresta del filetto attorno al foro: ~270°, poco più grande (`topo.geometry.arcs_around`). |
 | `TitleBlock` | class | `snapdraw/model.py:51` | Il cartiglio: il riquadro delle informazioni, suddiviso in celle. |
 | `TitleBlockTemplate` | class | `snapdraw/model.py:81` | Il design di un cartiglio da generare: righe strette impilate in |
 | `_to_scale` | func | `snapdraw/features.py:524` | Profondità alla scala della vista; senza scala, flag e profondità disegnata soltanto. |
 | `Trace` | class | `snapdraw/model.py:188` | La traccia di una feature in una vista compagna: le due pareti (linee |
 | `_trace_in` | func | `snapdraw/features.py:542` | Le due pareti dentro `bbox` alle quote `lo_level`/`hi_level` lungo |
+| `_turn` | func | `snapdraw/tag.py:96` | L'angolo fra le due rette, in gradi, ridotto a (-90, 90]. |
 | `View` | class | `snapdraw/model.py:120` | Un'isola di `sheet_islands(...)` letta come vista del foglio. |
 | `view_depth` | func | `snapdraw/views.py:100` | La terza dimensione della vista principale: la larghezza dei compagni in |
 | `view_edges` | func | `snapdraw/render.py:40` | Gli edge di `doc` interamente dentro `bbox`: contorni, linee nascoste, |
@@ -134,7 +139,7 @@ Same name defined at module level in different modules. Not automatically a bug 
 
 ### `snapdraw/` (root)
 
-#### `snapdraw/__init__.py` — 129 lines
+#### `snapdraw/__init__.py` — 130 lines
 
 _snapdraw_
 
@@ -266,11 +271,16 @@ _snapdraw/rules.py_
 - `rules_from_dict(data: dict, source: str='<dict>') -> List[topo.RoleRule]` — L61 — Come `load_rules`, da un dict già letto.
 - `_expand(entry: dict) -> List[topo.RoleRule]` — L73 — Una voce del JSON → una o più RoleRule (una per elemento di una lista).
 
-#### `snapdraw/tag.py` — 44 lines
+#### `snapdraw/tag.py` — 115 lines
 
 _snapdraw/tag.py_
 
-- `tag_layout(doc, layout: FrameLayout) -> int` — L28 — Setta `edge.role` sugli Edge di cornice e cartiglio in `layout`.
+- `tag_layout(doc, layout: FrameLayout) -> int` — L38 — Setta `edge.role` sugli Edge di cornice e cartiglio in `layout`.
+- `tag_center_marks(doc) -> List[str]` — L57 — I segni di centro disegnati a tratto continuo diventano `construction`
+- `_extends(line, arm, center) -> bool` — L82 — Il prolungamento di un braccio (il simbolo di SolidWorks ne ha uno per
+- `_turn(a, b) -> float` — L96 — L'angolo fra le due rette, in gradi, ridotto a (-90, 90].
+- `_from_center(line, circle) -> bool` — L104 — La linea parte dal centro del cerchio (o ci passa nel mezzo) e resta entro `CENTER_MARK_REACH` raggi.
+- `_perpendicular(a, b) -> bool` — L112
 
 #### `snapdraw/titleblock.py` — 338 lines
 

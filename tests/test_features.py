@@ -162,6 +162,48 @@ class TestHoles(unittest.TestCase):
         self.assertEqual(sd.describe_features(layout), "3 fori passanti Ø6, profondità 5")
 
 
+class TestCenterMarks(unittest.TestCase):
+
+    @staticmethod
+    def _cross(center, arm, extension=0.0):
+        """
+        Il segno di centro di SolidWorks (drw_0031): quattro bracci continui
+        dal centro, un po' oltre il raggio, e tre prolungamenti in fila.
+        """
+        x, y = center
+        lines = [{"type": "line", "start": center, "end": (x + dx * arm, y + dy * arm)}
+                 for dx, dy in ((1, 0), (0, 1), (-1, 0), (0, -1))]
+        if extension:
+            lines += [{"type": "line", "start": (x + dx * arm, y + dy * arm), "end": (x + dx * (arm + extension), y + dy * (arm + extension))}
+                      for dx, dy in ((0, 1), (-1, 0), (0, -1))]
+        return lines
+
+    # le misure di drw_0031: foro r=0,7, bracci 0,833, prolungamenti fino a
+    # 1,533, il capo in alto a 0,15 dal bordo della vista — entro max_gap,
+    # island() lo attacca al contorno e la croce taglia il cerchio in archi
+    EDGE_HOLE = [_rect(0, 0, 100, 50), {"type": "circle", "center": (30, 48.315), "radius": 0.7}]
+
+    def test_croce_continua_sul_foro_diventa_costruzione(self):
+        doc = topo.load_geometry([*self.EDGE_HOLE, *self._cross((30, 48.315), 0.833, 0.7), SIDE])
+        flags = sd.tag_center_marks(doc)
+        self.assertEqual(flags, ["center mark: (30.00, 48.31) r=0.70, 7 lines"])
+        result = sd.sheet_islands(doc)
+        hole, = sd.read_features(doc, result, sd.read_views(result)).features
+        self.assertEqual(hole.kind, "hole")
+
+    def test_senza_segno_la_croce_vicino_al_bordo_rompe_il_foro(self):
+        features = _read([*self.EDGE_HOLE, *self._cross((30, 48.315), 0.833, 0.7), SIDE]).features
+        self.assertEqual(features, [])
+
+    def test_linee_oltre_due_raggi_non_sono_un_segno(self):
+        doc = topo.load_geometry([*FRONT, *self._cross((30, 25), 7.0), SIDE])
+        self.assertEqual(sd.tag_center_marks(doc), [])
+
+    def test_una_linea_sola_non_e_un_segno(self):
+        doc = topo.load_geometry([*FRONT, {"type": "line", "start": (30, 25), "end": (33.6, 25)}, SIDE])
+        self.assertEqual(sd.tag_center_marks(doc), [])
+
+
 class TestOtherShapes(unittest.TestCase):
 
     def test_stadio_e_un_asola(self):

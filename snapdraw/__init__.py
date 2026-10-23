@@ -54,7 +54,7 @@ from .roles import (CONSTRUCTION, COUNTERBORE, COUNTERSINK, FRAME, HOLE, LAYERS,
 from .rules import load_rules, rules_from_dict
 from .recipe import detect_frame
 from .render import render_view, render_views, view_edges
-from .tag import tag_layout
+from .tag import tag_center_marks, tag_layout
 from .titleblock import extend_titleblock, find_titleblock, read_titleblock
 from .views import classify_view, principal_view, projection_mates, read_views, sheet_islands, view_depth
 
@@ -75,6 +75,7 @@ __all__ = [
     "find_titleblock",
     "extend_titleblock",
     "tag_layout",
+    "tag_center_marks",
     "load_rules",
     "rules_from_dict",
     "read_titleblock",

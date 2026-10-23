@@ -72,8 +72,12 @@ Prossimi, in ordine:
   "per convenzione"; asole senza vista compagna (drw_0005, drw_0027).
 - **Bug: drw_0010, la sagoma del pezzo letta come cartiglio** (visto da
   Federico nel CAD): la vista finisce su `title_block` e non ha feature.
-- **drw_0031: i fori di una vista restano in `loose` (Trash)**, quelli
-  delle altre viste sono letti giusti. Capire perché quella vista no.
+- **drw_0008 passa da 3 a 11 fori con `tag_center_marks`** (MAP D40):
+  guardare nel CAD che gli 8 nuovi siano fori veri
+  (`_debug/2026-10-23_snapdraw_fori_loose`).
+- Una linea di parete o una quota esplosa che tocca una forma chiusa la
+  spezza come la croce di D40: cercare altri casi nei fogli prima di
+  generalizzare.
 - Test con una vera vista a "T" e a ">-" da `anonymus` (oggi solo regr_02 e
   regr_03 coprono lamatura e svasatura sul vero).
 
@@ -360,6 +364,10 @@ Prossimi, in ordine:
 
 ## Richieste a topo
 
+- `topo_dxf`: il nome del blocco di un `INSERT` esploso leggibile da una
+  `RoleRule` (oggi solo il layer). SolidWorks scrive il segno di centro come
+  `SW_CENTERMARKSYMBOL_*`: con il nome, una regola in `generic.json` lo
+  marca senza geometria (MAP D40, `tag_center_marks` resta per gli altri CAD).
 - `promote` di più curve come un solo item (es. foro + sede di una
   lamatura): oggi `tag_features` toglie le curve da `loose` a mano (MAP D39).
 

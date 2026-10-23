@@ -1155,3 +1155,27 @@ filetto.
 
 Prova del 23 ottobre su anonymus + regression (38 fogli): 12 svasature,
 4 lamature, 29 filettati, 128 fori, 52 asole, 34 aperture.
+
+### D40 — un segno di centro a tratto continuo è costruzione, letto dalla geometria  ✅
+
+drw_0031: i tre fori della vista 3 finivano in Trash. Il CAD (SolidWorks)
+disegna il segno di centro come blocco `SW_CENTERMARKSYMBOL_*`: quattro
+bracci continui dal centro, un po' oltre il raggio, e tre prolungamenti in
+fila. Non è un errore del CAD (il segno di centro è continuo per norma), ma
+le regole di ruolo di topo vedono il nome del layer ("0"), non quello del
+blocco, quindi le linee restano `unknown`. Da sola la croce non fa danni;
+il guaio è un capo libero entro `SHEET_MAX_GAP` dal bordo della vista:
+`island()` chiude quel gap, la croce entra nella rete del contorno e il
+cerchio esce a pezzi, non più un pezzo che si chiude da solo (topo D162).
+
+`sd.tag_center_marks(doc)`, prima di `sheet_islands`: almeno due linee
+senza ruolo con un capo (o il punto medio) sul centro di un cerchio, entro
+2 raggi, due perpendicolari → `construction`, con i prolungamenti dei
+bracci (stessa retta, dal capo del braccio, non più lunghi del braccio).
+Un flag per segno, per vederli. Letto dalla geometria e non dal nome del
+blocco perché il nome dipende dal CAD; il nome resta una prova in più da
+chiedere a topo (TODO, Richieste a topo).
+
+Prova del 23 ottobre: segni su drw_0004/0008/0011/0012/0013/0031, regr_05;
+drw_0031 ritrova i 3 fori, drw_0008 passa da 3 a 11; gli altri conteggi
+fermi. Suite: gli stessi 9 rossi di prima (golden, TODO).
