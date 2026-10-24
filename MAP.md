@@ -1172,9 +1172,10 @@ cerchio esce a pezzi, non più un pezzo che si chiude da solo (topo D162).
 senza ruolo con un capo (o il punto medio) sul centro di un cerchio, entro
 2 raggi, due perpendicolari → `construction`, con i prolungamenti dei
 bracci (stessa retta, dal capo del braccio, non più lunghi del braccio).
-Un flag per segno, per vederli. Letto dalla geometria e non dal nome del
-blocco perché il nome dipende dal CAD; il nome resta una prova in più da
-chiedere a topo (TODO, Richieste a topo).
+Un flag per segno, per vederli. Letto dalla geometria, non dal nome del
+blocco: il nome è del CAD e del formato, e topo è geometria (topo D123) —
+niente richieste a topo per leggerlo. Se servirà aiutare la lettura per un
+CAD preciso, si fa qui in snapdraw, sulla geometria che quel CAD disegna.
 
 Prova del 23 ottobre: segni su drw_0004/0008/0011/0012/0013/0031, regr_05;
 drw_0031 ritrova i 3 fori, drw_0008 passa da 3 a 11; gli altri conteggi

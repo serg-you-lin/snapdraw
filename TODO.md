@@ -364,10 +364,6 @@ Prossimi, in ordine:
 
 ## Richieste a topo
 
-- `topo_dxf`: il nome del blocco di un `INSERT` esploso leggibile da una
-  `RoleRule` (oggi solo il layer). SolidWorks scrive il segno di centro come
-  `SW_CENTERMARKSYMBOL_*`: con il nome, una regola in `generic.json` lo
-  marca senza geometria (MAP D40, `tag_center_marks` resta per gli altri CAD).
 - `promote` di più curve come un solo item (es. foro + sede di una
   lamatura): oggi `tag_features` toglie le curve da `loose` a mano (MAP D39).
 
